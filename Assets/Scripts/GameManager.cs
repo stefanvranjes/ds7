@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //0xe8 - size
-public class UNK_PTR_004a3660
+public class PTR_DAT_004a3660
 {
     public bool DAT_02; //0x02
     public ushort DAT_48; //0x48
@@ -16,8 +16,22 @@ public class UNK_PTR_004a3660
     public ushort DAT_72; //0x72
 }
 
+//0x40 - size
+public class uGpffff838c
+{
+    public int DAT_00; //0x00
+    public int DAT_10; //0x10
+    public float DAT_20; //0x20
+    public float DAT_24; //0x24
+    public float DAT_28; //0x28
+    public float DAT_30; //0x30
+    public float DAT_34; //0x34
+}
+
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public int iGpfffff1a4;
     public int iGpfffff1a8;
     public int iGpfffff1ac;
@@ -36,26 +50,31 @@ public class GameManager : MonoBehaviour
     public int iGpfffff1e0;
     public int iGpfffff1e4;
     public int iGpfffff1f4;
+    public int iGpfffff1f8;
     public int iGpfffff1fc;
     public int iGpfffff200;
     public int iGpfffff204;
     public sbyte[] iGpffffb07c;
+    public uGpffff838c[] uGpffff838c;
     public int[] DAT_0035b200;
     public int[] DAT_0035b230;
     public int[] DAT_003db258;
     public int[] DAT_003db2b0;
-    public UNK_PTR_004a3660[] DAT_004a3660;
+    public PTR_DAT_004a3660[] DAT_004a3660;
     public int DAT_004a366c;
     public int DAT_0050ee88;
     public int DAT_0050ee8c;
     public int DAT_0050ee90;
+    public int DAT_0050ee94;
     public int DAT_0050eec8;
     public int[] DAT_0050eff0;
     public int DAT_0050f808;
     public int DAT_0050f820;
     public int[] DAT_0050f838;
+    public int DAT_0050f848;
     public int[] DAT_0050f850;
-
+    public int DAT_0050f860;
+    
     public void FUN_001a5668()
     {
         ushort uVar1;
@@ -63,12 +82,15 @@ public class GameManager : MonoBehaviour
         int iVar3;
         int[] puVar4;
         uint uVar5;
+        int iVar6;
+        PTR_DAT_004a3660 pVar6;
         int iVar7;
         int iVar8;
-        UNK_PTR_004a3660 pVar8;
+        PTR_DAT_004a3660 pVar8;
+        int iVar9;
         sbyte sVar10;
         int iVar11;
-        UNK_PTR_004a3660 pVar11;
+        PTR_DAT_004a3660 pVar11;
         long lVar12;
 
         iVar11 = iGpfffff1a4;
@@ -211,7 +233,7 @@ public class GameManager : MonoBehaviour
                                 goto switchD_001a56c4_caseD_8;
                         }
 
-                        //FUN_001a0620 --draw terrain
+                        GridManager.instance.FUN_001a0620();
                         iVar3 = 1;
                         goto LAB_001a5764;
                     }
@@ -291,7 +313,9 @@ public class GameManager : MonoBehaviour
                                         return;
                                     }
 
-                                    goto LAB_001a5c54;
+                                    GridManager.instance.FUN_001a0620();
+                                    iGpfffff1ac = 0;
+                                    return;
                                 }
 
                                 if (iGpfffff1a4 != 1)
@@ -303,7 +327,15 @@ public class GameManager : MonoBehaviour
                                 lVar12 = (long)FUN_001a1a80(sVar10);
                             }
 
-                            goto LAB_001a5c4c;
+                            if (lVar12 == 0)
+                            {
+                                iGpfffff1ac = 0;
+                                return;
+                            }
+
+                            GridManager.instance.FUN_001a0620();
+                            iGpfffff1ac = 0;
+                            return;
                         }
 
                         break;
@@ -571,7 +603,254 @@ public class GameManager : MonoBehaviour
                 //FUN_00144bb0
                 iGpfffff1a4 = iVar11;
                 return;
+            case 4:
+                DAT_0050eec8 = 0;
+
+                if (DAT_004a366c < 0)
+                    iVar11 = DAT_004a3660[4].DAT_4c;
+                else
+                    iVar11 = DAT_004a3660[DAT_004a366c].DAT_4c;
+
+                if (iVar11 != 0 || (DAT_004a3660[DAT_004a366c].DAT_48 & 0x10) != 0)
+                {
+                    //FUN_00144bb0
+                    FUN_0019d820(DAT_0050f838);
+
+                    if (DAT_0050f848 == 1)
+                    {
+                        //FUN_001a2778
+                        iGpfffff1ac = 6;
+                        return;
+                    }
+
+                    if (DAT_0050f848 < 2)
+                    {
+                        if (DAT_0050f848 != 0)
+                        {
+                            iGpfffff1ac = 6;
+                            return;
+                        }
+
+                        //FUN_001a29a0
+                        iGpfffff1ac = 6;
+                        return;
+                    }
+
+                    if (DAT_0050f848 == 2)
+                    {
+                        //FUN_001a26a0
+                        iGpfffff1ac = 6;
+                        return;
+                    }
+
+                    if (DAT_0050f848 != 3)
+                    {
+                        iGpfffff1ac = 6;
+                        return;
+                    }
+
+                    //FUN_001a2528
+                    iGpfffff1ac = 6;
+                    return;
+                }
+
+                pVar11 = DAT_004a3660[DAT_004a366c];
+
+                if (pVar11.DAT_50 == 0)
+                {
+                    if ((pVar11.DAT_72 & 1) == 0)
+                    {
+                        if ((pVar11.DAT_72 & 2) == 0)
+                        {
+                            DAT_0050eec8 = 0;
+                            return;
+                        }
+
+                        //FUN_00144bb0
+                        iVar8 = DAT_0050f848 + 1;
+                        iVar11 = DAT_0050f848 + 4;
+                    }
+                    else
+                    {
+                        //FUN_00144bb0
+                        iVar8 = DAT_0050f848 + 3;
+                        iVar11 = DAT_0050f848 + 6;
+                    }
+
+                    if (-1 < iVar8)
+                        iVar11 = iVar8;
+
+                    DAT_0050f848 = iVar8 + (iVar11 >> 2) * -4;
+                    return;
+                }
+
+                //FUN_00144bb0
+                puVar4 = DAT_0050f838;
+                goto LAB_001a636c;
+            case 5:
+                DAT_0050eec8 = 0;
+
+                if (DAT_004a366c < 0)
+                    iVar11 = DAT_004a3660[4].DAT_4c;
+                else
+                    iVar11 = DAT_004a3660[DAT_004a366c].DAT_4c;
+
+                if (iVar11 != 0 || (DAT_004a3660[DAT_004a366c].DAT_48 & 0x10) != 0)
+                {
+                    //FUN_00144bb0
+                    FUN_0019d820(DAT_0050f850);
+
+                    switch (DAT_0050f860)
+                    {
+                        case 0:
+                            iGpfffff1ac = 9;
+                            //FUN_001a4f58
+                            iGpfffff1ac = 6;
+                            return;
+                        case 1:
+                            goto switchD_001a64ac_caseD_1;
+                        case 2:
+                            DAT_0050ee94 ^= 1;
+                            iGpfffff1ac = 6;
+                            return;
+                        case 3:
+                            //FUN_001a4ac8
+                            iGpfffff1ac = 6;
+                            return;
+                        case 4:
+                            if (iGpfffff204 != 0)
+                            {
+                                //...
+                                return;
+                            }
+
+                            //FUN_001a4238
+                            iGpfffff1ac = 6;
+                            return;
+                        case 5:
+                            if (iGpfffff204 != 0)
+                            {
+                                //...
+                                return;
+                            }
+
+                            iGpfffff1ac = 10;
+                            return;
+                        default:
+                            iGpfffff1ac = 6;
+                            return;
+                    }
+                }
+
+                pVar11 = DAT_004a3660[DAT_004a366c];
+
+                if (pVar11.DAT_50 == 0)
+                {
+                    if ((pVar11.DAT_72 & 1) == 0)
+                    {
+                        if ((pVar11.DAT_72 & 2) == 0)
+                        {
+                            DAT_0050eec8 = 0;
+                            return;
+                        }
+
+                        //FUN_00144bb0
+                        iVar11 = DAT_0050f860 + 1;
+                    }
+                    else
+                    {
+                        //FUN_00144bb0
+                        iVar11 = DAT_0050f860 + 5;
+                    }
+
+                    DAT_0050f860 = iVar11 % 6;
+                    return;
+                }
+
+                //FUN_00144bb0
+                puVar4 = DAT_0050f850;
+                LAB_001a636c:
+                FUN_0019d820(puVar4);
+                iGpfffff1ac = 6;
+                return;
+            case 6:
+                if (!DAT_004a3660[DAT_004a366c].DAT_02)
+                {
+                    DAT_0050eec8 = 1;
+                    iGpfffff1ac = 0;
+                    return;
+                }
+
+                DAT_0050eec8 = 1;
+                return;
+            case 7:
+                iVar11 = DAT_0050ee88 - (iGpfffff1c4 + 1 >> 1);
+                iVar8 = iVar11 + iGpfffff1c4;
+
+                if (iVar11 < 0)
+                {
+                    iVar8 -= iVar11;
+                    iVar11 = 0;
+                }
+
+                if (0x3f < iVar8)
+                {
+                    iVar11 = (iVar11 - iVar8) + 0x3f;
+                    iVar8 = 0x3f;
+                }
+
+                iVar7 = DAT_0050ee8c - (iGpfffff1c8 + 1 >> 1);
+                iVar9 = iVar7 + iGpfffff1c8;
+
+                if (iVar7 < 0)
+                {
+                    iVar9 -= iVar7;
+                    iVar7 = 0;
+                }
+
+                if (0x3f < iVar9)
+                {
+                    iVar7 = (iVar7 - iVar9) + 0x3f;
+                    iVar9 = 0x3f;
+                }
+
+                //FUN_001a0bd0
+                pVar6 = DAT_004a3660[DAT_004a366c];
+
+                if (pVar6.DAT_50 == 0)
+                {
+                    if (DAT_004a366c < 0)
+                        iVar6 = DAT_004a3660[4].DAT_4c;
+                    else
+                        iVar6 = pVar6.DAT_4c;
+
+                    if (iVar6 == 0)
+                        return;
+
+                    //...
+                    GridManager.instance.FUN_001a0620();
+                    iGpfffff1ac = 0;
+                    return;
+                }
+
+                break;
+            default:
+                goto switchD_001a56c4_caseD_8;
         }
+
+        //FUN_00144bb0
+        iGpfffff1ac = 0;
+        switchD_001a56c4_caseD_8:
+        return;
+
+        switchD_001a64ac_caseD_1:
+        if (0x7f < iGpfffff1f8)
+        {
+            //...
+        }
+
+        //FUN_001a2a78
+        iGpfffff1ac = 6;
     }
 
     private void FUN_0019d808(int[] param1)
@@ -579,6 +858,12 @@ public class GameManager : MonoBehaviour
         param1[2] = 0;
         param1[3] = 15;
         param1[0] = 1;
+    }
+
+    private void FUN_0019d820(int[] param1)
+    {
+        param1[3] = 15;
+        param1[2] = 1;
     }
 
     private void FUN_001a0a58()
