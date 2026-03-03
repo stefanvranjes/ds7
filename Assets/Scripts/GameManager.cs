@@ -2,20 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//0xe8 - size
-public class PTR_DAT_004a3660
-{
-    public bool DAT_02; //0x02
-    public ushort DAT_48; //0x48
-    public int DAT_4c; //0x4C
-    public int DAT_50; //0x50
-    public int DAT_54; //0x54
-    public int DAT_58; //0x58
-    public int DAT_5c; //0x5C
-    public int DAT_60; //0x60
-    public ushort DAT_72; //0x72
-}
-
 //0x40 - size
 public class uGpffff838c
 {
@@ -32,7 +18,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public DAT_0027905c iGpfffff190; //undo
+    public DAT_0027905c[] iGpfffff190; //undo
     public int iGpfffff1a4;
     public int iGpfffff1a8;
     public int iGpfffff1ac;
@@ -56,25 +42,7 @@ public class GameManager : MonoBehaviour
     public int iGpfffff200;
     public int iGpfffff204;
     public uGpffff838c[] uGpffff838c;
-    public int[] DAT_0035b200;
-    public int[] DAT_0035b230;
-    public int[] DAT_003db258;
-    public int[] DAT_003db2b0;
-    public PTR_DAT_004a3660[] DAT_004a3660;
-    public int DAT_004a366c;
-    public int DAT_0050ee88;
-    public int DAT_0050ee8c;
-    public int DAT_0050ee90;
-    public int DAT_0050ee94;
-    public int DAT_0050eec8;
-    public int[] DAT_0050eff0;
-    public int DAT_0050f808;
-    public int DAT_0050f820;
-    public int[] DAT_0050f838;
-    public int DAT_0050f848;
-    public int[] DAT_0050f850;
-    public int DAT_0050f860;
-    
+
     public void FUN_001a5668()
     {
         ushort uVar1;
@@ -96,19 +64,19 @@ public class GameManager : MonoBehaviour
 
         iVar11 = iGpfffff1a4;
         lVar12 = 0;
-        DAT_0050eec8 = 1;
-        iVar8 = DAT_0050ee88 + DAT_0050ee8c * 0x40;
+        GridManager.instance.DAT_0050eec8 = 1;
+        iVar8 = GridManager.instance.DAT_0050ee88 + GridManager.instance.DAT_0050ee8c * 0x40;
 
         switch (iGpfffff1ac)
         {
             case 0:
-                pVar11 = DAT_004a3660[DAT_004a366c];
+                pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                 if (pVar11.DAT_60 != 0)
                 {
                     iVar3 = 13;
                     iGpfffff1dc = iGpfffff1d4;
-                    DAT_0050f808 = 1;
+                    GridManager.instance.DAT_0050f808 = 1;
                     iGpfffff1e0 = iGpfffff1d8;
                     iGpfffff1ac = 2;
                     goto LAB_001a5764;
@@ -116,7 +84,7 @@ public class GameManager : MonoBehaviour
 
                 if (pVar11.DAT_5c != 0)
                 {
-                    DAT_0050f820 = 1;
+                    GridManager.instance.DAT_0050f820 = 1;
                     iVar3 = 13;
                     iGpfffff1a8 = iGpfffff1a4;
                     iGpfffff1ac = 3;
@@ -136,11 +104,19 @@ public class GameManager : MonoBehaviour
                                     if (iGpfffff200 == 0)
                                     {
                                         iVar3 = 6;
-                                        //FUN_00144bb0
+                                        SoundManager.instance.FUN_00144bb0(iVar3);
                                     }
                                     else
                                     {
-                                        //...
+                                        SoundManager.instance.FUN_00144bb0(5);
+                                        System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_842, iGpfffff190[iGpfffff1fc].DAT_842, 0x1000);
+                                        System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_1842, iGpfffff190[iGpfffff1fc].DAT_1842, 0x1000);
+                                        System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_2842, iGpfffff190[iGpfffff1fc].DAT_2842, 0x1000);
+                                        iGpfffff1fc = (iGpfffff1fc + 1) % 2;
+                                        System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_842, GridManager.instance.PTR_DAT_004a00ec.DAT_842, 0x1000);
+                                        System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_1842, GridManager.instance.PTR_DAT_004a00ec.DAT_1842, 0x1000);
+                                        System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_2842, GridManager.instance.PTR_DAT_004a00ec.DAT_2842, 0x1000);
+                                        GridManager.instance.FUN_001a0620();
                                     }
                                 }
                             }
@@ -149,7 +125,7 @@ public class GameManager : MonoBehaviour
                                 sVar10 = GridManager.instance.PTR_DAT_004a00ec.DAT_842[iVar8];
 
                                 if (sVar10 < 0x20)
-                                    iGpfffff1d4 = DAT_003db2b0[sVar10];
+                                    iGpfffff1d4 = GridManager.instance.DAT_003db2b0[sVar10];
                                 else
                                 {
                                     iGpfffff1e4 = sVar10 - 0x20;
@@ -159,11 +135,11 @@ public class GameManager : MonoBehaviour
                                 }
 
                                 iVar3 = 4;
-                                //FUN_00144bb0
+                                SoundManager.instance.FUN_00144bb0(iVar3);
                             }
                         }
                         else if (iGpfffff1d4 < 0x16)
-                            lVar12 = DAT_003db258[iGpfffff1d4];
+                            lVar12 = GridManager.instance.DAT_003db258[iGpfffff1d4];
                         else
                             lVar12 = iGpfffff1e4 + iGpfffff1d8 * 6 + 0x20;
 
@@ -176,7 +152,9 @@ public class GameManager : MonoBehaviour
                                 if (GridManager.instance.PTR_DAT_004a00ec.DAT_842[iVar8] == lVar12)
                                     return;
 
-                                //FUN_0024c8d8
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_842, iGpfffff190[iGpfffff1fc].DAT_842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_1842, iGpfffff190[iGpfffff1fc].DAT_1842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_2842, iGpfffff190[iGpfffff1fc].DAT_2842, 0x1000);
                                 iGpfffff204 = 1;
                                 iGpfffff200 = 1;
                                 iGpfffff1fc = (iGpfffff1fc + 1) % 2;
@@ -187,19 +165,19 @@ public class GameManager : MonoBehaviour
                             case 4:
                             case 5:
                             case 6:
-                                if (DAT_004a366c < 0)
-                                    iVar11 = DAT_004a3660[4].DAT_4c;
+                                if (InputManager.instance.DAT_004a366c < 0)
+                                    iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                                 else
-                                    iVar11 = DAT_004a3660[DAT_004a366c].DAT_4c;
+                                    iVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_4c;
 
                                 if (iVar11 == 0)
                                     return;
 
                                 iGpfffff1f4 = 0;
-                                iGpfffff1b0 = DAT_0050ee88;
-                                uGpfffff1b8 = DAT_0050ee90;
+                                iGpfffff1b0 = GridManager.instance.DAT_0050ee88;
+                                uGpfffff1b8 = GridManager.instance.DAT_0050ee90;
                                 iVar3 = 4;
-                                iGpfffff1b4 = DAT_0050ee8c;
+                                iGpfffff1b4 = GridManager.instance.DAT_0050ee8c;
                                 iGpfffff1ac = 1;
                                 goto LAB_001a5764;
                             case 3:
@@ -209,21 +187,25 @@ public class GameManager : MonoBehaviour
                                 if (GridManager.instance.PTR_DAT_004a00ec.DAT_842[iVar8] == lVar12)
                                     return;
 
-                                //FUN_0024c8d8
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_842, iGpfffff190[iGpfffff1fc].DAT_842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_1842, iGpfffff190[iGpfffff1fc].DAT_1842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_2842, iGpfffff190[iGpfffff1fc].DAT_2842, 0x1000);
                                 iGpfffff204 = 1;
                                 iGpfffff200 = 1;
                                 iGpfffff1fc = (iGpfffff1fc + 1) % 2;
-                                uVar5 = (uint)FUN_001a1df8(DAT_0050ee88, DAT_0050ee8c, (sbyte)lVar12);
+                                uVar5 = (uint)FUN_001a1df8(GridManager.instance.DAT_0050ee88, GridManager.instance.DAT_0050ee8c, (sbyte)lVar12);
                                 break;
                             case 7:
-                                if (!DAT_004a3660[DAT_004a366c].DAT_02)
+                                if (!InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_02)
                                     return;
 
                                 if (GridManager.instance.PTR_DAT_004a00ec.DAT_1842[iVar8] == 0 && 
                                     GridManager.instance.PTR_DAT_004a00ec.DAT_2842[iVar8] == 0)
                                     return;
 
-                                //FUN_0024c8d8
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_842, iGpfffff190[iGpfffff1fc].DAT_842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_1842, iGpfffff190[iGpfffff1fc].DAT_1842, 0x1000);
+                                System.Array.Copy(GridManager.instance.PTR_DAT_004a00ec.DAT_2842, iGpfffff190[iGpfffff1fc].DAT_2842, 0x1000);
                                 iGpfffff204 = 1;
                                 uVar5 = 2;
                                 iGpfffff200 = 1;
@@ -241,18 +223,18 @@ public class GameManager : MonoBehaviour
                     }
 
                     iGpfffff1ac = 5;
-                    puVar4 = DAT_0050f850;
+                    puVar4 = GridManager.instance.DAT_0050f850;
                 }
                 else
                 {
                     iGpfffff1ac = 4;
-                    puVar4 = DAT_0050f838;
+                    puVar4 = GridManager.instance.DAT_0050f838;
                 }
 
                 FUN_0019d808(puVar4);
                 iVar3 = 13;
                 LAB_001a5764:
-                //FUN_00144bb0
+                SoundManager.instance.FUN_00144bb0(iVar3);
                 return;
             case 1:
                 switch (iGpfffff1a4)
@@ -268,22 +250,22 @@ public class GameManager : MonoBehaviour
                         else
                             FUN_001a1308();
 
-                        pVar11 = DAT_004a3660[DAT_004a366c];
+                        pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                         if (pVar11.DAT_50 == 0)
                         {
-                            if (DAT_004a366c < 0)
-                                iVar11 = DAT_004a3660[4].DAT_4c;
+                            if (InputManager.instance.DAT_004a366c < 0)
+                                iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                             else
                                 iVar11 = pVar11.DAT_4c;
 
                             if (iVar11 == 0)
                                 return;
 
-                            //FUN_00144bb0
+                            SoundManager.instance.FUN_00144bb0(4);
 
                             if (iGpfffff1d4 < 0x16)
-                                sVar10 = (sbyte)DAT_003db258[iGpfffff1d4];
+                                sVar10 = (sbyte)GridManager.instance.DAT_003db258[iGpfffff1d4];
                             else
                                 sVar10 = (sbyte)(iGpfffff1e4 + (sbyte)iGpfffff1d8 * 6 + 0x20);
 
@@ -343,45 +325,45 @@ public class GameManager : MonoBehaviour
                         break;
                     case 4:
                         FUN_001a0a58();
-                        pVar11 = DAT_004a3660[DAT_004a366c];
+                        pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                         if (pVar11.DAT_50 == 0)
                         {
-                            if (DAT_004a366c < 0)
-                                iVar11 = DAT_004a3660[4].DAT_4c;
+                            if (InputManager.instance.DAT_004a366c < 0)
+                                iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                             else
                                 iVar11 = pVar11.DAT_4c;
 
                             if (iVar11 == 0)
                                 return;
 
-                            //FUN_00144bb0
+                            SoundManager.instance.FUN_00144bb0(4);
 
-                            if (DAT_0050ee88 < iGpfffff1b0)
+                            if (GridManager.instance.DAT_0050ee88 < iGpfffff1b0)
                             {
-                                iGpfffff1bc = DAT_0050ee88;
-                                iGpfffff1c4 = iGpfffff1b0 - DAT_0050ee88;
+                                iGpfffff1bc = GridManager.instance.DAT_0050ee88;
+                                iGpfffff1c4 = iGpfffff1b0 - GridManager.instance.DAT_0050ee88;
                             }
                             else
                             {
                                 iGpfffff1bc = iGpfffff1b0;
-                                iGpfffff1c4 = DAT_0050ee88 - iGpfffff1b0;
+                                iGpfffff1c4 = GridManager.instance.DAT_0050ee88 - iGpfffff1b0;
                             }
 
-                            if (DAT_0050ee8c < iGpfffff1b4)
+                            if (GridManager.instance.DAT_0050ee8c < iGpfffff1b4)
                             {
-                                iGpfffff1c0 = DAT_0050ee8c;
-                                iGpfffff1c8 = iGpfffff1b4 - DAT_0050ee8c;
+                                iGpfffff1c0 = GridManager.instance.DAT_0050ee8c;
+                                iGpfffff1c8 = iGpfffff1b4 - GridManager.instance.DAT_0050ee8c;
                             }
                             else
                             {
-                                iGpfffff1c0 = DAT_0050ee8c;
-                                iGpfffff1c8 = DAT_0050ee8c - iGpfffff1b4;
+                                iGpfffff1c0 = GridManager.instance.DAT_0050ee8c;
+                                iGpfffff1c8 = GridManager.instance.DAT_0050ee8c - iGpfffff1b4;
                             }
 
                             iGpfffff1ac = 7;
-                            iGpfffff1b0 = DAT_0050ee88;
-                            iGpfffff1b4 = DAT_0050ee8c;
+                            iGpfffff1b0 = GridManager.instance.DAT_0050ee88;
+                            iGpfffff1b4 = GridManager.instance.DAT_0050ee8c;
                             return;
                         }
 
@@ -390,8 +372,8 @@ public class GameManager : MonoBehaviour
 
                 break;
             case 2:
-                DAT_0050eec8 = 0;
-                pVar11 = DAT_004a3660[DAT_004a366c];
+                GridManager.instance.DAT_0050eec8 = 0;
+                pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
                 uVar1 = pVar11.DAT_72;
 
                 if ((uVar1 & 1) == 0)
@@ -402,14 +384,14 @@ public class GameManager : MonoBehaviour
                         {
                             if ((uVar1 & 8) == 0)
                             {
-                                if (DAT_004a366c < 0)
-                                    iVar11 = DAT_004a3660[4].DAT_4c;
+                                if (InputManager.instance.DAT_004a366c < 0)
+                                    iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                                 else
                                     iVar11 = pVar11.DAT_4c;
 
                                 if (iVar11 == 0)
                                 {
-                                    pVar11 = DAT_004a3660[DAT_004a366c];
+                                    pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                                     if (pVar11.DAT_60 == 0)
                                     {
@@ -417,8 +399,8 @@ public class GameManager : MonoBehaviour
                                         {
                                             if (pVar11.DAT_50 != 0)
                                             {
-                                                //FUN_00144bb0
-                                                DAT_0050f808 = 0;
+                                                SoundManager.instance.FUN_00144bb0(5);
+                                                GridManager.instance.DAT_0050f808 = 0;
                                                 iGpfffff1ac = 6;
                                                 iGpfffff1d4 = iGpfffff1dc;
                                                 iGpfffff1d8 = iGpfffff1e0;
@@ -427,19 +409,19 @@ public class GameManager : MonoBehaviour
                                         }
                                         else
                                         {
-                                            DAT_0050f820 = 1;
+                                            GridManager.instance.DAT_0050f820 = 1;
                                             iGpfffff1a8 = iGpfffff1a4;
                                             iGpfffff1ac = 3;
-                                            DAT_0050f808 = 0;
-                                            //FUN_00144bb0
+                                            GridManager.instance.DAT_0050f808 = 0;
+                                            SoundManager.instance.FUN_00144bb0(13);
                                         }
 
                                         goto LAB_001a5e3c;
                                     }
 
-                                    //FUN_00144bb0
+                                    SoundManager.instance.FUN_00144bb0(14);
                                     iGpfffff1ac = 6;
-                                    DAT_0050f808 = 0;
+                                    GridManager.instance.DAT_0050f808 = 0;
 
                                     if (iGpfffff1d4 < 22) goto LAB_001a5e3c;
 
@@ -466,9 +448,9 @@ public class GameManager : MonoBehaviour
                                 {
                                     if (iGpfffff1d4 < 22)
                                     {
-                                        //FUN_00144bb0
+                                        SoundManager.instance.FUN_00144bb0(4);
                                         iGpfffff1ac = 6;
-                                        DAT_0050f808 = 0;
+                                        GridManager.instance.DAT_0050f808 = 0;
                                         goto LAB_001a5e3c;
                                     }
 
@@ -476,20 +458,21 @@ public class GameManager : MonoBehaviour
                                     {
                                         if (iGpfffff1d4 == 22 && iGpfffff1d8 == 0)
                                         {
-                                            //...
+                                            SoundManager.instance.FUN_00144bb0(6);
+                                            //FUN_001ebbf0
                                         }
                                         else
                                         {
-                                            //FUN_00144bb0
+                                            SoundManager.instance.FUN_00144bb0(4);
                                             iGpfffff1ac = 6;
                                             iGpfffff1e4 = iGpfffff1d4 - 22;
-                                            DAT_0050f808 = 0;
+                                            GridManager.instance.DAT_0050f808 = 0;
                                         }
 
                                         goto LAB_001a5e3c;
                                     }
 
-                                    //FUN_00144bb0
+                                    SoundManager.instance.FUN_00144bb0(4);
                                 }
 
                                 iGpfffff1d8 = iGpfffff1d4 - 27;
@@ -526,12 +509,12 @@ public class GameManager : MonoBehaviour
                 if (iVar11 == iGpfffff1d4)
                     return;
 
-                //FUN_00144bb0
+                SoundManager.instance.FUN_00144bb0(1);
                 iGpfffff1d4 = iVar11;
                 return;
             case 3:
-                DAT_0050eec8 = 0;
-                pVar8 = DAT_004a3660[DAT_004a366c];
+                GridManager.instance.DAT_0050eec8 = 0;
+                pVar8 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
                 uVar1 = pVar8.DAT_72;
 
                 if ((uVar1 & 4) == 0)
@@ -540,8 +523,8 @@ public class GameManager : MonoBehaviour
 
                     if ((uVar1 & 8) == 0)
                     {
-                        if (DAT_004a366c < 0)
-                            iVar8 = DAT_004a3660[4].DAT_4c;
+                        if (InputManager.instance.DAT_004a366c < 0)
+                            iVar8 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                         else
                             iVar8 = pVar8.DAT_4c;
 
@@ -549,7 +532,7 @@ public class GameManager : MonoBehaviour
 
                         if (iVar8 == 0)
                         {
-                            pVar8 = DAT_004a3660[DAT_004a366c];
+                            pVar8 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
                             uVar5 = 14;
 
                             if (pVar8.DAT_5c == 0)
@@ -558,8 +541,8 @@ public class GameManager : MonoBehaviour
                                 {
                                     if (pVar8.DAT_50 != 0)
                                     {
-                                        //FUN_00144bb0
-                                        DAT_0050f820 = 0;
+                                        SoundManager.instance.FUN_00144bb0(5);
+                                        GridManager.instance.DAT_0050f820 = 0;
                                         iGpfffff1a4 = iGpfffff1a8;
                                         iGpfffff1ac = 6;
                                         return;
@@ -567,21 +550,21 @@ public class GameManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    DAT_0050f808 = 1;
+                                    GridManager.instance.DAT_0050f808 = 1;
                                     iGpfffff1ac = 2;
                                     iGpfffff1dc = iGpfffff1d4;
                                     iGpfffff1e0 = iGpfffff1d8;
-                                    DAT_0050f820 = 0;
-                                    //FUN_00144bb0
+                                    GridManager.instance.DAT_0050f820 = 0;
+                                    SoundManager.instance.FUN_00144bb0(13);
                                 }
 
                                 goto LAB_001a6144;
                             }
                         }
 
-                        //FUN_00144bb0
+                        SoundManager.instance.FUN_00144bb0(uVar5);
                         iGpfffff1ac = 6;
-                        DAT_0050f820 = 0;
+                        GridManager.instance.DAT_0050f820 = 0;
                         goto LAB_001a6144;
                     }
 
@@ -602,32 +585,32 @@ public class GameManager : MonoBehaviour
                 if (iVar11 == iGpfffff1a4)
                     return;
 
-                //FUN_00144bb0
+                SoundManager.instance.FUN_00144bb0(1);
                 iGpfffff1a4 = iVar11;
                 return;
             case 4:
-                DAT_0050eec8 = 0;
+                GridManager.instance.DAT_0050eec8 = 0;
 
-                if (DAT_004a366c < 0)
-                    iVar11 = DAT_004a3660[4].DAT_4c;
+                if (InputManager.instance.DAT_004a366c < 0)
+                    iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                 else
-                    iVar11 = DAT_004a3660[DAT_004a366c].DAT_4c;
+                    iVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_4c;
 
-                if (iVar11 != 0 || (DAT_004a3660[DAT_004a366c].DAT_48 & 0x10) != 0)
+                if (iVar11 != 0 || (InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_48 & 0x10) != 0)
                 {
-                    //FUN_00144bb0
-                    FUN_0019d820(DAT_0050f838);
+                    SoundManager.instance.FUN_00144bb0(4);
+                    FUN_0019d820(GridManager.instance.DAT_0050f838);
 
-                    if (DAT_0050f848 == 1)
+                    if (GridManager.instance.DAT_0050f848 == 1)
                     {
                         //FUN_001a2778
                         iGpfffff1ac = 6;
                         return;
                     }
 
-                    if (DAT_0050f848 < 2)
+                    if (GridManager.instance.DAT_0050f848 < 2)
                     {
-                        if (DAT_0050f848 != 0)
+                        if (GridManager.instance.DAT_0050f848 != 0)
                         {
                             iGpfffff1ac = 6;
                             return;
@@ -638,14 +621,14 @@ public class GameManager : MonoBehaviour
                         return;
                     }
 
-                    if (DAT_0050f848 == 2)
+                    if (GridManager.instance.DAT_0050f848 == 2)
                     {
                         //FUN_001a26a0
                         iGpfffff1ac = 6;
                         return;
                     }
 
-                    if (DAT_0050f848 != 3)
+                    if (GridManager.instance.DAT_0050f848 != 3)
                     {
                         iGpfffff1ac = 6;
                         return;
@@ -656,7 +639,7 @@ public class GameManager : MonoBehaviour
                     return;
                 }
 
-                pVar11 = DAT_004a3660[DAT_004a366c];
+                pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                 if (pVar11.DAT_50 == 0)
                 {
@@ -664,45 +647,45 @@ public class GameManager : MonoBehaviour
                     {
                         if ((pVar11.DAT_72 & 2) == 0)
                         {
-                            DAT_0050eec8 = 0;
+                            GridManager.instance.DAT_0050eec8 = 0;
                             return;
                         }
 
-                        //FUN_00144bb0
-                        iVar8 = DAT_0050f848 + 1;
-                        iVar11 = DAT_0050f848 + 4;
+                        SoundManager.instance.FUN_00144bb0(1);
+                        iVar8 = GridManager.instance.DAT_0050f848 + 1;
+                        iVar11 = GridManager.instance.DAT_0050f848 + 4;
                     }
                     else
                     {
-                        //FUN_00144bb0
-                        iVar8 = DAT_0050f848 + 3;
-                        iVar11 = DAT_0050f848 + 6;
+                        SoundManager.instance.FUN_00144bb0(1);
+                        iVar8 = GridManager.instance.DAT_0050f848 + 3;
+                        iVar11 = GridManager.instance.DAT_0050f848 + 6;
                     }
 
                     if (-1 < iVar8)
                         iVar11 = iVar8;
 
-                    DAT_0050f848 = iVar8 + (iVar11 >> 2) * -4;
+                    GridManager.instance.DAT_0050f848 = iVar8 + (iVar11 >> 2) * -4;
                     return;
                 }
 
-                //FUN_00144bb0
-                puVar4 = DAT_0050f838;
+                SoundManager.instance.FUN_00144bb0(5);
+                puVar4 = GridManager.instance.DAT_0050f838;
                 goto LAB_001a636c;
             case 5:
-                DAT_0050eec8 = 0;
+                GridManager.instance.DAT_0050eec8 = 0;
 
-                if (DAT_004a366c < 0)
-                    iVar11 = DAT_004a3660[4].DAT_4c;
+                if (InputManager.instance.DAT_004a366c < 0)
+                    iVar11 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                 else
-                    iVar11 = DAT_004a3660[DAT_004a366c].DAT_4c;
+                    iVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_4c;
 
-                if (iVar11 != 0 || (DAT_004a3660[DAT_004a366c].DAT_48 & 0x10) != 0)
+                if (iVar11 != 0 || (InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_48 & 0x10) != 0)
                 {
-                    //FUN_00144bb0
-                    FUN_0019d820(DAT_0050f850);
+                    SoundManager.instance.FUN_00144bb0(4);
+                    FUN_0019d820(GridManager.instance.DAT_0050f850);
 
-                    switch (DAT_0050f860)
+                    switch (GridManager.instance.DAT_0050f860)
                     {
                         case 0:
                             iGpfffff1ac = 9;
@@ -712,7 +695,7 @@ public class GameManager : MonoBehaviour
                         case 1:
                             goto switchD_001a64ac_caseD_1;
                         case 2:
-                            DAT_0050ee94 ^= 1;
+                            GridManager.instance.DAT_0050ee94 ^= 1;
                             iGpfffff1ac = 6;
                             return;
                         case 3:
@@ -744,7 +727,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
 
-                pVar11 = DAT_004a3660[DAT_004a366c];
+                pVar11 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                 if (pVar11.DAT_50 == 0)
                 {
@@ -752,41 +735,41 @@ public class GameManager : MonoBehaviour
                     {
                         if ((pVar11.DAT_72 & 2) == 0)
                         {
-                            DAT_0050eec8 = 0;
+                            GridManager.instance.DAT_0050eec8 = 0;
                             return;
                         }
 
-                        //FUN_00144bb0
-                        iVar11 = DAT_0050f860 + 1;
+                        SoundManager.instance.FUN_00144bb0(1);
+                        iVar11 = GridManager.instance.DAT_0050f860 + 1;
                     }
                     else
                     {
-                        //FUN_00144bb0
-                        iVar11 = DAT_0050f860 + 5;
+                        SoundManager.instance.FUN_00144bb0(1);
+                        iVar11 = GridManager.instance.DAT_0050f860 + 5;
                     }
 
-                    DAT_0050f860 = iVar11 % 6;
+                    GridManager.instance.DAT_0050f860 = iVar11 % 6;
                     return;
                 }
 
-                //FUN_00144bb0
-                puVar4 = DAT_0050f850;
+                SoundManager.instance.FUN_00144bb0(5);
+                puVar4 = GridManager.instance.DAT_0050f850;
                 LAB_001a636c:
                 FUN_0019d820(puVar4);
                 iGpfffff1ac = 6;
                 return;
             case 6:
-                if (!DAT_004a3660[DAT_004a366c].DAT_02)
+                if (!InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_02)
                 {
-                    DAT_0050eec8 = 1;
+                    GridManager.instance.DAT_0050eec8 = 1;
                     iGpfffff1ac = 0;
                     return;
                 }
 
-                DAT_0050eec8 = 1;
+                GridManager.instance.DAT_0050eec8 = 1;
                 return;
             case 7:
-                iVar11 = DAT_0050ee88 - (iGpfffff1c4 + 1 >> 1);
+                iVar11 = GridManager.instance.DAT_0050ee88 - (iGpfffff1c4 + 1 >> 1);
                 iVar8 = iVar11 + iGpfffff1c4;
 
                 if (iVar11 < 0)
@@ -801,7 +784,7 @@ public class GameManager : MonoBehaviour
                     iVar8 = 0x3f;
                 }
 
-                iVar7 = DAT_0050ee8c - (iGpfffff1c8 + 1 >> 1);
+                iVar7 = GridManager.instance.DAT_0050ee8c - (iGpfffff1c8 + 1 >> 1);
                 iVar9 = iVar7 + iGpfffff1c8;
 
                 if (iVar7 < 0)
@@ -817,19 +800,19 @@ public class GameManager : MonoBehaviour
                 }
 
                 FUN_001a0bd0(iVar11, (uint)iVar7, iVar8, (uint)iVar9, (uint)(iGpfffff1c0 & 1));
-                pVar6 = DAT_004a3660[DAT_004a366c];
+                pVar6 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
 
                 if (pVar6.DAT_50 == 0)
                 {
-                    if (DAT_004a366c < 0)
-                        iVar6 = DAT_004a3660[4].DAT_4c;
+                    if (InputManager.instance.DAT_004a366c < 0)
+                        iVar6 = InputManager.instance.DAT_004a3660[4].DAT_4c;
                     else
                         iVar6 = pVar6.DAT_4c;
 
                     if (iVar6 == 0)
                         return;
 
-                    //FUN_00144bb0
+                    SoundManager.instance.FUN_00144bb0(4);
                     lVar12 = (long)FUN_001a0f70(iVar11, (uint)iVar7, iVar8, iVar9, (uint)(iGpfffff1c0 & 1));
 
                     if (lVar12 == 0)
@@ -848,7 +831,7 @@ public class GameManager : MonoBehaviour
                 goto switchD_001a56c4_caseD_8;
         }
 
-        //FUN_00144bb0
+        SoundManager.instance.FUN_00144bb0(5);
         iGpfffff1ac = 0;
         switchD_001a56c4_caseD_8:
         return;
@@ -859,18 +842,18 @@ public class GameManager : MonoBehaviour
             //...
         }
 
-        //FUN_001a2a78
+        GridManager.instance.FUN_001a2a78();
         iGpfffff1ac = 6;
     }
 
-    private void FUN_0019d808(int[] param1)
+    public void FUN_0019d808(int[] param1)
     {
         param1[2] = 0;
         param1[3] = 15;
         param1[0] = 1;
     }
 
-    private void FUN_0019d820(int[] param1)
+    public void FUN_0019d820(int[] param1)
     {
         param1[3] = 15;
         param1[2] = 1;
@@ -886,22 +869,22 @@ public class GameManager : MonoBehaviour
         int iVar6;
         int iVar7;
 
-        iVar1 = DAT_0050ee88;
+        iVar1 = GridManager.instance.DAT_0050ee88;
         iVar3 = iGpfffff1b0;
 
-        if (iGpfffff1b0 <= DAT_0050ee88)
+        if (iGpfffff1b0 <= GridManager.instance.DAT_0050ee88)
         {
             iVar1 = iGpfffff1b0;
-            iVar3 = DAT_0050ee88;
+            iVar3 = GridManager.instance.DAT_0050ee88;
         }
 
-        iVar2 = DAT_0050ee8c;
+        iVar2 = GridManager.instance.DAT_0050ee8c;
         iVar7 = iGpfffff1b4;
 
-        if (iGpfffff1b4 <= DAT_0050ee8c)
+        if (iGpfffff1b4 <= GridManager.instance.DAT_0050ee8c)
         {
             iVar2 = iGpfffff1b4;
-            iVar7 = DAT_0050ee8c;
+            iVar7 = GridManager.instance.DAT_0050ee8c;
         }
 
         iGpfffff1f4 = 0;
@@ -914,9 +897,9 @@ public class GameManager : MonoBehaviour
 
             do
             {
-                DAT_0050eff0[piVar4] = iVar5;
+                GridManager.instance.DAT_0050eff0[piVar4] = iVar5;
                 iGpfffff1f4++;
-                DAT_0050eff0[piVar4 + 1] = iVar2;
+                GridManager.instance.DAT_0050eff0[piVar4 + 1] = iVar2;
                 iVar5++;
                 piVar4 += 2;
             } while (iVar5 <= iVar3);
@@ -931,9 +914,9 @@ public class GameManager : MonoBehaviour
 
             do
             {
-                DAT_0050eff0[piVar4] = iVar5;
+                GridManager.instance.DAT_0050eff0[piVar4] = iVar5;
                 iGpfffff1f4++;
-                DAT_0050eff0[piVar4 + 1] = iVar7;
+                GridManager.instance.DAT_0050eff0[piVar4 + 1] = iVar7;
                 iVar5++;
                 piVar4 += 2;
             } while (iVar5 <= iVar3);
@@ -946,15 +929,15 @@ public class GameManager : MonoBehaviour
             while (++iVar2 < iVar7)
             {
                 iVar6 = iGpfffff1f4 + 1;
-                DAT_0050eff0[iGpfffff1f4 * 2 + 1] = iVar2;
-                DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
+                GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = iVar2;
+                GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
                 iVar5 = iGpfffff1f4 + 2;
                 iGpfffff1f4 = iVar6;
 
                 if (iVar1 != iVar3)
                 {
-                    DAT_0050eff0[iVar6 * 2 + 1] = iVar2;
-                    DAT_0050eff0[iVar6 * 2] = iVar3;
+                    GridManager.instance.DAT_0050eff0[iVar6 * 2 + 1] = iVar2;
+                    GridManager.instance.DAT_0050eff0[iVar6 * 2] = iVar3;
                     iGpfffff1f4 = iVar5;
                 }
             }
@@ -982,9 +965,9 @@ public class GameManager : MonoBehaviour
 
                 do
                 {
-                    DAT_0050eff0[piVar4] = (byte)iVar1;
+                    GridManager.instance.DAT_0050eff0[piVar4] = (byte)iVar1;
                     iVar2++;
-                    DAT_0050eff0[piVar4 + 1] = (byte)param2;
+                    GridManager.instance.DAT_0050eff0[piVar4 + 1] = (byte)param2;
                     iVar1++;
                     piVar4 += 2;
                     iGpfffff1f4 = iVar2;
@@ -998,8 +981,8 @@ public class GameManager : MonoBehaviour
 
                 do
                 {
-                    DAT_0050eff0[piVar4] = iVar2;
-                    DAT_0050eff0[piVar4 + 1] = (int)param4;
+                    GridManager.instance.DAT_0050eff0[piVar4] = iVar2;
+                    GridManager.instance.DAT_0050eff0[piVar4 + 1] = (int)param4;
                     iVar2++;
                     piVar4 += 2;
                 } while (iVar2 <= param3);
@@ -1012,15 +995,15 @@ public class GameManager : MonoBehaviour
                 for (; iVar2 < (int)param4; iVar2++)
                 {
                     iVar3 = iGpfffff1f4 + 1;
-                    DAT_0050eff0[iGpfffff1f4 * 2 + 1] = iVar2;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = iVar2;
                     iVar1 = iVar3 * 2;
-                    DAT_0050eff0[iGpfffff1f4 * 2] = param1;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = param1;
 
                     if (param1 != param3)
                     {
-                        DAT_0050eff0[iVar3 * 2 + 1] = iVar2;
+                        GridManager.instance.DAT_0050eff0[iVar3 * 2 + 1] = iVar2;
                         iVar3 = iGpfffff1f4 + 2;
-                        DAT_0050eff0[iVar1] = param3;
+                        GridManager.instance.DAT_0050eff0[iVar1] = param3;
                     }
 
                     iGpfffff1f4 = iVar3;
@@ -1037,9 +1020,9 @@ public class GameManager : MonoBehaviour
 
                 do
                 {
-                    DAT_0050eff0[piVar4] = iVar2;
+                    GridManager.instance.DAT_0050eff0[piVar4] = iVar2;
                     iGpfffff1f4++;
-                    DAT_0050eff0[piVar4 + 1] = (int)param2;
+                    GridManager.instance.DAT_0050eff0[piVar4 + 1] = (int)param2;
                     iVar2++;
                     piVar4 += 2;
                 } while (iVar2 <= param3);
@@ -1053,7 +1036,7 @@ public class GameManager : MonoBehaviour
                 {
                     uVar6 = (uVar5 ^ 1) & 1;
                     iVar1 = param1 + (int)uVar6;
-                    DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar5;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar5;
                     iVar2 = param3;
 
                     if (uVar6 != 0)
@@ -1065,13 +1048,13 @@ public class GameManager : MonoBehaviour
                     if (0x3f < iVar2)
                         iVar2 = 0x3f;
 
-                    DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
                     iVar3 = iGpfffff1f4 + 1;
 
                     if (param1 != param3 && iVar1 != iVar2)
                     {
-                        DAT_0050eff0[iVar3 * 2] = iVar2;
-                        DAT_0050eff0[iVar3 * 2 + 1] = (int)uVar5;
+                        GridManager.instance.DAT_0050eff0[iVar3 * 2] = iVar2;
+                        GridManager.instance.DAT_0050eff0[iVar3 * 2 + 1] = (int)uVar5;
                         iVar3 = iGpfffff1f4 + 2;
                     }
 
@@ -1089,8 +1072,8 @@ public class GameManager : MonoBehaviour
 
                     if (iVar2 < 0x40)
                     {
-                        DAT_0050eff0[iGpfffff1f4 * 2] = iVar2;
-                        DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param4;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar2;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param4;
                         iGpfffff1f4++;
                     }
                 } while (param1 <= param3);
@@ -1112,8 +1095,8 @@ public class GameManager : MonoBehaviour
                 {
                     if (iVar1 < 0x40)
                     {
-                        DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param2;
-                        DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param2;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
                         iGpfffff1f4++;
                     }
 
@@ -1129,7 +1112,7 @@ public class GameManager : MonoBehaviour
                 {
                     uVar6 = (uVar5 ^ 1) & 1;
                     iVar1 = param1 + (int)uVar6;
-                    DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar5;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar5;
                     iVar2 = param3;
 
                     if (uVar6 != 0)
@@ -1141,13 +1124,13 @@ public class GameManager : MonoBehaviour
                     if (0x3f < iVar2)
                         iVar2 = 0x3f;
 
-                    DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
+                    GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar1;
                     iVar3 = iGpfffff1f4 + 1;
 
                     if (param1 != param3 && iVar1 != iVar2)
                     {
-                        DAT_0050eff0[iVar3 * 2] = iVar2;
-                        DAT_0050eff0[iVar3 * 2 + 1] = (int)uVar5;
+                        GridManager.instance.DAT_0050eff0[iVar3 * 2] = iVar2;
+                        GridManager.instance.DAT_0050eff0[iVar3 * 2 + 1] = (int)uVar5;
                         iVar3 = iGpfffff1f4 + 2;
                     }
 
@@ -1165,8 +1148,8 @@ public class GameManager : MonoBehaviour
 
                     if (iVar2 < 0x40)
                     {
-                        DAT_0050eff0[iGpfffff1f4 * 2] = iVar2;
-                        DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param4;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = iVar2;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)param4;
                         iGpfffff1f4++;
                     }
                 } while (param1 <= param3);
@@ -1354,9 +1337,9 @@ public class GameManager : MonoBehaviour
 
         if (uVar7 != 0)
         {
-            System.Array.Copy(iGpfffff190.DAT_842, GridManager.instance.PTR_DAT_004a00ec.DAT_842, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_1842, GridManager.instance.PTR_DAT_004a00ec.DAT_1842, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_2842, GridManager.instance.PTR_DAT_004a00ec.DAT_2842, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_842, GridManager.instance.PTR_DAT_004a00ec.DAT_842, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_1842, GridManager.instance.PTR_DAT_004a00ec.DAT_1842, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_2842, GridManager.instance.PTR_DAT_004a00ec.DAT_2842, 0x1000);
             iGpfffff204 = 1;
             iGpfffff200 = 1;
             iGpfffff1fc = (iGpfffff1fc + 1) % 2;
@@ -1385,15 +1368,15 @@ public class GameManager : MonoBehaviour
         uint uVar13;
         uint uVar14;
 
-        uVar7 = (uint)DAT_0050ee8c;
-        iVar11 = DAT_0050ee88 * 2 + (DAT_0050ee8c & 1);
+        uVar7 = (uint)GridManager.instance.DAT_0050ee8c;
+        iVar11 = GridManager.instance.DAT_0050ee88 * 2 + (GridManager.instance.DAT_0050ee8c & 1);
         bVar1 = (((uint)iGpfffff1b0 | (uint)iGpfffff1b4) & 0xffffffc0) == 0;
         iVar9 = iGpfffff1b0 * 2 + (iGpfffff1b4 & 1);
 
         if (bVar1)
         {
-            DAT_0050eff0[0] = iGpfffff1b0;
-            DAT_0050eff0[1] = iGpfffff1b4;
+            GridManager.instance.DAT_0050eff0[0] = iGpfffff1b0;
+            GridManager.instance.DAT_0050eff0[1] = iGpfffff1b4;
         }
 
         iGpfffff1f4 = bVar1 ? 1 : 0;
@@ -1409,12 +1392,12 @@ public class GameManager : MonoBehaviour
 
         uVar2 = 0xffffffff;
 
-        if (DAT_0050ee8c < iGpfffff1b4)
-            iVar4 = iGpfffff1b4 - DAT_0050ee8c;
+        if (GridManager.instance.DAT_0050ee8c < iGpfffff1b4)
+            iVar4 = iGpfffff1b4 - GridManager.instance.DAT_0050ee8c;
         else
         {
-            uVar2 = (uint)(iGpfffff1b4 < DAT_0050ee8c ? 1 : 0);
-            iVar4 = DAT_0050ee8c - iGpfffff1b4;
+            uVar2 = (uint)(iGpfffff1b4 < GridManager.instance.DAT_0050ee8c ? 1 : 0);
+            iVar4 = GridManager.instance.DAT_0050ee8c - iGpfffff1b4;
         }
 
         if (iVar4 * 2 < iVar5)
@@ -1457,8 +1440,8 @@ public class GameManager : MonoBehaviour
 
                     if (((int)(uVar13 | uVar7) >> 1 & 0xffffffc0U) == 0)
                     {
-                        DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar12;
-                        DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar14;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar12;
+                        GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar14;
                         iGpfffff1f4++;
                     }
                 }
@@ -1499,8 +1482,8 @@ public class GameManager : MonoBehaviour
 
                         if (((uVar12 | uVar8) & 0xffffffc0) == 0)
                         {
-                            DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar8;
-                            DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar12;
+                            GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar8;
+                            GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar12;
                             iGpfffff1f4++;
                         }
                     }
@@ -1526,7 +1509,7 @@ public class GameManager : MonoBehaviour
             uVar8 = (uint)iGpfffff1b4;
             uVar12 = (uint)iGpfffff1b4;
 
-            if (iGpfffff1b4 != DAT_0050ee8c)
+            if (iGpfffff1b4 != GridManager.instance.DAT_0050ee8c)
             {
                 do
                 {
@@ -1548,8 +1531,8 @@ public class GameManager : MonoBehaviour
 
                         if (((uVar13 | uVar8) & 0xffffffc0) == 0)
                         {
-                            DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar13;
-                            DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar8;
+                            GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2] = (int)uVar13;
+                            GridManager.instance.DAT_0050eff0[iGpfffff1f4 * 2 + 1] = (int)uVar8;
                             iGpfffff1f4++;
                         }
                     }
@@ -1590,10 +1573,10 @@ public class GameManager : MonoBehaviour
             do
             {
                 bVar9 = 0;
-                uVar1 = (uint)DAT_0050eff0[iVar5 * 2 + 1];
-                uVar2 = (uint)DAT_0050eff0[iVar5 * 2 + 2];
-                uVar3 = (uint)DAT_0050eff0[iVar5 * 2 + 3];
-                iVar4 = DAT_0050eff0[iVar5 * 2];
+                uVar1 = (uint)GridManager.instance.DAT_0050eff0[iVar5 * 2 + 1];
+                uVar2 = (uint)GridManager.instance.DAT_0050eff0[iVar5 * 2 + 2];
+                uVar3 = (uint)GridManager.instance.DAT_0050eff0[iVar5 * 2 + 3];
+                iVar4 = GridManager.instance.DAT_0050eff0[iVar5 * 2];
                 iVar6 = iVar4 + (int)uVar1 * 0x40;
                 iVar10 = (int)uVar2 + (int)uVar3 * 0x40;
 
@@ -1714,9 +1697,9 @@ public class GameManager : MonoBehaviour
 
         if (iVar13 != 0)
         {
-            System.Array.Copy(iGpfffff190.DAT_842, auStack_3a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_1842, auStack_2a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_2842, auStack_1a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_842, auStack_3a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_1842, auStack_2a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_2842, auStack_1a60, 0x1000);
             iGpfffff204 = 1;
             iGpfffff200 = 1;
             iGpfffff1fc = (iGpfffff1fc + 1) % 2;
@@ -1845,7 +1828,7 @@ public class GameManager : MonoBehaviour
 
             do
             {
-                iVar5 = DAT_0050eff0[piVar4] + DAT_0050eff0[piVar4 + 1] * 0x40;
+                iVar5 = GridManager.instance.DAT_0050eff0[piVar4] + GridManager.instance.DAT_0050eff0[piVar4 + 1] * 0x40;
 
                 if (GridManager.instance.PTR_DAT_004a00ec.DAT_842[iVar5] != iVar6)
                 {
@@ -1886,9 +1869,9 @@ public class GameManager : MonoBehaviour
 
         if (uVar7 != 0)
         {
-            System.Array.Copy(iGpfffff190.DAT_842, auStack_3a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_1842, auStack_2a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_2842, auStack_1a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_842, auStack_3a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_1842, auStack_2a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_2842, auStack_1a60, 0x1000);
             iGpfffff204 = 1;
             iGpfffff200 = 1;
             iGpfffff1fc = (iGpfffff1fc + 1) % 2;
@@ -1945,21 +1928,21 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        iVar3 = DAT_0050ee88;
+        iVar3 = GridManager.instance.DAT_0050ee88;
         iVar6 = iGpfffff1b0;
 
-        if (iGpfffff1b0 <= DAT_0050ee88)
+        if (iGpfffff1b0 <= GridManager.instance.DAT_0050ee88)
         {
             iVar3 = iGpfffff1b0;
-            iVar6 = DAT_0050ee88;
+            iVar6 = GridManager.instance.DAT_0050ee88;
         }
 
         iVar4 = iGpfffff1b4;
-        iVar5 = DAT_0050ee8c;
+        iVar5 = GridManager.instance.DAT_0050ee8c;
 
-        if (iGpfffff1b4 <= DAT_0050ee8c)
+        if (iGpfffff1b4 <= GridManager.instance.DAT_0050ee8c)
         {
-            iVar4 = DAT_0050ee8c;
+            iVar4 = GridManager.instance.DAT_0050ee8c;
             iVar5 = iGpfffff1b4;
         }
 
@@ -2014,9 +1997,9 @@ public class GameManager : MonoBehaviour
 
         if (uVar9 != 0)
         {
-            System.Array.Copy(iGpfffff190.DAT_842, auStack_3a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_1842, auStack_2a60, 0x1000);
-            System.Array.Copy(iGpfffff190.DAT_2842, auStack_1a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_842, auStack_3a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_1842, auStack_2a60, 0x1000);
+            System.Array.Copy(iGpfffff190[iGpfffff1fc].DAT_2842, auStack_1a60, 0x1000);
             iGpfffff204 = 1;
             iGpfffff200 = 1;
             iGpfffff1fc = (iGpfffff1fc + 1) % 2;
@@ -2097,10 +2080,10 @@ public class GameManager : MonoBehaviour
                         local_1040[iVar5] == sVar1 && local_2040[iVar5] == -1)
                     {
                         local_2040[iVar5] = 1;
-                        piVar7 = DAT_0035b230;
+                        piVar7 = GridManager.instance.DAT_0035b230;
 
                         if (uVar10 == 0)
-                            piVar7 = DAT_0035b200;
+                            piVar7 = GridManager.instance.DAT_0035b200;
 
                         iVar5 = 5;
                         iVar7 = 0;

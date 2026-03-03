@@ -12,6 +12,13 @@ public class DAT_0027905c
 public class GridManager : MonoBehaviour
 {
     public static GridManager instance;
+    public int[] DAT_0035b200;
+    public int[] DAT_0035b230;
+    public int DAT_00369848;
+    public int DAT_00369850;
+    public int DAT_00369864;
+    public int[] DAT_003db258;
+    public int[] DAT_003db2b0;
     public float[] DAT_00484930 = new float[]
     {
         0f, 0.0625f, 0.125f, 0.1875f, 0.25f, 0.3125f, 0.375f, 0.4375f,
@@ -22,17 +29,228 @@ public class GridManager : MonoBehaviour
         0, 0.5235988f, 3.2f, 0.5f, 1.6f, 76.7999954f, 1f
     }; //...
     public DAT_0027905c PTR_DAT_004a00ec;
+    public int DAT_004a00fc;
+    public ushort DAT_004a0100 = 0;
+    public float DAT_004a0104 = 100f;
+    public float DAT_004a0108 = 26f;
+    public float DAT_004a010c = 230f;
+    public float DAT_004a0110 = 1.5707964f;
+    public float DAT_004a0114 = -1.5707964f;
+    public float DAT_004a0118 = 3.1415927f;
+    public float DAT_004a011c = 2.0943952f;
+    public float DAT_004a0120 = 1.0471976f;
+    public float DAT_004a0124 = -2.0943952f;
+    public float DAT_004a0128 = -1.0471976f;
     public float DAT_004a0460 = 0.03125f;
     public int DAT_004a420c;
     public int DAT_004a4210;
     public int DAT_004a4258;
     public int DAT_004a4268;
+    public int DAT_0050ee88;
+    public int DAT_0050ee8c;
+    public int DAT_0050ee90;
+    public int DAT_0050ee94;
+    public int DAT_0050eea8;
+    public float DAT_0050eeac;
+    public float DAT_0050eeb0;
+    public float DAT_0050eeb4;
+    public float DAT_0050eeb8;
+    public int DAT_0050eec4;
+    public int DAT_0050eec8;
     public int[] DAT_0050ef98;
+    public int[] DAT_0050eff0;
     public short[] DAT_0050efb0;
+    public int[] DAT_0050f7f0;
+    public int DAT_0050f808;
+    public int DAT_0050f820;
+    public int[] DAT_0050f838;
+    public int DAT_0050f848;
+    public int[] DAT_0050f850;
+    public int DAT_0050f860;
+    public int[] DAT_0050f868;
+
+    private void FUN_0019d838()
+    {
+        ushort uVar1;
+        int iVar2;
+        PTR_DAT_004a3660 pVar4;
+        ushort uVar6;
+        float fVar7;
+        int iVar8;
+        int iVar9;
+        float fVar13;
+        float fVar14;
+        float fVar15;
+
+        iVar8 = DAT_0050ee88 + DAT_0050ee8c * 0x40;
+        pVar4 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
+        fVar13 = (float)(pVar4.DAT_08 - pVar4.DAT_09) / DAT_004a0104;
+
+        if (fVar13 != 0.0f)
+        {
+            DAT_0050eeb0 += fVar13;
+
+            if (DAT_0050eeb0 < DAT_004a0108)
+                DAT_0050eeb0 = DAT_004a0108;
+
+            if (DAT_004a010c < DAT_0050eeb0)
+                DAT_0050eeb0 = DAT_004a010c;
+        }
+
+        if (fVar13 != 0.0f)
+        {
+            DAT_0050eea8 = 0;
+            DAT_0050eeac = -DAT_0050eeb0;
+        }
+
+        uVar1 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c].DAT_72;
+        uVar6 = (ushort)(uVar1 & 0xf);
+
+        if (DAT_0050eec8 == 0 || (uVar1 & 0xf) == 0)
+        {
+            DAT_004a00fc++;
+
+            if (0x78 < DAT_004a00fc)
+            {
+                DAT_0050eeb4 = DAT_0049eb20[(iVar8 * 8) / 4];
+                DAT_0050eeb8 = DAT_0049eb20[(iVar8 * 8) / 4 + 1];
+            }
+
+            goto LAB_0019dc48;
+        }
+
+        if (DAT_004a0100 != uVar6)
+        {
+            DAT_0050eeb4 = DAT_0049eb20[(iVar8 * 8) / 4];
+            DAT_0050eeb8 = DAT_0049eb20[(iVar8 * 8) / 4 + 1];
+        }
+
+        fVar13 = DAT_0050eeb4;
+        DAT_0050eec4 = 0;
+        fVar15 = 0f;
+
+        switch (uVar6)
+        {
+            default:
+                goto switchD_0019d9d8_caseD_0;
+            case 1:
+                fVar7 = DAT_004a0110;
+                break;
+            case 2:
+                fVar7 = DAT_004a0114;
+                goto LAB_0019e030;
+            case 4:
+                fVar7 = DAT_004a0118;
+                break;
+            case 5:
+                fVar7 = DAT_004a011c;
+                goto LAB_0019e030;
+            case 6:
+                fVar7 = DAT_004a0124;
+                LAB_0019e030:
+                fVar15 = fVar7;
+                goto switchD_0019d9d8_caseD_0;
+            case 9:
+                fVar7 = DAT_004a0120;
+                break;
+            case 10:
+                fVar7 = DAT_004a0128;
+                break;
+        }
+
+        fVar15 = fVar7;
+    switchD_0019d9d8_caseD_0:
+        iVar9 = -1;
+        fVar14 = DAT_0050eeb8;
+        DAT_004a0100 = uVar6;
+
+    }
 
     public void FUN_001a83f8(DAT_0027905c param1)
     {
         //...
+    }
+
+    public void FUN_001a2a78()
+    {
+        int iVar1;
+        PTR_DAT_004a3660 pVar2;
+        uint uVar3;
+
+        iVar1 = DAT_0050f7f0[2];
+
+        if (DAT_0050f7f0[2] == 0)
+            GameManager.instance.FUN_0019d820(DAT_0050f7f0);
+
+        DAT_0050f7f0[1] = 0;
+        DAT_00369848 = 0;
+
+        do
+        {
+            DAT_00369864 = DAT_00369864 - 0x14;
+
+            if (DAT_00369864 < 0)
+                DAT_00369864 = 0;
+
+            //FUN_0019d838
+            //FUN_001a6a10
+        } while (DAT_0050f7f0[0] != 0 || DAT_0050f850[0] != 0);
+
+        GameManager.instance.iGpfffff1ac = 8;
+        //FUN_00181698
+        DAT_00369850 = 0;
+        GameManager.instance.FUN_0019d808(DAT_0050f868);
+
+        do
+        {
+            //FUN_001a6a10
+            pVar2 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
+
+            if ((pVar2.DAT_48 & 0x20) != 0) break;
+        } while (pVar2.DAT_50 == 0);
+
+        SoundManager.instance.FUN_00144bb0(5);
+        DAT_00369850 = 0;
+        GameManager.instance.FUN_0019d820(DAT_0050f868);
+
+        do
+        {
+            DAT_00369864 -= 0x14;
+
+            if (DAT_00369864 < 0)
+                DAT_00369864 = 0;
+
+            //FUN_001a6a10
+        } while (DAT_0050f868[0] != 0);
+
+        uVar3 = 0;
+
+        do
+        {
+            //FUN_00104a10
+            uVar3++;
+        } while ((int)uVar3 < 0x1000);
+
+        FUN_001a0620();
+        GameManager.instance.iGpfffff1ac = 6;
+
+        do
+        {
+            DAT_00369864 += 0x14;
+
+            if (0xff < DAT_00369864)
+                DAT_00369864 = 0xff;
+
+            //FUN_0019d838
+            //FUN_001a6a10
+        } while (DAT_00369864 < 0xff);
+
+        DAT_0050f7f0[1] = 1;
+
+        if (iVar1 != 0)
+            return;
+
+        GameManager.instance.FUN_0019d808(DAT_0050f7f0);
     }
 
     public void FUN_001a0620()
