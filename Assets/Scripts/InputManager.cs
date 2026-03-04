@@ -8,6 +8,8 @@ public class PTR_DAT_004a3660
     public bool DAT_02; //0x02
     public byte DAT_08; //0x08
     public byte DAT_09; //0x09
+    public float DAT_14; //0x14
+    public float DAT_18; //0x18
     public ushort DAT_48; //0x48
     public int DAT_4c; //0x4C
     public int DAT_50; //0x50
