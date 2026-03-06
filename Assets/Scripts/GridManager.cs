@@ -15,12 +15,14 @@ public class GridManager : MonoBehaviour
     public static GridManager instance;
     public int[] DAT_0035b200;
     public int[] DAT_0035b230;
-    public int DAT_003694b4;
-    public int DAT_003694b8;
-    public float DAT_003694bc;
-    public int DAT_003694cc;
+    public Vector3 DAT_003694b4;
+    public Vector3 DAT_003694cc;
     public float DAT_003694d0;
     public int DAT_003694d4;
+    public Vector4[] DAT_00369598 = new Vector4[4];
+    public Vector4[] DAT_003695d8 = new Vector4[4];
+    public Vector4[] DAT_00369618 = new Vector4[4];
+    public Vector4[] DAT_00369658 = new Vector4[4];
     public int DAT_00369848;
     public int DAT_00369850;
     public int DAT_00369864;
@@ -74,15 +76,13 @@ public class GridManager : MonoBehaviour
     public int DAT_0050ee8c;
     public int DAT_0050ee90;
     public int DAT_0050ee94;
-    public float DAT_0050ee98;
-    public float DAT_0050ee9c;
+    public Vector3 DAT_0050ee98;
     public int DAT_0050eea8;
     public float DAT_0050eeac;
     public float DAT_0050eeb0;
     public float DAT_0050eeb4;
     public float DAT_0050eeb8;
-    public float DAT_0050eebc;
-    public int DAT_0050eec0;
+    public Vector2 DAT_0050eebc;
     public int DAT_0050eec4;
     public int DAT_0050eec8;
     public int[] DAT_0050ef98;
@@ -291,9 +291,9 @@ public class GridManager : MonoBehaviour
             DAT_0050eeb8 = fVar13;
             DAT_0050eeb4 = fVar12;
             DAT_004a00fc = 0;
-            //FUN_001e08d8
-            fVar13 = (DAT_004a0130 - DAT_0050eec0) * DAT_004a0134;
-            fVar9 = (DAT_0050eebc + DAT_004a0130) * DAT_004a0138;
+            DAT_0050eebc = Utilities.FUN_001e08d8(DAT_0049eb20[iVar8 * 2], DAT_0049eb20[iVar8 * 2 + 1], DAT_00369618);
+            fVar13 = (DAT_004a0130 - DAT_0050eebc.y) * DAT_004a0134;
+            fVar9 = (DAT_0050eebc.x + DAT_004a0130) * DAT_004a0138;
             fVar12 = DAT_004a0140;
 
             if (DAT_0050f7f0[0] != 0)
@@ -301,45 +301,49 @@ public class GridManager : MonoBehaviour
 
             if (fVar9 < fVar12 || DAT_004a0144 < fVar9 || fVar13 < DAT_004a0148 || DAT_004a014c < fVar13)
             {
-                DAT_0050ee98 = DAT_0050eeb4;
-                DAT_0050ee9c = DAT_0050eeb8;
+                DAT_0050ee98.x = DAT_0050eeb4;
+                DAT_0050ee98.y = DAT_0050eeb8;
             }
         }
 
-    LAB_0019dc48:
+        LAB_0019dc48:
         fVar12 = DAT_004a0130;
         pVar3 = InputManager.instance.DAT_004a3660[InputManager.instance.DAT_004a366c];
         fVar9 = DAT_0049eb20[0];
-        fVar13 = DAT_0050ee98 + pVar3.DAT_14;
-        DAT_0050ee9c += pVar3.DAT_18;
+        fVar13 = DAT_0050ee98.x + pVar3.DAT_14;
+        DAT_0050ee98.y += pVar3.DAT_18;
 
         if (fVar9 <= fVar13)
             fVar9 = fVar13;
 
-        DAT_0050ee98 = fVar9;
+        DAT_0050ee98.x = fVar9;
 
         if (DAT_0049ef18 < fVar9)
-            DAT_0050ee98 = DAT_0049ef18;
+            DAT_0050ee98.x = DAT_0049ef18;
 
-        if (DAT_0049eb20[1] < DAT_0050ee9c)
-            DAT_0050ee9c = DAT_0049eb20[1];
+        if (DAT_0049eb20[1] < DAT_0050ee98.y)
+            DAT_0050ee98.y = DAT_0049eb20[1];
 
-        if (DAT_0050ee9c < DAT_004a6b1c)
-            DAT_0050ee9c = DAT_004a6b1c;
+        if (DAT_0050ee98.y < DAT_004a6b1c)
+            DAT_0050ee98.y = DAT_004a6b1c;
 
-        DAT_003694b8 = DAT_0050eea8;
-        DAT_003694bc = DAT_0050eeac;
-        DAT_003694b4 = 0;
+        DAT_003694b4.y = DAT_0050eea8;
+        DAT_003694b4.z = DAT_0050eeac;
+        DAT_003694b4.x = 0;
         DAT_003694d4 = 0;
-        DAT_003694cc = 0;
+        DAT_003694cc.x = 0;
         DAT_003694d0 = DAT_004a0130;
-        //...
+        Utilities.FUN_001e07f0(out DAT_003694b4, DAT_003694b4, DAT_0050ee98);
+        Utilities.FUN_001e0c38(DAT_00369598, DAT_003694b4, DAT_0050ee98, DAT_003694cc);
+        Utilities.FUN_001e0e40(DAT_00369618, DAT_00369598, DAT_003695d8);
+        Utilities.FUN_001e0eb0(DAT_00369658, DAT_00369618);
 
         if (DAT_0050eec8 != 0)
         {
-            //FUN_001e08d8
-            fVar9 = (DAT_0050eebc + fVar12) * DAT_004a0138;
-            fVar12 = (fVar12 - DAT_0050eec0) * DAT_004a0134;
+            DAT_0050eebc = Utilities.FUN_001e08d8(DAT_0049eb20[(DAT_0050ee88 + DAT_0050ee8c * 0x40) * 2], 
+                                                  DAT_0049eb20[(DAT_0050ee88 + DAT_0050ee8c * 0x40) * 2 + 1], DAT_00369618);
+            fVar9 = (DAT_0050eebc.x + fVar12) * DAT_004a0138;
+            fVar12 = (fVar12 - DAT_0050eebc.y) * DAT_004a0134;
 
             if (DAT_0050eec4 == 0)
             {
@@ -353,7 +357,7 @@ public class GridManager : MonoBehaviour
             }
 
             DAT_0050eec4 = 1;
-            DAT_0050ee88 = (int)((DAT_0050ee98 - DAT_0049eb08) / DAT_0049eb00);
+            DAT_0050ee88 = (int)((DAT_0050ee98.x - DAT_0049eb08) / DAT_0049eb00);
 
             if (DAT_0050ee88 < 0)
                 DAT_0050ee88 = 0;
@@ -361,7 +365,7 @@ public class GridManager : MonoBehaviour
             if (0x3f < DAT_0050ee88)
                 DAT_0050ee88 = 0x3f;
 
-            DAT_0050ee8c = (int)((DAT_0049eb0c - DAT_0050ee9c) / DAT_0049eb04);
+            DAT_0050ee8c = (int)((DAT_0049eb0c - DAT_0050ee98.x) / DAT_0049eb04);
 
             if (DAT_0050ee8c < 0)
                 DAT_0050ee8c = 0;
@@ -370,7 +374,7 @@ public class GridManager : MonoBehaviour
                 DAT_0050ee8c = 0x3f;
 
             iVar3 = DAT_0050ee88 + DAT_0050ee8c * 0x40;
-            //FUN_001e08d8
+            DAT_0050eebc = Utilities.FUN_001e08d8(DAT_0049eb20[iVar3 * 2], DAT_0049eb20[iVar3 * 2 + 1], DAT_00369618);
             DAT_0050eeb4 = DAT_0049eb20[iVar3 * 2];
             DAT_0050eeb8 = DAT_0049eb20[iVar3 * 2 + 1];
         }
@@ -407,7 +411,7 @@ public class GridManager : MonoBehaviour
             if (DAT_00369864 < 0)
                 DAT_00369864 = 0;
 
-            FUN_0019d838()
+            FUN_0019d838();
             //FUN_001a6a10
         } while (DAT_0050f7f0[0] != 0 || DAT_0050f850[0] != 0);
 
