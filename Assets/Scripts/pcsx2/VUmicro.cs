@@ -23,7 +23,7 @@ namespace PCSX2
 
         void ExecuteBlock(bool startUp)
         {
-            uint stat = VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL;
+            uint stat = VU.VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL;
             uint test = m_Idx != 0 ? 0x100U : 1U;
 
             //if (m_Idx && THREAD_VU1)

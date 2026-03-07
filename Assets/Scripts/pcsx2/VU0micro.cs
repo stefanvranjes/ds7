@@ -6,8 +6,8 @@ namespace PCSX2
     {
         static void vu0ResetRegs()
         {
-            VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL &= ~0xffU;
-            VU0.VI[(int)VURegFlags.REG_FBRST].UL &= ~0xffU;
+            VU.VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL &= ~0xffU;
+            VU.VU0.VI[(int)VURegFlags.REG_FBRST].UL &= ~0xffU;
             //vif
         }
 
@@ -25,27 +25,27 @@ namespace PCSX2
         {
             //log
 
-            if ((VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL & 0x1) != 0)
+            if ((VU.VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL & 0x1) != 0)
             {
                 //warning
                 //finish vu0
             }
 
-            uint CLIP = VU0.VI[(int)VURegFlags.REG_CLIP_FLAG].UL;
-            uint MAC = VU0.VI[(int)VURegFlags.REG_MAC_FLAG].UL;
-            uint STATUS = VU0.VI[(int)VURegFlags.REG_STATUS_FLAG].UL;
-            VU0.clipflag = CLIP;
-            VU0.macflag = MAC;
-            VU0.statusflag = STATUS;
+            uint CLIP = VU.VU0.VI[(int)VURegFlags.REG_CLIP_FLAG].UL;
+            uint MAC = VU.VU0.VI[(int)VURegFlags.REG_MAC_FLAG].UL;
+            uint STATUS = VU.VU0.VI[(int)VURegFlags.REG_STATUS_FLAG].UL;
+            VU.VU0.clipflag = CLIP;
+            VU.VU0.macflag = MAC;
+            VU.VU0.statusflag = STATUS;
 
-            vu0SetMicroFlags(VU0.micro_clipflags, CLIP);
-            vu0SetMicroFlags(VU0.micro_macflags, MAC);
-            vu0SetMicroFlags(VU0.micro_statusflags, vu0DenormalizeMicroStatus(STATUS));
+            vu0SetMicroFlags(VU.VU0.micro_clipflags, CLIP);
+            vu0SetMicroFlags(VU.VU0.micro_macflags, MAC);
+            vu0SetMicroFlags(VU.VU0.micro_statusflags, vu0DenormalizeMicroStatus(STATUS));
 
-            VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL &= ~0xFFU;
-            VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL |= 0x01U;
+            VU.VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL &= ~0xFFU;
+            VU.VU0.VI[(int)VURegFlags.REG_VPU_STAT].UL |= 0x01U;
             //cycle
-            if ((int)addr != -1) VU0.VI[(int)VURegFlags.REG_TPC].UL = addr & 0x1FF;
+            if ((int)addr != -1) VU.VU0.VI[(int)VURegFlags.REG_TPC].UL = addr & 0x1FF;
 
             //cpuvu0
         }

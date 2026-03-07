@@ -8,11 +8,15 @@ public class DAT_0027905c
     public sbyte[] DAT_842; //0x842
     public sbyte[] DAT_1842; //0x1842
     public sbyte[] DAT_2842; //0x2842
+    public sbyte DAT_3842;
+    public sbyte[] DAT_3843;
 }
 
 public class GridManager : MonoBehaviour
 {
     public static GridManager instance;
+    public float[] DAT_002648e0 = new float[0x1000];
+    public int[] DAT_002688e0 = new int[0x1000];
     public int[] DAT_0035b200;
     public int[] DAT_0035b230;
     public Vector3 DAT_003694b4;
@@ -26,13 +30,28 @@ public class GridManager : MonoBehaviour
     public int DAT_00369848;
     public int DAT_00369850;
     public int DAT_00369864;
+    public int DAT_003da1e0;
+    public int DAT_003da1e4;
+    public int DAT_003da1e8;
+    public int DAT_003da1ec;
+    public int[] DAT_003da3b0 = new int[]
+    {
+        -1, -1, 1, 0, -1, 1, -1, 0, 0, 1, 0, 0, -1, 1, 1, 0, 1, 1
+    };
     public int[] DAT_003db258;
     public int[] DAT_003db2b0;
+    public float[] DAT_00484878 = new float[]
+    {
+        3.2f, 1.6f, 0f, -1.6f, -3.2f, -4.8f
+    };
     public float[] DAT_00484930 = new float[]
     {
         0f, 0.0625f, 0.125f, 0.1875f, 0.25f, 0.3125f, 0.375f, 0.4375f,
         0.5f, 0.5625f, 0.625f, 0.6875f, 0.75f, 0.8125f, 0.875f, 0.9375f, 1f
     };
+    public float DAT_0049d0ec = 3.1415925f;
+    public float DAT_0049d0f0 = 0.15915494f;
+    public float DAT_0049d0f4 = 6.283185f;
     public short DAT_0049d878 = 0;
     public short DAT_0049d87a = 0;
     public float DAT_0049eb00 = 0;
@@ -43,6 +62,13 @@ public class GridManager : MonoBehaviour
     {
         0, 0.5235988f, 3.2f, 0.5f, 1.6f, 76.7999954f, 1f
     }; //...
+    public float DAT_0049ec88 = 0.03125f;
+    public float DAT_0049ec8c = 0.125f;
+    public float DAT_0049ec90 = 0.03125f;
+    public float DAT_0049ec94 = 0.03125f;
+    public float DAT_0049ec98 = 1.6f;
+    public float DAT_0049ec9c = -1.6f;
+    public float DAT_0049eca0 = 3.2f;
     public float DAT_0049ef18 = 108.125f;
     public DAT_0027905c PTR_DAT_004a00ec;
     public int DAT_004a00fc = 0;
@@ -96,6 +122,482 @@ public class GridManager : MonoBehaviour
     public int[] DAT_0050f850;
     public int DAT_0050f860;
     public int[] DAT_0050f868;
+
+    private void FUN_00181698(DAT_0027905c param1)
+    {
+        FUN_00181b08(param1);
+        FUN_00181c90(param1);
+        FUN_001824e0(param1);
+        FUN_00182020(param1);
+    }
+
+    private int FUN_00181ac0(int param1)
+    {
+        switch (param1)
+        {
+            case 9:
+            case 20:
+                return 3;
+            case 10:
+            case 12:
+            case 13:
+            case 22:
+            case 23:
+            case 36:
+            case 42:
+            case 48:
+            case 54:
+            case 60:
+                return 1;
+            default:
+                return 2;
+            case 14:
+                return 0;
+        }
+    }
+
+    private void FUN_00181b08(DAT_0027905c param1)
+    {
+        sbyte sVar1;
+        int iVar2;
+        uint uVar3;
+        uint uVar4;
+        float fVar5;
+        float fVar6;
+        float fVar7;
+        float fVar8;
+
+        uVar4 = 0;
+        fVar7 = DAT_0049ec88;
+
+        while (true)
+        {
+            sVar1 = param1.DAT_842[uVar4];
+            iVar2 = FUN_00181ac0(sVar1);
+            fVar5 = DAT_00484878[iVar2];
+            DAT_002688e0[uVar4] = iVar2;
+            DAT_002648e0[uVar4] = fVar5;
+
+            if (sVar1 < 0x20)
+            {
+                fVar6 = DAT_00484930[sVar1 & 0xf];
+                fVar8 = DAT_00484930[sVar1 >> 4];
+            }
+            else
+            {
+                iVar2 = Utilities.FUN_001451b0(sVar1);
+                fVar6 = DAT_00484930[iVar2];
+                fVar8 = DAT_0049ec8c;
+            }
+
+            uVar3 = uVar4 & 0x3f;
+            iVar2 = (int)uVar4 >> 6;
+            uVar4++;
+            RenderQueue.FUN_00104a10(-fVar5, uVar3, iVar2, 0);
+            RenderQueue.FUN_00104aa0(fVar6 + fVar7, fVar8 + fVar7, uVar3, iVar2, 0, 0, 1);
+
+            if (0xfff < (int)uVar4) break;
+        }
+    }
+
+    private void FUN_00181c90(DAT_0027905c param1)
+    {
+        int iVar1;
+        int iVar2;
+        int iVar3;
+        int iVar4;
+        sbyte sVar5;
+        sbyte sVar6;
+        uint uVar7;
+        uint uVar8;
+        long lVar9;
+        int iVar10;
+        uint uVar11;
+        float fVar12;
+        float fVar13;
+        float fVar14;
+        float fVar15;
+
+        iVar10 = 0;
+        iVar1 = 0;
+        iVar4 = 0;
+
+        do
+        {
+            sVar6 = param1.DAT_842[iVar4];
+            iVar1++;
+
+            if (sVar6 < 0x20)
+            {
+                sVar5 = param1.DAT_1842[iVar4];
+
+                if (sVar5 == 0)
+                {
+                    if (param1.DAT_2842[iVar4] == 0 && sVar6 != 10 && sVar6 != 22 && sVar6 != 23 && sVar6 != 12)
+                        goto LAB_00181d54;
+
+                    sVar5 = param1.DAT_1842[iVar4];
+                }
+
+                iVar2 = iVar10 + 1;
+                iVar3 = iVar10 + 2;
+                iVar10 = iVar2;
+
+                if (sVar5 != 0 && param1.DAT_2842[iVar4] != 0)
+                    iVar10 = iVar3;
+            }
+
+            LAB_00181d54:
+            iVar4 = iVar1;
+        } while (iVar1 < 0x1000);
+
+        DAT_003da1e4 = iVar10 * 6;
+        DAT_003da1e8 = iVar10 << 1;
+
+        if (iVar10 == 0)
+        {
+            uVar11 = 0;
+
+            do
+            {
+                uVar7 = uVar11 & 0x3f;
+                iVar4 = (int)uVar11 >> 6;
+                uVar11++;
+                RenderQueue.FUN_00104aa0(0, 0, uVar7, iVar4, 1, 0, 0);
+                RenderQueue.FUN_00104aa0(0, 0, uVar7, iVar4, 2, 0, 0);
+            } while ((int)uVar11 < 0x1000);
+        }
+        else
+        {
+            fVar12 = 0.0f;
+            uVar11 = 0;
+            fVar14 = 0.0f;
+            fVar15 = 0.0f;
+            fVar13 = DAT_0049ec90;
+
+            do
+            {
+                uVar7 = uVar11 & 0x3f;
+                iVar10 = (int)uVar11 >> 6;
+                RenderQueue.FUN_00104aa0(0, 0, uVar7, iVar10, 1, 0, 0);
+                RenderQueue.FUN_00104aa0(0, 0, uVar7, iVar10, 2, 0, 0);
+                iVar4 = (int)uVar11;
+                lVar9 = param1.DAT_1842[iVar4];
+                sVar6 = param1.DAT_842[iVar4];
+                sVar5 = param1.DAT_2842[iVar4];
+
+                if (sVar6 == 12)
+                    lVar9 = -36;
+                else if (sVar6 < 13)
+                {
+                    if (sVar6 == 10)
+                        lVar9 = -40;
+                }
+                else if (sVar6 == 22)
+                    lVar9 = -39;
+                else if (sVar6 == 23)
+                    lVar9 = -38;
+
+                if (lVar9 == 0)
+                {
+                    if (sVar5 != 0)
+                    {
+                        sVar6 = param1.DAT_842[iVar4];
+
+                        if (sVar6 < 0x20)
+                        {
+                            if (sVar5 != 0)
+                            {
+                                fVar12 = DAT_00484930[(sVar5 >> 4) + 8];
+                                fVar14 = DAT_00484930[sVar5 & 0xf];
+                                RenderQueue.FUN_00104a10(-0, uVar7, iVar10, 2); //0x80000000
+                                RenderQueue.FUN_00104aa0(fVar14 + fVar13, fVar12 + fVar13, uVar7, iVar10, 2, 0, 1);
+                            }
+
+                            uVar8 = (uint)lVar9;
+
+                            if (lVar9 < 1)
+                            {
+                                if (lVar9 < 0)
+                                {
+                                    uVar8 += 0x40;
+                                    lVar9 = (long)(int)uVar8;
+                                    fVar14 = DAT_00484930[uVar8 & 0xf];
+                                    fVar12 = DAT_00484930[(int)uVar8 >> 4];
+                                }
+                            }
+                            else
+                            {
+                                fVar14 = DAT_00484930[uVar8 & 0xf];
+                                fVar12 = DAT_00484930[((int)uVar8 >> 4) + 4];
+                            }
+
+                            if (lVar9 != 0)
+                            {
+                                RenderQueue.FUN_00104a10(-fVar15, uVar7, iVar10, 1);
+                                RenderQueue.FUN_00104aa0(fVar14 + DAT_0049ec90, fVar12 + DAT_0049ec90, uVar7, iVar10, 1, 0, 1);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    sVar6 = param1.DAT_842[iVar4];
+
+                    if (sVar6 < 0x20)
+                    {
+                        if (sVar5 != 0)
+                        {
+                            fVar12 = DAT_00484930[(sVar5 >> 4) + 8];
+                            fVar14 = DAT_00484930[sVar5 & 0xf];
+                            RenderQueue.FUN_00104a10(-0, uVar7, iVar10, 2); //0x80000000
+                            RenderQueue.FUN_00104aa0(fVar14 + fVar13, fVar12 + fVar13, uVar7, iVar10, 2, 0, 1);
+                        }
+
+                        uVar8 = (uint)lVar9;
+
+                        if (lVar9 < 1)
+                        {
+                            if (lVar9 < 0)
+                            {
+                                uVar8 += 0x40;
+                                lVar9 = (long)(int)uVar8;
+                                fVar14 = DAT_00484930[uVar8 & 0xf];
+                                fVar12 = DAT_00484930[(int)uVar8 >> 4];
+                            }
+                        }
+                        else
+                        {
+                            fVar14 = DAT_00484930[uVar8 & 0xf];
+                            fVar12 = DAT_00484930[((int)uVar8 >> 4) + 4];
+                        }
+
+                        if (lVar9 != 0)
+                        {
+                            RenderQueue.FUN_00104a10(-fVar15, uVar7, iVar10, 1);
+                            RenderQueue.FUN_00104aa0(fVar14 + DAT_0049ec90, fVar12 + DAT_0049ec90, uVar7, iVar10, 1, 0, 1);
+                        }
+                    }
+                }
+
+                uVar11++;
+            } while ((int)uVar11 < 0x1000);
+        }
+    }
+
+    private void FUN_00182020(DAT_0027905c param1)
+    {
+        float fVar1;
+        int iVar2;
+        int iVar3;
+        int iVar4;
+        uint uVar5;
+        uint uVar6;
+        float fVar7;
+
+        fVar1 = DAT_0049ec94;
+        iVar4 = 0;
+        iVar2 = 0;
+
+        do
+        {
+            iVar3 = iVar2;
+            iVar2++;
+
+            if (param1.DAT_842[iVar3] == 14)
+                iVar4++;
+        } while (iVar2 < 0x1000);
+
+        DAT_003da1ec = iVar4 << 1;
+
+        if (iVar4 != 0)
+        {
+            uVar6 = 0;
+            fVar7 = DAT_0049ec98;
+
+            do
+            {
+                uVar5 = uVar6 & 0x3f;
+                iVar2 = (int)uVar6 >> 6;
+                RenderQueue.FUN_00104aa0(fVar1, fVar1, uVar5, iVar2, 3, 0, 0);
+                iVar4 = (int)uVar6;
+                uVar6++;
+
+                if (param1.DAT_842[iVar4] == 14)
+                {
+                    RenderQueue.FUN_00104a10(-fVar7, uVar5, iVar2, 3);
+                    RenderQueue.FUN_00104aa0(fVar1, fVar1, uVar5, iVar2, 3, 0, 1);
+                }
+            } while ((int)uVar6 < 0x1000);
+        }
+    }
+
+    private void FUN_00182148(DAT_0027905c param1)
+    {
+        sbyte sVar1;
+        byte bVar2;
+        long lVar3;
+        int[] piVar4;
+        int ppiVar4;
+        uint uVar5;
+        int iVar6;
+        int puVar7;
+        int iVar8;
+        int iVar9;
+        int puVar10;
+        float[] local_100 = new float[8];
+        Vector4[] auStack_e0 = new Vector4[4];
+        Vector4[] auStack_a0 = new Vector4[4];
+
+        puVar10 = 0;
+        local_100[0] = 4.1887903f;
+        local_100[1] = 3.1415927f;
+        local_100[2] = 2.0943952f;
+        local_100[3] = 1.0471976f;
+        local_100[4] = 0;
+        local_100[5] = 5.2359877f;
+        FUN_001e14b8();
+        FUN_001e14b8();
+
+        if (0 < param1.DAT_3842)
+        {
+            do
+            {
+                sVar1 = param1.DAT_3843[puVar10 + 2];
+                bVar2 = (byte)param1.DAT_3843[puVar10 + 3];
+                lVar3 = Utilities.FUN_001451b0(param1.DAT_3843[puVar10]);
+                iVar9 = sVar1;
+
+                if (lVar3 == 4)
+                {
+                    if ((bVar2 & 1) == 0)
+                        piVar4 = DAT_0035b200;
+                    else
+                        piVar4 = DAT_0035b230;
+
+                    iVar8 = 0;
+                    ppiVar4 = 0;
+                    iVar6 = piVar4[ppiVar4];
+
+                    while (true)
+                    {
+                        uVar5 = (uint)((sbyte)bVar2 + piVar4[ppiVar4 + 1]);
+                        ppiVar4 += 2;
+
+                        if ((((iVar9 + iVar6 | (int)uVar5) & 0xffffffc0) == 0 &&
+                            param1.DAT_842[iVar9 + iVar6 + (int)uVar5 * 0x40] - 13 < 2) || 5 < ++iVar8) break;
+
+                        iVar6 = piVar4[ppiVar4];
+                    }
+
+                    if (iVar8 == 6)
+                    {
+                        if ((uVar5 & 1) == 0)
+                            piVar4 = DAT_0035b200;
+                        else
+                            piVar4 = DAT_0035b230;
+
+                        iVar8 = 0;
+                        ppiVar4 = 0;
+                        iVar6 = piVar4[ppiVar4];
+
+                        while (true)
+                        {
+                            uVar5 = (uint)((sbyte)bVar2 + piVar4[ppiVar4 + 1]);
+                            ppiVar4 += 2;
+
+                            if ((((iVar9 + iVar6 | (int)uVar5) & 0xffffffc0) == 0 &&
+                                param1.DAT_842[iVar9 + iVar6 + (int)uVar5 * 0x40] == 15) || 5 < ++iVar8) break;
+
+                            iVar6 = piVar4[ppiVar4];
+                        }
+
+                        if (iVar8 == 6)
+                            iVar8 = 0;
+                    }
+
+                    FUN_001e1058(local_100[iVar8], auStack_a0);
+                    puVar7 = (iVar9 + bVar2 * 0x40) * 2;
+                    FUN_001e10b8(DAT_0049eb20[puVar7], DAT_0049eb20[puVar7 + 1], 0, auStack_e0);
+                }
+            }
+        }
+    }
+
+    private void FUN_001824e0(DAT_0027905c param1)
+    {
+        float fVar1;
+        int iVar2;
+        uint uVar3;
+        uint uVar4;
+        int puVar5;
+        int piVar6;
+        uint uVar7;
+        float fVar8;
+        float fVar9;
+        float fVar10;
+        int local_70;
+        int local_6c;
+
+        fVar1 = DAT_0049eca0;
+        uVar7 = 0;
+        fVar9 = DAT_0049ec9c;
+        RenderQueue.FUN_00103f90(10);
+        local_6c = 0;
+        local_70 = 0;
+        iVar2 = 0;
+
+        do
+        {
+            piVar6 = 0;
+            iVar2 = FUN_00181ac0(param1.DAT_842[iVar2]);
+            fVar10 = DAT_00484878[iVar2];
+            iVar2 = DAT_003da3b0[0];
+
+            while (true)
+            {
+                uVar4 = (uVar7 & 0x3f) + (uint)iVar2 + (uVar7 >> 6 & (uint)DAT_003da3b0[piVar6 / 4 + 2]);
+                uVar3 = (uint)((int)uVar7 >> 6) + (uint)DAT_003da3b0[piVar6 / 4 + 1];
+                piVar6 += 12;
+                fVar8 = DAT_0049eca0;
+
+                if (((uVar4 | uVar3) & 0xffffffc0) == 0)
+                {
+                    iVar2 = FUN_00181ac0(param1.DAT_842[uVar4 + uVar3 * 0x40]);
+                    fVar8 = DAT_00484878[iVar2];
+                }
+
+                if (fVar10 < fVar8) break;
+
+                if (0x47 < (int)piVar6) goto LAB_00182630;
+
+                iVar2 = DAT_003da3b0[piVar6 / 4];
+            }
+
+            local_70++;
+            local_6c += 4;
+            puVar5 = (int)uVar7 * 2;
+            RenderQueue.FUN_001025e8(DAT_0049eb20[puVar5], -fVar10, DAT_0049eb20[puVar5 + 1], -fVar9, -fVar1);
+            LAB_00182630:
+            uVar7++;
+            iVar2 = (int)uVar7;
+
+            if (0xfff < (int)uVar7)
+            {
+                if (local_70 == 0)
+                    DAT_003da1e0 = 0;
+                else
+                {
+                    if (local_6c < 0)
+                        local_6c += 3;
+
+                    DAT_003da1e0 = local_6c >> 2;
+                }
+
+                return;
+            }
+        } while (true);
+    }
 
     private void FUN_0019d838()
     {
@@ -680,5 +1182,39 @@ public class GridManager : MonoBehaviour
     private void FUN_001e08d8()
     {
         //...
+    }
+
+    
+
+    private void FUN_001e1058(float param1, Vector4[] param2)
+    {
+        float fVar1;
+        Vector4[] auStack_60 = new Vector4[4];
+
+        Utilities.FUN_00200aa0(auStack_60);
+        fVar1 = FUN_001ff048(param1);
+        Utilities.FUN_00240938(fVar1, auStack_60, auStack_60);
+        Utilities.FUN_001e0778(param2, auStack_60);
+    }
+
+    private void FUN_001e10b8(float param1, float param2, float param3, Vector4[] param4)
+    {
+        Utilities.FUN_001e0af0(param4);
+        param4[3].z = param3;
+        param4[3].x = param1;
+        param4[3].y = param2;
+    }
+
+    private void FUN_001e14b8()
+    {
+        return;
+    }
+
+    private float FUN_001ff048(float param1)
+    {
+        float fVar1;
+
+        fVar1 = (param1 + DAT_0049d0ec) * DAT_0049d0f0;
+        return param1 - (float)((int)fVar1 - (BitConverter.ToInt32(BitConverter.GetBytes(fVar1), 0) >> 0x1f)) * DAT_0049d0f4; //need to check
     }
 }

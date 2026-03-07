@@ -2,16 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class DAT_0049d3fc
+{
+    public DAT_0049d3fc_10[] DAT_10;
+    public int DAT_30;
+    public int DAT_34;
+}
+
 //0x40 - size
-public class uGpffff838c
+public struct DAT_0049d3fc_10
 {
     public int DAT_00; //0x00
+    public int DAT_04;
     public int DAT_10; //0x10
+    public int DAT_1c; //0x1C
     public float DAT_20; //0x20
     public float DAT_24; //0x24
     public float DAT_28; //0x28
     public float DAT_30; //0x30
     public float DAT_34; //0x34
+}
+
+public class DAT_0049d400
+{
+    public DAT_0049d400_10[] DAT_10;
+    public DAT_0049d400_18da00[] DAT_18da00;
+    public int DAT_1ad320;
+    public int DAT_1ad328;
+}
+
+//0x40 - size
+public struct DAT_0049d400_10
+{
+    public float DAT_00;
+    public float DAT_04;
+    public float DAT_08;
+    public float DAT_0c;
+    public float DAT_10;
+    public float DAT_14;
+}
+
+//0x20 - size
+public struct DAT_0049d400_18da00
+{
+    public float DAT_00;
+    public float DAT_04;
+    public float DAT_08;
+    public float DAT_0c;
+    public float DAT_10;
+    public float DAT_14;
 }
 
 public class GameManager : MonoBehaviour
@@ -41,7 +80,8 @@ public class GameManager : MonoBehaviour
     public int iGpfffff1fc;
     public int iGpfffff200;
     public int iGpfffff204;
-    public uGpffff838c[] uGpffff838c;
+    public DAT_0049d3fc DAT_0049d3fc;
+    public DAT_0049d400 DAT_0049d400;
 
     public void FUN_001a5668()
     {

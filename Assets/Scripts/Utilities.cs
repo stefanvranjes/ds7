@@ -21,6 +21,12 @@ public class Utilities
         4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5,
         0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5
     };
+    public static Vector4[] DAT_00443920 = new Vector4[]
+    {
+        new Vector4(1f, 0, 0, 0), new Vector4(0, 1f, 0, 0),
+        new Vector4(0, 0, 1f, 0), new Vector4(0, 0, 0, 1f)
+    };
+    public static Vector4 DAT_004760f0 = new Vector4(0.000002601887f, -0.00019807414f, 0.0083330255f, -0.16666657f);
     public static float[] DAT_0049a9c4 = new float[]
     {
         1.499389E-43f, 1.57077f, 3.141541f, 4.71228f, 6.283081f,
@@ -34,6 +40,7 @@ public class Utilities
     public static float DAT_0049d3f8 = -1f;
     public static float DAT_004a372c = 1f;
     public static float DAT_004a3730 = 1f;
+    public static float DAT_004a3738 = 1f;
     public static float DAT_004a3744 = 1f;
     public static Vector4[] DAT_004a3f30 = new Vector4[4];
     public static Vector4[] DAT_004a3f34 = new Vector4[4];
@@ -119,7 +126,7 @@ public class Utilities
         }
     }
 
-    private static void FUN_001e0778(Vector4[] param1, Vector4[] param2)
+    public static void FUN_001e0778(Vector4[] param1, Vector4[] param2)
     {
         int iVar1;
         int iVar2;
@@ -186,6 +193,34 @@ public class Utilities
         return new Vector2(local_30.x * fVar1, local_30.y * fVar1);
     }
 
+    public static void FUN_001e0af0(Vector4[] param1)
+    {
+        int iVar3;
+        int iVar4;
+
+        iVar3 = 0;
+
+        while (true)
+        {
+            iVar4 = 3;
+
+            do
+            {
+                param1[iVar3][-iVar4 + 3] = 0;
+                iVar4--;
+            } while (-1 < iVar4);
+
+            iVar3++;
+
+            if (3 < iVar3) break;
+        }
+
+        param1[0].x = DAT_004a3738;
+        param1[1].y = DAT_004a3738;
+        param1[2].z = DAT_004a3738;
+        param1[3].w = DAT_004a3738;
+    }
+
     public static void FUN_001e0c38(Vector4[] param1, Vector3 param2, Vector3 param3, Vector3 param4)
     {
         float fVar3;
@@ -248,6 +283,11 @@ public class Utilities
         param1[3].y = param2[1].w;
         param1[3].z = param2[2].w;
         param1[3].w = param2[3].w;
+    }
+
+    public static void FUN_00200aa0(Vector4[] param1)
+    {
+        FUN_00240830(param1, DAT_00443920);
     }
 
     private static Vector4[] FUN_0021e8a8()
@@ -809,6 +849,14 @@ public class Utilities
         param1[3].w = VUops.VU.VF[5].f.w;
     }
 
+    public static void FUN_00240830(Vector4[] param1, Vector4[] param2)
+    {
+        param1[0] = param2[0];
+        param1[1] = param2[1];
+        param1[2] = param2[2];
+        param1[3] = param2[3];
+    }
+
     public static void FUN_00240898(Vector4[] param1)
     {
         R5900.COP2(0x4be0012c); //vsub.xyzw
@@ -836,6 +884,91 @@ public class Utilities
         param1[0].y = VUops.VU.VF[7].f.y;
         param1[0].z = VUops.VU.VF[7].f.z;
         param1[0].w = VUops.VU.VF[7].f.w;
+    }
+
+    public static void FUN_002408c0(bool param1)
+    {
+        VUops.VU.VF[4].f.x = DAT_004760f0.x;
+        VUops.VU.VF[4].f.y = DAT_004760f0.y;
+        VUops.VU.VF[4].f.z = DAT_004760f0.z;
+        VUops.VU.VF[4].f.w = DAT_004760f0.w;
+        VUops.VU.VF[4].SetFtoI();
+        R5900.COP2(0x4a26333d); //vmr32.w
+        R5900.COP2(0x4b060100); //vaddx.x
+        R5900.COP2(0x4b0631aa); //vmul.x
+        R5900.COP2(0x4ae02118); //vmulx.yzw
+        R5900.COP2(0x4be62a1b); //vmulw.xyzw
+        R5900.COP2(0x4be0016c); //vsub.xyzw
+        R5900.COP2(0x4be64218); //vmulx.xyzw
+        R5900.COP2(0x4bc64218); //vmulx.xyz
+        R5900.COP2(0x4b082103); //vaddw.x
+        R5900.COP2(0x4b864218); //vmulx.xy
+        R5900.COP2(0x4b082102); //vaddz.x
+        R5900.COP2(0x4b064218); //vmulx.x
+        R5900.COP2(0x4b082101); //vaddy.x
+        R5900.COP2(0x4b082100); //vaddx.x
+        R5900.COP2(0x4b842900); //vaddx.xy
+        R5900.COP2(0x4b0421ea); //vmul.x
+        R5900.COP2(0x4a2701c4); //vsubx.w
+        R5900.COP2(0x4b8703bd); //vsqrt
+        R5900.COP2(0x4a0003bf); //vwaitq
+        R5900.COP2(0x4b0001e0); //vaddq.x
+
+        if (!param1)
+            R5900.COP2(0x4b072900); //vaddx.x
+        else
+            R5900.COP2(0x4b072904); //vsubx.x
+    }
+
+    public static void FUN_00240938(float param1, Vector4[] param2, Vector4[] param3)
+    {
+        int iVar1;
+        bool bVar2;
+
+        if (param1 < 0.0f)
+        {
+            param1 += 1.570796f;
+            bVar2 = true;
+        }
+        else
+        {
+            param1 = 1.570796f - param1;
+            bVar2 = false;
+        }
+
+        cpuRegs.GPR.r[8].UL_0 = BitConverter.ToUInt32(BitConverter.GetBytes(param1), 0);
+        R5900.COP2(0x48a83000); //qmtc2.I
+        FUN_002408c0(bVar2);
+        R5900.COP2(0x4be62b3c); //vmove.xyzw
+        R5900.COP2(0x4be72b3c); //vmove.xyzw
+        R5900.COP2(0x4be9033c); //vmove.xyzw
+        R5900.COP2(0x4bc94a6c); //vsub.xyz
+        R5900.COP2(0x4be84b3d); //vmr32.xyzw
+        R5900.COP2(0x4a64212c); //vsub.zw
+        R5900.COP2(0x4a842980); //vaddx.y
+        R5900.COP2(0x4b042981); //vaddy.x
+        R5900.COP2(0x4b0429c4); //vaddy.y
+        R5900.COP2(0x4a8429c1); //vaddy.y
+        iVar1 = 4;
+
+        do
+        {
+            VUops.VU.VF[4].f.x = param3[-iVar1 + 4].x;
+            VUops.VU.VF[4].f.y = param3[-iVar1 + 4].y;
+            VUops.VU.VF[4].f.z = param3[-iVar1 + 4].z;
+            VUops.VU.VF[4].f.w = param3[-iVar1 + 4].w;
+            VUops.VU.VF[4].SetFtoI();
+            R5900.COP2(0x4be431bc); //vmulax.xyzw
+            R5900.COP2(0x4be438bd); //vmadday.xyzw
+            R5900.COP2(0x4be440be); //vmaddaz.xyzw
+            R5900.COP2(0x4be4494b); //vmaddw.xyzw
+            VUops.VU.VF[5].SetIToF();
+            param2[-iVar1 + 4].x = VUops.VU.VF[5].f.x;
+            param2[-iVar1 + 4].y = VUops.VU.VF[5].f.y;
+            param2[-iVar1 + 4].z = VUops.VU.VF[5].f.z;
+            param2[-iVar1 + 4].w = VUops.VU.VF[5].f.w;
+            iVar1--;
+        } while (iVar1 != 0);
     }
 
     private static void FUN_00240ba8(Vector4[] param1, ref Vector4 param2, ref Vector4 param3, ref Vector4 param4)
