@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e64f607f2dfd0c4d9e3bbb3d497da44, type: 3}
+  m_Name: NewWeapon
+  m_EditorClassIdentifier: 
+  weaponName: Machine Gun
+  weaponType: Cannon
+  firePower: 19
+  maxAmmo: 5
+  hitRateAir: 21
+  hitRateHeli: 15
+  hitRateVehicle: 14
+  hitRateInfantry: 22
+  hitRateVessel: 20
+  hitRateSub: 15
+  hitRateFacility: 27
+  rangeHigh: 2
+  rangeMed: 2
+  rangeLow: 2
+  rangeGround: 2
+  rangeSurface: 2
+  rangeDeep: 2
+  elevationUp: 2
+  elevationDown: 2
+  canAdj: 0
+  canMoveAndFire: 0
+  canAttack: 1
+  canDefend: 1
+  canBomb: 0
+  isMissile: 0
+  isMegahex: 0

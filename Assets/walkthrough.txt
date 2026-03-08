@@ -1,0 +1,1561 @@
+Dai Senryaku VII Exceed for US Playstation 2
+by Systemsoft Alpha and Valcon Games
+FAQ (this document) by JVGFanatic (tm)
+Game copyright 2006 Systemsoft Alpha and 2007 Valcon Games
+This document's copyright 2008 JVGFanatic
+
+Since this faq is a work in progress this table of contents is very incomplete
+and in fact may contain inaccuracies. 
+
+Introduction
+   What is Dai Senryaku VII Exceed?
+FAQs
+Menu Reference
+Game Mechanics
+Detailed Game Information
+   Movement
+   Zone of Control
+   March
+   Transport
+   Transport Mechanics
+   Load and Land Rules
+   Unload Rules
+   Paratroopers and other Airdropped Units
+   Resupply & Refueling
+   Resupply Mechanics
+   Costs of Supply
+   Tactical considerations of supply
+   Attack
+   Understanding Unit and Weapon Stats
+   Range
+   Move
+   Adjacent
+   Counter-Attack
+   Bombardment & Repair
+   Deploy
+   Jam
+   Equip
+   Air Intercept
+   Saving of Leveled Units
+   Grading during Missions and Campaign Levels
+Mission Walkthroughs
+Campaign Walkthroughs
+The Tutorial Mode
+Unlockables
+
+ToDo:
+
+Tons of stuff to do yet.
+
+*
+***
+******
+********
+**********
+
+IMPORTANT NOTE: This document is in transition. It may contain innacuracies.
+Please bear with me while I get this all sorted. I'm currently working on two
+documents, a manual for D7E and this FAQ so some elements are getting combined
+in last-minute fashion. Rest-assured when it is all finished we should be at 100
+percent accuracy. Cheers.
+
+***********
+*********
+******
+***
+*
+
+------------------------------------------------------------------------------
+                                1.0 Introduction
+------------------------------------------------------------------------------
+
+Hello and welcome to the FAQ for Dai Senryaku VII Exceed for Playstation 2. In
+this FAQ I will attempt to document everything there is to know about D7E. It is
+currently a work in progress so bear with its current incompleteness. If you
+have anything you'd like to contribute (strategies, etc...) then please send it
+along to the following address:
+
+jvgfanatic AT hotNOSPAMmail DOT com (of course remove the NOSPAM bit there...)
+
+Should you send an email to that address be sure to put "Dai Senryaku Exceed" in
+the title so I don't delete the email as spam.
+
+I will certainly add you as a contributor to this document should you have
+anything useful to contribute so please don't hesitate to send it along.
+
+What is Dai Senryaku VII Exceed?
+-------------------------------
+
+Dai Senryaku is a modern era military, turn-based strategy game played on a
+hexagonal grid of varying terrain. A collection of units--referred to as an
+Army--from each country participating in the battle are arranged on this grid in
+a strategic manner. Each unit has strengths and weaknesses particular to its
+type. Utilizing the strengths of your army while exploiting weaknesses in the
+enemy until you satisfy victory conditions is the core of the gameplay in Dai
+Senryaku VII.
+
+Each country participating in a battle takes its turn by moving and taking
+action with some, all, or none of its units. Actions in Dai Senryaku VII consist
+of resupply, moving, attacking, bombarding facilities, combining units,
+producing and placing units, loading units onto transports, and capturing
+facilities.
+
+The following countries are playable: Japan, America, Russia, Germany, England,
+France, Israel, and China.
+
+The following terrain elements combine to make Dai Senryaku Exceed's maps:
+Capital, City, Airport, Port, Factory, Refinery, Bridge, Plain, Desert,
+Wasteland, Wetland, Grove, Forest, Hill, Mountain, Peaks, Lake, Shallows, Sea,
+Deep Sea, Snowfield, Snowy Grove, Snowy Forest, Snowy Hill, and Snowy Peaks.
+
+The game contains over 400 units across the nations listed. Each hex can contain
+multiple units at different heights from deep sea to upper atmosphere. This adds
+a tremendous amount of depth to the game and makes for a game with nicely
+dynamic fronts.
+
+Extensive testing of the XBox version of this game yielded that Fog of War is
+obeyed by the computer AI and the AI does not cheat (funds or intel) under any
+difficulty level. There is no reason to believe it will be different here.
+SystemSoft has been making Daisenryakus for 20 years now, their AI is pretty
+solid if not a bit rote.
+
+For the record, here is a list of Daisenryaku games to appear on consoles:
+
+1988.10.11 Daisenryaku - Famicom
+1989.04.29 Super Daisenryaku - Megadrive
+1990.04.27 Super Daisenryaku - Turbo CD
+1991.06.12 Daisenryaku - Gameboy
+1991.06.21 Advanced Daisenryaku - Megadrive
+1991.09.28 Daisenryaku G - Gamegear
+1991.11.21 Lord of Wars - Turbo CD
+1992.05.29 Campaign-Han Daisenryaku II - Turbo CD
+1992.09.25 Daisenryaku Expert - Super Famicom
+1995.09.22 World Advanced Daisenryaku Kotetsu no Ikusakaze - Saturn
+1996.03.15 World Advanced Daisenryaku Saksen Fire - Saturn
+1996.03.29 Daisenryaku: Players Spirit - Playstation
+1996.05.08 Iron Storm - Saturn - (USA - Release)
+1996.08.30 Daisenryaku Expert WWII - Super Famicom
+1997.06.27 Daisenryaku Strong Style - Saturn
+1998.12.03 Daisenryaku: Master Combat - Playstation
+1999.02.04 Cyber Daisenryaku - Playstation
+2000.06.21 Advanced Daisenryaku Europe no Arashi - Dreamcast
+2001.04.26 Advanced Daisenryaku 2001 - Dreamcast
+2001.12.07 Daisenryaku for Gameboy Advance - Gameboy Advance
+2003.05.29 Daisenryaku VII - XBox
+2003.11.03 Daisenryaku 1941 - Playstation 2
+2004.11.11 Standard Daisenryaku: Dengekisen
+2005.02.16 Dai Senryaku VII: Modern Military Tactics - XBox (USA Release)
+2005.06.02 Standard Daisenryaku: Shiwareta Shouri
+2005.12.22 Daisenryaku Portable - PSP
+2006.02.26 Sega Ages Vol. 22 Advanced Daisenryaku Deuch Dengeki Sakusen - PS2
+2006.05.25 Daisenryaku DS - Nintendo DS
+2006.12.14 Daisenryaku VII Exceed - PS2
+2006.12.14 Daisenryaku Portable 2 - PSP
+2007.12.12 Dai Senryaku VII Exceed - PS2 (USA Release)
+
+World Advanced Daisenryaku Kotetsu no Ikusakaze became Iron Storm when Working
+Designs brought it over to the US.
+
+Fellow Daisenryaku Fanatic and FAQ author Jack Power has this list to provide,
+these are the Daisenryaku titles released for the PC. Note that these are
+Japanese games and may require specific software to run on your US PC. I cannot
+provide instructions or support for this however.
+
+2001.12.20 Daisenryaku VII
+2002.10.25 Gendai Daisenryaku 2002
+2003.03.20 Daisenryaku Perfect 1.0
+2003.10.24 Gendai Daisenryaku 2003
+2004.02.27 Realtime Daisenryaku Perfect 1.0
+2004.06.25 Daisenryaku Perfect 2.0
+2004.10.29 Gendai Daisenryaku 2004
+2005.01.28 Daisenryaku Daitoua-Kouboushi
+
+Jack Power also has the following to say about the PC series:
+
+    FYI, the "gendai" games, 200X series, and Perfect games are all modern war
+    games a la DSVII. I've written a FAQ on Daisenryaku Perfect, which is
+    undoubtedly the best installment in the series (especially 2.0).
+
+As an aside: SystemSoft, the makers of Daisenryaku have done some other
+projects. Here are as many as I could find at the moment:
+
+1991.07.26 Master of Monsters - Megadrive
+1997.07.31 Master of Monsters - Playstation (JP & US)
+1996.10.25 Master of Monsters Neo Generation - Saturn
+1991.02.15 Master of Monsters - PC Engine (SCD)
+
+
+------------------------------------------------------------------------------
+                                    FAQs
+------------------------------------------------------------------------------
+
+Is this game coming out in English?
+
+   Yes, this FAQ has been updated for the US release which became available
+   on the 12th of December, 2007.
+
+What countries are represented in Dai Senryaku VII Exceed?
+
+   Japan
+   America
+   Russia
+   Germany
+   England
+   France
+   Israel
+   China
+   
+How many games/maps/etc can I save?
+
+   There are 8 slots per mode (Free, Mission, Campaign, Map Editor, etc..)
+
+Differences from Dai Senryaku VII Modern Military Tactics (XBox)?
+
+    Dai Senryaku VII: Modern Military Tactics (MMT) was released in the
+    US on Microsoft's XBox console by Kemco Games. As it is the only
+    other Daisenryaku to get a US localization in recent history players
+    will be keen on knowing what differences exist between it and VII
+    Exceed.
+
+    Daisenryaku VII Exceed is everything that MMT was and more in terms
+    of content. In addition to MMT's Mission Mode and Free Play Mode
+    Exceed now has a Campaign Mode in which how you level units to carry
+    them from stage to stage will play a key role in your victory. I'm
+    finding Campaign Mode to be a satisfying challenge when compared to
+    Mission Mode's relative ease.
+    
+    You can no longer change the computer AI player in Free Play to a
+    human player mid-turn. You can change the AI's difficulty level but
+    the option to change to a human player is disabled.
+
+    You can choose an operator to voice confirmation of commands. This
+    has no bearing on gameplay. There were six operators in the Japanese
+    version of the game, only two in the US version.
+    
+    The game now supports bombardment and repair. These features are
+    discussed in that section of the FAQ.
+    
+    Also new in Exceed is Air Intercept. That feature is also described
+    in detail in the relevant section of this FAQ.
+
+    Some unit details have changed, I'll log as many as I can for the
+    faq but will appreciate board members pointing out any they spot
+    changes as well.
+
+    Valcon added a few new features to the US release of the game that
+    were not in the Japanese release. The first is a blacked out screen
+    between turns in Free Play allowing players to change control without
+    comprimising troop layout. Another feature is the addition of a window
+    in the 'assign button' section of options. You can now open the unit
+    data screen with a single button press. Finally a Health column was
+    added to the Facility List showing how much damage a facility has
+    taken from bombardment.
+
+
+------------------------------------------------------------------------------
+                        Game Mechanics (or How To Play)
+------------------------------------------------------------------------------
+
+The Basics
+----------
+
+BASIC GAMEPLAY INSTRUCTIONS
+---------------------------
+
+Dai Senryaku VII Exceed is a turn-based strategy game played on a hexagonal grid
+of varying terrain. A collection of units--referred to as an Army--from each
+country participating in the battle are arranged on this grid in a strategic
+manner. Each unit has strengths and weaknesses particular to its type. Utilizing
+the strengths of your army while exploiting weaknesses in the enemy until you
+satisfy victory conditions is the core of the gameplay in Dai Senryaku VII.
+
+Each country participating in a battle takes its turn by moving and taking
+action with some, all, or none of its units. Actions in Dai Senryaku consist of
+Resupply, Moving, Attacking Enemy Units, Combining Units, Producing and Placing
+Units, Loading Units onto Transports, and Capturing Facilities. For detailed
+information on the game's mechanics see section "Detailed Game Information".
+
+The maps in Dai Senryaku VII consist of various terrain elements that have to be
+traversed by your army. Building an army appropriate to the terrain they are
+fighting on is key to success in D7E. In addition to the land there are also
+"Facilities" consisting of Ports, Cities, Refineries, Factories, and Capitals.
+There is only one Capital per country and the taking of an enemy capital means
+the defeat of that enemy. Facilities are either owned by a country or they are
+neutral, each facility possessed by a country brings that country strategic and
+material benefits.
+
+Victory in Dai Senryaku VII is achieved by satisfying the particular victory
+conditions of the battle if in Mission or Campaign mode however the taking of an
+enemy capital will always cause a win in any mode.
+
+There are 3 modes of play in Dai Senryaku VII in addition to a Map Editor and a
+Tutorial to help you understand some of the basics of the game. The three modes
+of play are: Mission Mode, Campaign Mode, and Free Play Mode. Map Edit mode will
+be discussed in more depth later, until then let's concentrate on Mission Mode,
+Campaign Mode and Free Play Mode since they are the primary meat of the game.
+
+About Mission Mode
+------------------
+
+Mission Mode allows you to play a series of battles that tell the story of Blue
+Army (you) versus Red Army (the enemy). While in the abstract you are Blue army,
+in fact you'll be playing as each of the game's countries. Your units do gain
+experience in a battle however that experience cannot be carried to the next
+fight. Continuity from one mission to the next is found in the story that
+unfolds as you play through this mode.
+
+Battles are graded in Mission Mode from S (highest) to F (lowest) rank. You will
+progress through Mission Mode and unlock units as you complete battles
+regardless of rank.
+
+The missions, should you be happy with B, A, and S ranks shouldn't take you too
+long to complete given their limited scope. Some of them can be rather time
+consuming but none have the scale that you'll face in Campaign mode.
+
+About Campaign Mode
+-------------------
+
+In Campaign Mode you'll also be following a story of sorts, each of the four
+initial campaigns tells a tale. In addition to this, you'll be able to save
+units that have gained experience at the end of each battle. You can then use
+these units in the next or later battles. This provides tremendous continuity to
+your Dai Senryaku VII Exceed experience.
+
+Battles in Campaign mode are graded similarly to Mission Mode however Campaign
+mode branches based on performance.
+
+About Free Play Mode
+--------------------
+
+In Free Play mode you start with an empty map. You can set parameters for each
+nation on the map including alliances, amount of starting funds, and
+nationality. Building your army and executing strategies is what Free Play is
+all about. You can have up to 4 players playing this mode either competitively
+or cooperatively.
+
+As you complete Mission Mode battles and Campaign battles you will open up maps
+and units for use in Free Play mode.
+
+Each country can save up to 20 levelled up units for use in Free Play mode.
+
+
+------------------------------------------------------------------------------
+                          Detailed Game Information
+------------------------------------------------------------------------------
+
+Movement
+--------
+
+Moving a unit consists of selecting the unit and issuing the Move command. This
+causes the unit to be surrounded by a field of green hexagons and sometimes a
+row or two of red hexagons beyond that. The green hexagons denote standard
+movement whilst the red hexagons denote high-speed movement. These colors
+indicate the hexes to which the unit may move.
+
+There are costs associated with moving including both fuel and movement points.
+A unit can move a distance equal to its standard or high-speed movement
+allowance given the movement cost required to traverse the terrain and available
+fuel. It costs twice as much fuel to move a unit into a red (high-speed) hex as
+it does to move a unit into a green (standard movement) hex.
+
+High-Speed Movement Allowance, Standard Movement Allowance and the cost for a
+unit to move through various terrain elements are all found on the Unit Detail
+Screen.
+
+Air units, when moved, are required to set an altitude. Air units can fly at
+low, medium, and high altitude as well as ground level when flying over water.
+To change the altitude of an air unit, press the circle button when the altitude
+menu appears. Each press of the circle button changes the altitude. Each level
+of altitude changed costs one movement point.
+
+A unit cannot move into a hex containing another unit at the same elevation as
+the moving unit however a unit can pass through hexes containing friendly units
+without restriction.
+
+Zone of Control
+--------------
+
+Each hex in D7E has up to six altitudes. Only one unit can exist in a given hex
+at a given altitude. A unit can move freely through hexes containing units of
+one’s own army as well as units of allied armies.
+
+Ground units and surface vessels are affected by zone of control. Zone of
+control governs a unit’s ability to stop an enemy from moving through an area
+that is controlled by the unit. In Dai Senryaku VII, this area is equal to the
+six hexes surrounding a unit.
+
+A unit will stop moving immediately upon entering the ZOC an enemy unit. In
+addition, the enemy will attack the moving unit, if able, and the moving unit
+will not be able to return fire.
+
+March
+-----
+
+The March command allows you to move units over great distances without having
+to issue individual move commands to units. In order to March a unit, simply
+select that unit and issue the March command and then "Set Destination." Select
+a hex as that unit's final destination and press the X button.
+
+Once a destination has been set you can choose the March command again, this
+time selecting the "March Execute" sub command or you can press Triangle and
+choose the March All command to execute marches for all your units that have set
+destinations.
+
+March has certain features that make it worth using. Sending long-haul units
+back for resupply for example is made easier by marching them instead of moving
+them manually each turn.
+
+Transport
+---------
+
+Some ground vehicles, vessels, and aircraft are capable of transporting other
+units. Such units have the “TRANS” ability however each transport capable unit
+has its own transport capacities.
+
+To determine the transport capabilities of a unit you will have to open the Unit
+Detail Screen. On this screen in the “Transport” section you might see something
+like [Veh][Inf] indicating that the unit can transport up one Vehicle load type
+unit and one Infantry load type unit. A unit’s load type can be found in the
+Load Type section of the Unit Detail Screen and the Load stat in unit production
+lists.
+
+Transport capabilities represent the maximum number and size of units that a
+unit can transport. A transporting unit can always transport units that have a
+smaller load type than the one indicated up to the maximum number of load slots.
+For example, our [Veh][Inf] transporting unit can also transport two [Inf] type
+units but never two [Veh] units.
+
+- From smallest to largest ground load types are: Inf, Veh, Lght, Hev.
+- From smallest to largest air unit load types are: Hel, Air
+
+Transport Mechanics
+-------------------
+
+To load a transporting unit with units to be transported, simply move the unit
+to be transported onto the unit doing the transporting and choose the “Load”
+command.
+
+Load and Land rules
+-------------------
+
+Transport aircraft can only be loaded at airports. Transport helicopters and
+VTOL craft can be loaded wherever they can land. Trucks can be loaded anywhere.
+Carriers can be loaded with air units only while at sea. To land an aircraft at
+a carrier you must fly at Ground level and choose the Land command when over the
+carrier. Helicopters cannot land on assault ships in either ports or shallows;
+the assault ship must be at sea for a helicopter to land on it.
+
+Unload rules
+------------
+
+Transport ships must be at a port to unload its units. Assault ships can unload
+at ports or shallows. A helicopter on an assault ship must launch at sea as it
+cannot take off while the assault ship is in port or in shallows. A ground unit
+must have an available hex onto which it unloads adjacent to the transporting
+unit. Transporting helicopters can unload wherever they can land.
+
+Paratroopers and other Airdropped Units
+---------------------------------------
+
+Special Forces, Paratroopers, and LAir capable units of all types can be dropped
+from aircraft. Units with a [LAir] ability can be dropped from a low altitude
+while Special Forces and Paratroopers can be dropped from Medium or Low
+altitude. No unit can be dropped from High altitude.
+
+Special Forces and Paratroopers can be dropped from helicopters and planes
+however they do use their turn during the drop (so they can't be dropped and
+capture/move in the same turn).
+
+Resupply & Refueling (RESP, [Sup])
+----------------------------------
+
+Building a good supply infrastructure in the worst environments can win you
+battles. While your enemy is constantly fretting about running low on ammo and
+fuel, your units will always be in top condition if you follow a flexible set of
+guidelines for keeping your troops in supply.
+
+Identifying good defensive terrain, positioning units so as to give them good
+access to the front, and keeping available key positions for supply units all
+combine to make a well oiled supply machine.
+
+First off, you need a good understanding of how supply works in Dai Senryaku VII
+Exceed. Each weapon carried by a unit has a limited supply of ammunition and
+amount of fuel. The remaining fuel and ammunition is displayed whenever you
+select a unit for command. Fuel is displayed as a decreasing yellow bar as well
+as a numerical value to the left of the bar. Ammunition for each weapon is shown
+beside the weapon’s name.
+
+Each time you fire a weapon its ammunition supply is decreased by one. When a
+weapon has zero remaining ammunition then that weapon cannot be used until the
+unit has been resupplied.
+
+A unit running low on fuel or ammunition will also have a small icon displayed
+above the unit on the battlefield. A truck icon is shown for a unit low on fuel
+and a shell (bullet) icon for units low on ammunition.
+
+Resupply Mechanics
+------------------
+
+In order for a unit to be resupplied it must be on a supply-capable facility or
+adjacent to a supply-capable vehicle or vessel. Choosing the RESP command from
+its menu can resupply such a unit.
+
+Supplying units on carriers is easy but not so obvious. You must do so through
+the Unit List (press CIRCLE and choose Unit List from the menu). Choose the unit
+you wish to supply from the unit list and press X, the standard menu of commands
+including RESP will be displayed.
+
+Costs of Supply
+---------------
+
+Each unit has a resupply cost that is deducted from your total funds when a unit
+is resupplied. Fuel that is required to refuel a unit is also deducted from your
+fuel reserves total. Both your total funds and fuel reserves are shown in the
+upper left corner of the screen with no unit selected.
+
+Supplying a supply truck with supplies at a facility does not cost anything
+however supplying other units with that supply truck does cost the appropriate
+supply cost.
+
+Supplying a unit in the field with a supply truck uses a single (one) supply
+point from the truck’s available supply stock whether the unit is refueled,
+resupplied, or both and no matter how much is needed to resupply and refuel.
+This compounds the case for turning off AUTO in Resup Method, in System Options
+since in “Auto” mode units will resupplies even when only small amount of ammo
+has been used.
+
+Tactical considerations of supply
+---------------------------------
+
+Correctly positioning a support tanker is key to headache-free supply
+management. For example, it is wise, particularly when the lay of the terrain
+supports such a maneuver, to end your tanker’s movement adjacent to as many
+out-of-supply units as possible. As such it is a good idea to get supply issues
+out of the way at the start of a turn particularly since a unit is not ‘used’ as
+a result of resupplying.
+
+It bears mentioning again: turn off AUTO Resupply in Options. Set it to MANual,
+it will keep you busier but it’s a resource-smart busier.
+
+Attack
+------
+
+If you should find an enemy unit within range of your units’ weapons then you’ll
+be able to issue the Attack command. The attack command will only be available
+if the unit doing the attacking has met all of the firing criteria for at least
+one of its available weapons.
+
+Let’s take a look at some of the factors in determining whether or not you can
+attack with a given unit.
+
+Understanding Unit and Weapon Stats
+-----------------------------------
+
+Range
+-----
+You cannot fire a weapon unless an enemy unit is within range of the weapon.
+Understanding the Range page of the Unit Detail Screen is paramount to knowing
+how to place units so that they are within firing range of enemy units. Unlike
+many other simpler strategy games, finding the range isn’t as simple as pressing
+a button. Instead you’ll need to count hexagons.
+
+To get to the Range page of the Unit Detail Screen you’ll need to press X to
+display the weapon info page. From there press down so that Range is
+highlighted. Each weapon is shown as well as the ranges that each weapon
+operates at. The numbers shown are specific to each elevation. If there is a
+value of “2” in the yellow (or “1”) column then the weapon will be able to hit
+enemies at Low Air altitude as far as 2 hexes away.
+
+There is one caveat to that calculation, each weapon also has to “Elev” stats
+that denote how many levels of altitude up and down that the weapon can fire and
+unless an enemy falls within those ranges as well as the lateral range it cannot
+be targeted.
+
+Move (Mv)
+---------
+
+Next, if you look at the Status page of the Weapon Detail screen you’ll see a
+list of weapon attributes for each of your unit’s weapons.
+
+One of them is labeled “Mv” and this stat determines whether or not a weapon can
+be fired directly after moving a unit. Weapons with an “O” in this column can be
+fired during the same turn that a unit has moved while those with a “–“ in the
+Mv column cannot.
+
+Weapons that cannot be fired after a move can only be fired if the firing unit
+has not moved during the given turn.
+
+Adjacent (Adj)
+--------------
+
+Next let’s examine the “Adj” stat on the Weapon Status page of the Unit Detail
+screen. Adj stands for Adjacent and a weapon without the Adj ability cannot fire
+into an adjacent hex.
+
+In this case I’m looking at the details for a Patriot Missile System and on the
+Weapon Information STATUS page I can see that the ADJ attribute of the MIM-104
+Missile is marked with a line and thus the weapon cannot be fired at an enemy
+that is adjacent to this unit.
+
+Counter-Attack
+--------------
+
+Bombardment & Repair (BOMB, [Bmb] [Rpr])
+---------------------------------
+
+Some aircraft (bombers) are able to bomb facilities. Bombing facilities reduces
+their effectiveness. A fully damaged facility has it’s repair, refuel, and
+income generating features reduced dramatically.
+
+In order to bomb a facility a unit with the Bomb (BMB) ability must position
+itself directly over the facility to be bombed. Once doing so the “Bomb” command
+can be issued from that unit’s command menu.
+
+In order to determine how severely facilities are damaged you can (by default)
+press the L2 button
+
+Another quick way to display damage to your own facilities is to display the
+Army Facility List.
+
+Facilities that have been bombed and have had their effectiveness reduced may be
+repaired by Engineer units. Engineer units are a special kind of infantry that
+have the RPR (Repair) ability. In order to repair a facility you must position
+the Engineer on the facility and then choose the “Repair” command.
+
+Deploy
+------
+
+Some units are either Deployed or Mobile. Such units have an ability of “DPLY”.
+This is more restriction than ability. While a unit with this ability is moving
+it cannot fire. When the unit is deployed and ready to fire it cannot move.
+Issuing the “DEPL” command ends a unit’s turn and thus a unit cannot deploy and
+fire on the same turn.
+
+These units are often used as fixed position artillery or fortification-style
+armament. This attribute differs from the weapon attribute Mv.
+
+Jam
+---
+
+Some aircraft have the “Jam” (ECM) ability. This ability, which is triggered by
+a command, will reduce the search ability of all units within its area of effect
+to one hex. The effect lasts for one turn and the Jam command uses ECM
+ammunition much like a weapon and cannot be used once its ammunition has been
+depleted. Supplying a unit capable of Jamming will resupply its ECM ammunition
+as well.
+
+Equip
+-----
+
+Many units in D7E are capable of carrying different weapon load outs. Each
+loadout is referred to as a “Package” or “Pack.” You can change a unit’s pack by
+positioning it on an appropriate facility and choosing the Equip command. The
+Equip command takes a full turn to execute so a unit will be unable to move
+either before or after the command is issued. Another caveat is that a unit that
+is not in full supply or full health cannot change its equipment.
+
+Facilities capable of equipment change are as follows:
+   Naval vessels: Ports
+   Aircraft: Airfields and carriers
+   Ground units: Cities, capital
+
+Air Intercept
+-------------
+
+Air intercept is automatic in Dai Senryaku 7 Exceed. It’s the ability [INT] of
+some naval vessels to attack aircraft automatically should the aircraft enter
+the range of the vessel’s weapons.
+
+Saving of Leveled Units
+-----------------------
+
+At the end of each Campaign and Free Mode battle you are allowed to save units
+which have gained experience. You can then load these into other Campaign or
+Free Mode battles respectively.
+
+When you load these units into a battle you are asked to pick a memory card
+where it will then ERASE each unit from the saved units list as it's launched.
+Should that unit perish or should you lose the fight you will lose any of the
+units you've launched into that battle.
+
+Even if you load an earlier saved game you will NO LONGER have those units
+available for sortie.
+
+You can refuse to save the game during a launch however I'm unsure as to the
+effects of this.
+
+Grading during Missions and Campaign levels
+-------------------------------------------
+
+At the end of each Campaign and Mission mode battles you'll get graded on five
+criteria. They are as follows, from top to bottom:
+
+
+
+------------------------------------------------------------------------------
+                Game Reference Guide (Menu/Screen Translations)
+------------------------------------------------------------------------------
+
+Table of Contents
+-----------------
+  The Main Menu
+  The In-Battle Options
+  The Unit Information Screen
+  Unit Production Information
+  Command Menu
+  System Menu
+  Map Editor Menu
+  Controls
+
+-------------
+The Main Menu
+-------------
+
+    Mission      - A series of missions
+    Campaign     - Four campaigns
+    Free Play    - Free Play maps
+    Map Editor   - You can build your own maps here
+    Tutorial     - The game's tutorial
+    Set Up       - One options screen (more available in-battle)
+
+---------------------
+The In-Battle Options
+---------------------
+    Display Settings
+      Unit Information
+      |-Unit Name
+      |-Sub Units
+      |-Load
+      |-Elevation
+      |-Status
+      Hex Lines (on/off)
+      Army's Capital flag (on/off)
+      Map Effect (on/off)
+      Map Cursor (Reset to capital/Keep in place)
+      Battle Screen (own army/all armies/no display)
+      
+    System Settings
+      Battle Animation (Real/Summary)
+      Select Weapon for counter-attack & opportunity fire (off/on)
+      Resupply Method (auto/ask/manual)
+      Vibration (on/off)
+      Button Config - Assign Square, R2, and L2 to any of the following:
+         End Turn
+         Save
+         Load
+         Options
+         Unit List
+         Terrain Chart
+         Movement Chart
+         Unit Catalog
+         Army Status
+         Army Facility Chart
+         Adjust Detection Level
+         Reset View
+         Move Cursor to Capital
+         March All
+         Supply All
+         Display SubUnit Tag
+      Operator Selection
+      
+    Sound Settings
+      Choose your background music
+      
+    Return to Defaults
+    Save Settings
+
+---------------------------
+The Unit Information Screen
+---------------------------
+
+    Unit Type                       Movement Type
+    Unit Name                       Special Commands
+    Unit Nationality & Flag         Transport Information
+    
+    Altitude       Vertical Detect      Level Detection/Altitude
+    Indication                          Evasion/Altitude
+    Setting
+    
+    Cost       Type
+    SubUnits   Standard Move            Movement Cost Table Variable
+    Endurance  High Move                with Altitude Selection
+    Fuel       ECM Evade Strength
+
+------------------------------
+Weapon Information Tables
+-------------------------
+
+Pressing CIRCLE on the Unit Information screen will open the Weapon info
+page(s). A lit of Weapons current loaded into the unit are shown, white weapons
+are ones in the current PACK while grey ones are not availble with the current
+PACK.
+
+The Up/Down d-pad will switch between three pages of data for the weapons while
+Left/Right d-pad will switch between showing information about the different
+PACKs. Note changing the PACK here does NOT change the unit's current
+configuration.
+
+First Page of Weapon Info:
+
+    Weapon Name    FirePower    HitRates: Air/Heli/Veh/Inf/Ves/Sub/Facil
+
+Second Page of Weapon Info:
+
+    Weapon Name    Ammo Count   Range: High/Med/Low/Grnd/Surf/Deep/Up/Dn
+
+Third Page of Weapon Info:
+
+    Weapon Name    Type         Abilities: Adj/Move/Att/Def/Bomb/Mssl/Mega
+
+Explanation:
+
+    Adj - Can the weapon be fired from a range of 1
+    Move - Can the weapon be fired after moving
+    Att - Can the weapon be used for attacking
+    Def - Can the weapon be used for counter-attacking
+    Bomb - Can the weapon be used for facility bombing
+    Mssl - Is the weapon a Missile type
+    Mega - Does the weapon do Megahex damage
+
+---------------------------
+Unit Production Information
+---------------------------
+
+When you attempt to make a unit by pressing the button on a capital, airport, or
+port you get a list of available units. The data displayed for each unit is as
+translated below:
+
+    Unit Type                    Unit name
+    Cost           Sol Type      Load Type
+    Fuel      SubUnit Count  SubUnit Endur
+    Movement                       Package
+
+
+-----------
+Command Menu
+------------
+
+    Active Unit List
+    Terrain Chart
+    Movement Chart
+    Unit Catalog
+    Battle Overview
+    Facilities Overview
+    Set Detection Level Visibility
+    Map Reset
+    Move To Capital
+    Supply All (only present when manual supply is set)
+    March All (only present when units are to be marched)
+
+-----------
+System Menu
+-----------
+Pressing the Start button in mid-game will get you this menu:
+
+    End Turn
+    Save
+    Load
+    Player
+    Option
+    Quit
+
+---------------
+Map Editor Menu
+---------------
+This menu is opened by pressing Start in the Map Editor
+
+    Map Settings
+    Preview
+    Lines On/Off
+    Save
+    Load
+    Quit Editor
+
+--------
+Controls
+--------
+
+On the Battlefield
+------------------
+X Btn    - Okay/Select
+Triangle - Cancel
+Square   - Customizable*
+Circle   - Command Menu
+Select   - Hides/Shows Info Palette
+Start    - Displays System Menu
+R1       - Zoom In (Zooms are analogue so press harder for faster zoom)
+R2       - Zoom Out
+R2       - Customizable*
+L2       - Customizable*
+R Stick  - Move Map
+L Stick  - Rotate Map
+L3       - Rotate to Default
+
+After a campaign mission
+------------------------
+You are given the option of saving up to 20 units.
+
+X Btn    - Moves units from one side to the other
+Square   - Show stats for selected unit
+Start    - Saves and continue
+Triangle - Cancel
+
+In the Map Editor
+-----------------
+The Map Editor is a complex beast. Here are the controls:
+
+R2        - Opens Tool Menu
+L2        - Opens Terrain Menu
+R1/L1     - Zoom In/Out
+Circle    - Opens Menu
+Square    - Picks up current terrain
+Start     - Opens the Menu
+Triangle  - Undoes latest action
+
+
+
+
+------------------------------------------------------------------------------
+                               Mission Walkthroughs
+------------------------------------------------------------------------------
+
+---------------------------
+Mission 1: Recruit Training
+---------------------------
+
+Objective: Eliminate the Red army.
+
+Strategy: You can't capture Red's capital with the units you have so you'll have
+to eliminate all Red units. Keep your capture capable units protected by leading
+an advance with your (kick butt) M109's and your M1A1. Red has a surprise M109
+waiting for you on the southern area of this map so just keep your eyes out for
+it.
+
+There are 155mm Howitzers located on Red capital and on the northern peninsula.
+
+Unlocks: Map Recruit Training opened in Free Play
+
+---------------------------------
+Mission 2: Capture the Enemy Base
+---------------------------------
+
+Objective: To take Red's capital
+
+Your Forces: China
+
+Type 69 x 3
+Type 83 x 2
+Type 89
+PGZ-95 x 2
+PLZ-45 x 2
+S-300 PMU
+WZ551 x 2
+Recon Veh
+Infantry x 2
+Supply Truck
+
+Strategy: Take out the MiG that is near your capital. I have done this with a
+single PGZ-95 but chances are it will take both of them to take out the plane.
+If you don't take it out then you might just want to restart the level as it's
+easy enough to do.
+
+Your two infantry and the supply truck are going to be responsible for more than
+you can imagine. They are going to be able to take out most of the helicopters
+at a range of 2 hexes. To be sure, your PGZ's will bear some of the burden but
+they will take a while to get into range.
+
+Once you start your move on Red's capital you can pretty much drive through
+non-stop for most of the helis will be dealt with by that time.
+
+Unlocks: Map Capture the Base in Free Play mode
+         MBT Type 69 (China) in Free Play mode
+         WZ551 (China) in Free Play Mode
+
+--------------------------------
+Mission 3: Long Bridge to Battle
+--------------------------------
+
+Goal: To eliminate Red army or take Red's capital.
+
+Your Forces: Germany
+
+Tornado RECCE
+Leopard 2A6 x 6
+155mm Deployed x 4
+Infantry
+MLRS
+Marder A3 x 3
+PZH 2000 x 4
+Support Tanker
+Truck
+
+Strategy: This mission is easy enough given the amount of firepower and recon
+ability you are given. Just wait until the enemy advances and take them out.
+Make sure you go for the kill because the enemy will have plenty of opportunity
+to repair their units and draw the battle out.
+
+Unlocks: Long Bridge to Battle map in Free Play
+         Leopard 2A6 (Germany)
+         
+
+-----------------------------------------
+Mission 4: Defend Against A Faraway Enemy
+-----------------------------------------
+
+Objective: Either eliminate all of the enemy's strike forces or have at least 16
+Yellow Support Tankers survive until the end of turn 12.
+
+Strategy: Simply set up a good defensive net along the line of yellow supply
+tankers. Your carrier is your biggest weak point but even if it gets sunk (bleh)
+then you will still be okay because your planes have enough fuel to last the 12
+turns. If they need ammo you've got airports near the capital.
+
+Really, with the defensive fire of your Patriots you will have no trouble with
+this mission at all.
+
+Unlocks: F35B (America)
+         Map Faraway Enemy in Free Play
+
+---------------------------------
+Mission 5: Southern Defense Force
+---------------------------------
+
+Objective: Gain $10,000 in funds before Red Army
+
+Strategy: Land your transports on either side of the main island and capture/dig
+in as possible. Move your 155mm guns to the left side of the center of the
+island and dig in. Build Type 90s and Type 99s for an assault on the central
+production area, that is where the money is.
+
+Unlocks: Assault Ship Oosumi (Japan)
+         Attack Heli AH-64 (Japan)
+         Map: Southern Defense Force playable in Free Play
+
+-------------------------------
+Mission 6: Attack From the Deep
+-------------------------------
+
+Objective: Maintain at least 20 BLUE Army units while destroying all RED Army
+submarines.
+
+Your Forces (United Kingdom):  Invincible
+                               Nimrod MR-2 x 3
+                               Lynx Mk. 8 x 10
+                               Supply Ship x 10
+
+Strategy: Make sure you fly low when doing recon so you can see as far as
+possible. Getting that last sub is going to be really hard but you can count on
+it going for wherever the enemy recon plane sees you (other than your capital,
+of course).
+
+Unlocks: Naval Helicopter Lynx Mk. 8 (UK)
+         Naval Helicopter Lynx Mk. 8 (Germany)
+         Map: Enemies From the Deep playable in Free Play
+         
+--------------------------
+Mission 7: Jungle Fortress
+--------------------------
+
+Objective: Capture RED Army's factory
+
+Your Forces (China): Infantry x 6    
+                     Special Forces x 2    
+                     Type 99 Amph. Tank x 2 
+                     + Production
+
+Strategy: Perform an assault on the factory with all of your infantry from
+different directions keeping in mind the detection range of the facilities
+surrounding it as they have artillery on them. If you can take out even one of
+the artillery and have an infantry unit to slip into the factory then you beat
+the mission by capturing it.
+
+Unlocks: Type 99 Amph. Lt. Tank (China)
+         Map: Jungle Fortress playable in Free Play
+         
+------------------------------------------------
+Mission 8: Capture in the Vermillion Archipelago
+------------------------------------------------
+
+Objective: Sink all of RED Army's warships.
+
+Your Forces (USA): 155mm Howitzer x 2
+                   CH-47 Chinook x 2
+                   F-22 Raptor x 1
+                   M-1 Abrams x 3
+                   M109 x 2
+                   M-113 x 1
+                   M3 Bradley x 1
+                   P-3C Orion x 1
+                   RAH-66 Comanche x 1
+                   RF/A-18 x 1
+                   S-3B Viking x 1
+                   SH-60 Sea Hawk x 2
+                   UH-60 x 1
+                   V-22 Osprey x 2
+                   Avenger x 1
+                   San Antonio x 1
+                   Seawolf x 1
+                   Zumwalt x 4
+                   Ticonderoga x 2
+                   Patriot x 3
+                   HAWK x 2
+                   Virginia x 3
+                   Paratroopers x 3
+                   Recon
+                   Special Forces x 3
+                   
+Tactical Considerations: Your search craft will run out of fuel easily and thus
+you need to keep a close eye on that. There are immense areas to search so this
+is very important.
+
+Your Howitzer's have minimal sea firepower so they'll likely sit unused.
+
+You've got two Chinooks which are used to transport units. One of them has an
+Avenger and Paratroopers, the other has two Paratroopers. At the very least you
+should take the Southern Island (3 neutral cities, a neutral port and a neutral
+airfield make it a good though not great strategic win). Your long term goal if
+the mission lasts that long will be to take the central island as well. Most
+importantly, if you land your Chinooks and unload your ground units they will
+get to move on that turn, if you drop them then they will have to wait a turn to
+move.
+
+Also pre-loaded are your Ospreys. While one Osprey has the range to make it to
+the central island you will want to exercise a little caution as that island is
+defended and will require a more coordinated assault.
+
+Your F-22 will be your primary anti-air platform but you'll have to be wary of
+it's fuel level. Use it to cover your P-3C which will act as a terrific search
+plane.
+
+Strategy:
+
+Your army starts in the southeast, the enemy is in the northwest. You have a lot
+of coverage, your anti-air support comes in the form of two jets and a couple of
+ships.
+
+Unlocks: Destroyer Zumwalt (USA)
+         Submarine Virginia (USA)
+         Map: Vermillion Keys in Free Play
+
+Spoilers
+********
+
+Starting locations of some of RED army's ships on Blue turn 1:
+
+    X19 Y36 - Kiro  (X)
+    X20 Y30 - Neustrashimyy
+    X25 Y28 - Neustrashimyy
+    X27 Y29 - An-124 Ruslan
+    X30 Y30 - 2S6M AA Guns
+    X38 Y24 - MiG-25R
+    X40 Y14 - Antiaircraft Artillery
+    
+
+-----------------------
+Mission 9: Hot and Cold
+-----------------------
+
+Objective: Capture RED Army's capital.
+
+Your Forces (USA): AMX-10P x 3 (capture)
+                   AMX-10RC x 4
+                   AMX-30B2
+                   AMX-30GCT x 3
+                   AU-F2 x 7 (move and fire)
+                   MLRS    
+                   SA-342 Gazelle x 2
+                   Foudre x 5
+                   Leclerc x 5
+                   Special Forces
+                   Support Tanker x 2
+
+Strategy: Pretty easy overall, it will be slow going to start because of the
+snow but just play the level a bit cautiously until you can recon and artillery
+shell their capital.
+
+I believe the enemy can produce units on this map so capturing the capital is
+essential.
+
+Unlocks: Map: Hot and Cold in Free Play
+              Foudre Assault Ship (France)
+              AU-F-2 SPH (France)
+
+---------------------------
+Mission 10: Border Incident
+---------------------------
+
+Objective: Protect BLUE capital for 12 turns.
+
+Your Forces (USA): 155mm Deployed x 4
+                   ATACMS x 4
+                   EA-6B Prowler x 2
+                   F-35A x 2
+                   FB-22 x 2
+                   KC-135 x 2
+                   M-109A6 x 8
+                   M-3 Bradley x 3
+                   MLRS
+                   RF/A-18 x 2
+                   Recon Veh x 2
+                   Supply Truck x 2
+
+Strategy: Don't miss the units you have on the southern corners and
+south-central section of this map. You have a ton of firepower at your disposal,
+know it, love it, use it.
+
+Unlocks: F-35A (USA)
+         FB-22 (USA)
+         Border Incident Map in Free Play
+
+-------------------------------
+Mission 11: Hot Sands Offensive
+-------------------------------
+
+Objective: Capture 50 facilities before RED army wipes YELLOW army off the map.
+
+Your Forces (Israel): A-4N Skyhawk x 2
+                      CH-53 x 4 (Transport)
+                      F-15 Baz x 3
+                      F-15I Raam x 2
+                      F-16 Barak x 3
+                      F-4E-2000 x 2
+                      M-113 x 1 (Cap)
+                      RF-4 PhantomII x 2
+                      Kfir C7 x 2
+                      Truck x 2
+                      Hughes 500MD (Lahatoot) x 4
+                      Merkava Mk. 3 x 2
+                      Merkava Mk. 4 x 6
+                      Ramta RBY x 3
+                      Paratroopers x 8 (Cap)
+                      Infantry x 2 (Cap)
+                      Supply Truck x 2
+
+Strategy:
+
+Unlocks: Hughes 500MD (Lahatoot) (Israel)
+         Merkava Mk. 4 (Israel)
+         Hot Sands Offensive Map in Free Play
+
+-----------------------
+Mission 12: Sea Monster
+-----------------------
+
+Objective: Take out the enemy Lun craft.
+
+
+Your Forces (French): 155mm Deployed
+                      AS-532 Horizon x 5
+                      KC-135FR x 2
+                      Atlantic 2 x 4
+                      Tiger x 6
+                      Lafayette x 2
+                      Support Tanker x 3
+
+Strategy: This mission is a pain in the butt, no bones about it, lol. Anyway,
+use your Horizons for most of the searching and your Tigers for attack. Your
+Atlantics do pack quite a punch but their range is limited. Use the KC-135 FRs
+for mid-air refueling if you must.
+
+You will be forced to crawl along the waterways near RED capital to get the last
+couple of Luns. I believe I counted five of them total with 3 of them in the
+outer sea area and two in the waterways. This puts you in range of some pretty
+heavy anti-air cover so just take your hits and shots carefully and watch your
+ranges. Your Horizons can search about as far as your Tigers can travel. Most
+often you'll find the enemy Luns moving INTO your search range rather than you
+searching and destroying.
+
+Unlocks: AS-532 Horizon (France)
+         Sea Monster Map available in Free Play
+         
+
+
+-------------------------------
+Mission 13: The Lost World
+-------------------------------
+
+Objective: Get one of the Light Armored Vehicles to BLUE capital by turn 99.
+
+Rewards: Light Armored Vehicle (Japan)
+         Lost World Map available in Free Play
+
+Strategy: This one is a challenge. To do this effectively you'll need to move
+your small group with the LAVs in it through hostile territory with one of the
+two enemies sporting Leopard tanks. If you're unfamiliar with those then this
+mission will indoctrinate you into their awesome firepower and high defense.
+
+You can time the advance of the LAV's through the front. Watch the cycle of
+attack/retreat and try to slip through when Red pulls their Leopard's back from
+the front. Chances are your group WILL get shattered but all you need is for one
+of those LAV's to make it to blue captial. Your small force near your capital
+can advance across the bridge and prepare the road as well.
+
+-------------------------------
+Mission 14: The Oil Emperor
+-------------------------------
+
+OBJECTIVES: Maintain at least 15 BLUE facilities while depleting RED Army's
+            facilities to 15 or less within 20 turns.
+
+
+------------------------------------------------------------------------------
+                               Campaign Walthroughs
+------------------------------------------------------------------------------
+Herein I will attempt to describe and give general strategies to each Campaign
+Mode battle. While my strategies may not be the best I hope, in the future, to
+add strategies submitted by other players. Credit is, of course, given to those
+who help others out here. The grades listed after each battle's title are the
+grades I received for that battle. This should encourage you to a) do better and
+b) send in your strategy :)
+
+Each campaign has multiple battles, each is listed along with the starting
+units, goal, strategy, and unlock items (for beating said battle).
+
+Here is a map of Campaign Battles showing the branches througout.
+
+
+    Campaign 1_____________________
+                            01: First Battlefield
+                                      |
+                                      |
+                                02: Graduation
+                                      |
+    Campaign 2 ____________________   |
+                            03: East Mediterranean War
+                                      |
+                         ___________________________
+                        |                           |
+                   04: ??????               05: Holy Warriors
+                            
+                            
+
+                              -----------------
+                                 Campaign 1:
+
+                       Officer Candidate (2 Battles)
+                              -----------------
+
+01: First Battlefield (S)
+---------------------
+Your Units:
+
+    Type 87
+    Type 89
+    Type 90 x 4
+    Type 99 x 2
+    MLRS
+    Infantry x 2
+    Supply Truck
+
+Goal: Eliminate all opposition or capture the enemy's capital.
+
+Strategy: It's pretty easy to S-Rank this mission. I took a plodding 23 turns to
+beat it and still S-Ranked it without losing a single unit. The enemy will
+provide minimal opposition however he does have some good scouting units and
+ranged artillery so just stay on your toes. The M-1 tanks can also be a bother
+but just keep your Type 87 on the lookout.
+
+The enemy will try to sneak through the mountain pass by travelling slightly
+south of the road. If you keep your Type 87 looking out for that pass you should
+be fine, just be aware that if the enemy sights you he has a small battery of
+M109's ready to pound you.
+
+Make sure you get at least a little experience for ALL your units here and this
+includes the supply truck (have it finish off an infantry unit or something).
+This will allow you to save those units for use in the next campaign battle!
+
+Unlock: First Battlefield Map in Free Play mode.
+        New campaign level: Graduation
+
+02: Graduation (A)
+--------------
+Your Units
+
+    Type 87
+    Type 89
+    Type 90 x 2
+    AH-1S Cobra x 2 (Pack 1)
+    F-2 x 2 (Pack 1)
+    MLRS
+    Infantry x 2
+
+Goal: Eliminate all Red opposition or capture Red's capital.
+
+Strategy: Use your air units to act as recon. Watch out for the enemy F-16s and
+be prepared to work in cycles replenishing your aircraft's ammo. Red army has
+significantly more firepower than they did in the previous campaign mission but
+nothing you can't handle. It is possible to make it through this without losing
+a single whole unit (though the loss of sub units is inevitable).
+
+I recommend getting experience for ALL your units in the previous campaign
+mission as you'll have the ability to bring them out here. You don't start with
+a supply truck so having the one saved from the previous mission will help
+immensely.
+
+Unlock: Graduation Map in Free Play mode
+        Type 61 SP (Japan)
+        Type 74 SP1 (Japan)
+        
+                    END OFFICER CANDIDATE CAMPAIGN - Credits roll
+                            ------------------------------
+        
+                               ---------------------
+                                    Campaign 2:
+
+                               The Mediterranean War
+                               ---------------------
+
+03: Taking the Bosporus
+-----------------------
+Your Units (Russia)
+
+    2S19 MSTA-S x 3
+    2S6M Tunguska x 2
+    9A52 Smerch
+    BMD-3 x 2
+    BMP-3 x 2
+    Ka-52 Hokum B (Pack 1)
+    Mi-17 Hip H x 2 (Pack 1)
+    Mi-24 Hind x 2 (Pack 1)
+    Su-33 Flanker x 2 (Pack 1)
+    Su-34 x 2
+    Su-35
+    T-72 x 2
+    T-90 x 5
+    Ivan Rogrov x 2
+    Udaloy x 2
+    Slava
+    Tor M1 ADS x 2
+    Infantry x 3
+    Supply Truck x 2
+    
+    No reinforcements
+
+Goal: Elmination of Red's army or capture of Red's capital.
+
+Strategy: 
+
+Unlocks: Overtaking the Bosporus Map in Free Play Mode
+
+
+B+ Got CAMPAIGN 05
+
+
+05: Holy Warriors
+-----------------
+Your Units (Russia)
+    
+    2S19 MSTA-S x 2
+    9A52 Smerch x 2
+    BMD-3
+    BTR-T
+    Ka-50 Hokum
+    Su-33 Flanker x 2
+    T-80 x 2
+    Admirial Kuznetsov
+    Ivan Rogrov x 3
+    Tor M1 ADS x 1
+    Special Ops x 2
+    Supply Truck
+     
+
+
+Campaign Battle 11: The Netherlands
+
+Your Units:
+
+AS90 Braveheart x 8
+Challenger 1 x 5
+Gazelle x 1
+Harrier GR7 x 2
+Infantry x 2
+Jaguar GR3 x 2
+Lynx Mk.9
+Sabre x 3
+Saxon x 2
+Starstreak SP HVM x 2
+Stryker x 8
+Support Tanker x 1
+
+
+------------------------------------------------------------------------------
+                                 The Tutorial Mode
+------------------------------------------------------------------------------
+
+The following tutorials are presented in Tutorial Mode. You can, for the most
+part, get through them by pressing O repeatedly however at many points you'll
+need to move a specific unit to a specific location. At other times you'll need
+to select a particular command. In such cases the necessary choices are clearly
+indicated though for commands you'll need to match what you see in the
+instructions (Kanji) to what is in the command list.
+
+Playing through the tutorial unlocks the Tutorial Map in Free Play mode.
+
+1-1 - Production, Land
+1-2 - Production, Air
+1-3 - Production, Sea
+1-4 - Production
+2-1 - Movement, Land
+2-2 - Movement, Air
+2-3 - Movement, Sea
+2-4 - March Movement
+3   - Enemy Detection
+4-1 - Attacking (Indirect)
+4-2 - Attacking (Move & Attack)
+4-3 - Attacking (Megahex)
+5-1 - Transport (Truck)
+5-2 - Transport (Heli)
+5-3 - Paratroopers
+5-4 - Transport (Sea)
+5-5 - Transport (Carriers)
+6-1 - Repair
+6-2 - Supply Trucks
+6-3 - Supply Ships
+6-4 - Repair of Aircraft
+6-5 - Supply of Aircraft on Carriers
+6-6 - Midair Refueling
+6-7 - Repair/Supply of Ships
+6-8 - Supply of Ships enroute
+6-9 - Reoutfitting Aircraft
+6-10 - Merging Units
+7   - Capturing Facilities
+8   - The Command Menu
+
+
+------------------------------------------------------------------------------
+                                 Unlockables
+------------------------------------------------------------------------------
+
+Tutorial Map in Free Play            Complete Tutorial mode
+First Battlefield Map in Free Play   Complete Campaign Level First Battlefield
+Graduation Map in Free Play          Complete Campaign Level Graduation
+Type 61 SP (Japan)                   Complete Campaign Level Graduation
+Type 74 SP1 (Japan)                  Complete Campaign Level Graduation
+Map Recruit Training in Free Play    Complete Mission 1 in Mission Mode
+Map Capture the Base in Free Play    Complete Mission 2 in Mission Mode
+MBT Type 69 (China) in Free Play     Complete Mission 2 in Mission Mode
+WZ551 (China) in Free Play           Complete Mission 2 in Mission Mode
+Long Bridge to Battle Map in FP      Complete Mission 3 in Mission Mode
+Leopard 2A6 (Germany)                Complete Mission 3 in Mission Mode
+F35B (America)                       Complete Mission 4 in Mission Mode
+Map Faraway Enemy in Free Play       Complete Mission 4 in MIssion Mode
+Assault Ship Oosumi (Japan)          Complete Mission 5 in Mission Mode
+Attack Heli AH-64 (Japan)            Complete Mission 5 in Mission Mode
+Map Get Rick Quick in Free Play      Complete Mission 5 in Mission Mode
+Naval Helicopter Lynx Mk. 8 (UK)     Complete Mission 6 in Mission Mode
+Naval Helicopter Lynx Mk. 8 (Ger.)   Complete Mission 6 in Mission Mode
+Map Enemies From the Deep in Free    Complete Mission 6 in Mission Mode
+Type 99 Amph. Lt. Tank (China)       Complete Mission 7 in Mission Mode
+Map Jungle Fortress  in Free Play    Complete Mission 7 in Mission Mode
+Destroyer Zumwalt (USA)              Complete Mission 8 in Mission Mode
+Submarine Virginia (USA)             Complete Mission 8 in Mission Mode
+Map Vermillion Keys in Free Play     Complete Mission 8 in Mission Mode
+Map Hot and Cold in Free Play        Complete Mission 9 in Mission Mode
+Foudre Assault Ship (France)         Complete Mission 9 in Mission Mode
+AU-F-2 SPH (France)                  Complete Mission 9 in Mission Mode
+
+
+
+
+
+EOF
