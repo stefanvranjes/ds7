@@ -19,8 +19,29 @@ namespace DS7.Grid
         [Tooltip("Outer radius of each hex tile (center to corner).")]
         public float hexSize = 1f;
 
-        [Header("Prefab")]
-        public HexCell cellPrefab;
+        [System.Serializable]
+        public struct TerrainPrefabMapping
+        {
+            public TerrainType type;
+            public HexCell prefab;
+        }
+
+        [Header("Prefabs")]
+        public TerrainPrefabMapping[] cellPrefabs;
+        public HexCell fallbackCellPrefab;
+
+        private HexCell GetPrefabForTerrain(TerrainType type)
+        {
+            if (cellPrefabs != null)
+            {
+                foreach (var mapping in cellPrefabs)
+                {
+                    if (mapping.type == type && mapping.prefab != null)
+                        return mapping.prefab;
+                }
+            }
+            return fallbackCellPrefab;
+        }
 
         [Header("Default Terrain")]
         public DS7.Data.TerrainData defaultTerrain;
@@ -57,9 +78,12 @@ namespace DS7.Grid
                     var coords  = HexCoordinates.FromOffsetCoords(col, row);
                     var worldPos = coords.ToWorldPosition(hexSize);
 
-                    var cell = Instantiate(cellPrefab, worldPos, Quaternion.identity, transform);
+                    var terrain = terrainOverride ?? defaultTerrain;
+                    var prefab = GetPrefabForTerrain(terrain != null ? terrain.terrainType : TerrainType.Plain);
+
+                    var cell = Instantiate(prefab, worldPos, Quaternion.identity, transform);
                     cell.name = $"Hex_{col}_{row}";
-                    cell.Initialize(coords, terrainOverride ?? defaultTerrain);
+                    cell.Initialize(coords, terrain);
                     _cells[col, row] = cell;
                 }
             }

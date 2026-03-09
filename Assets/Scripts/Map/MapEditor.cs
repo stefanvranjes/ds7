@@ -5,9 +5,7 @@ using DS7.Grid;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
 
 namespace DS7.Map
 {
@@ -37,8 +35,13 @@ namespace DS7.Map
         [Tooltip("1 = single hex, 7 = megahex (centre + ring)")]
         public int brushRadius = 1;
 
+        [Header("Camera Controls")]
+        public float panSpeed = 20f;
+        public float rotationSpeed = 300f;
+
         [Header("References")]
         public HexGrid grid;
+        public Camera targetCamera;
         public LayerMask hexLayer;
 
         // ── History for Undo ──────────────────────────────────────────────────
@@ -57,15 +60,17 @@ namespace DS7.Map
         private void Awake()
         {
             if (grid == null) grid = HexGrid.Instance;
+            if (targetCamera == null) targetCamera = Camera.main;
         }
 
         // ── Update ────────────────────────────────────────────────────────────
         private void Update()
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
             HandleZoom();
-            HandleCameraPan();
+            HandleCameraMovement();
+            HandleCameraRotation();
 
             if (Input.GetMouseButton(0))        TryPaint(sample: false);
             if (Input.GetMouseButtonDown(1))    TryPaint(sample: true);
@@ -77,7 +82,7 @@ namespace DS7.Map
         // ── Paint / Sample ────────────────────────────────────────────────────
         private void TryPaint(bool sample)
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var ray = targetCamera.ScreenPointToRay(Input.mousePosition);
             if (!Physics.Raycast(ray, out var hit, 500f, hexLayer)) return;
 
             var rootCell = hit.collider.GetComponentInParent<HexCell>();
@@ -164,23 +169,77 @@ namespace DS7.Map
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (Mathf.Abs(scroll) < 0.001f) return;
-            Camera.main.orthographicSize = Mathf.Clamp(
-                Camera.main.orthographicSize - scroll * 5f, 2f, 80f);
+            
+            if (targetCamera.orthographic)
+            {
+                targetCamera.orthographicSize = Mathf.Clamp(
+                    targetCamera.orthographicSize - scroll * 5f, 2f, 80f);
+            }
+            else
+            {
+                targetCamera.transform.position += targetCamera.transform.forward * scroll * 15f;
+            }
         }
 
-        private Vector3 _panOrigin;
-        private bool    _panning;
+        private Plane   _groundPlane = new Plane(Vector3.up, Vector3.zero);
+        private Vector3 _panOriginWorld;
+        private bool    _rotating;
 
-        private void HandleCameraPan()
+        private void HandleCameraMovement()
         {
-            if (Input.GetMouseButtonDown(2)) { _panOrigin = Input.mousePosition; _panning = true; }
-            if (Input.GetMouseButtonUp(2))   _panning = false;
+            Vector3 movement = Vector3.zero;
 
-            if (!_panning) return;
-            Vector3 delta = Camera.main.ScreenToWorldPoint(Input.mousePosition)
-                          - Camera.main.ScreenToWorldPoint(_panOrigin);
-            Camera.main.transform.position -= delta;
-            _panOrigin = Input.mousePosition;
+            // Get rotation only on the Y axis
+            Quaternion yRotation = Quaternion.Euler(0, targetCamera.transform.eulerAngles.y, 0);
+            
+            Vector3 forward = yRotation * Vector3.forward;
+            Vector3 right = yRotation * Vector3.right;
+
+            if (Input.GetKey(KeyCode.W)) movement += forward;
+            if (Input.GetKey(KeyCode.S)) movement -= forward;
+            if (Input.GetKey(KeyCode.A)) movement -= right;
+            if (Input.GetKey(KeyCode.D)) movement += right;
+
+            if (movement != Vector3.zero)
+            {
+                targetCamera.transform.position += movement.normalized * panSpeed * Time.deltaTime;
+                // Debug.Log($"Pan: {targetCamera.transform.position}");
+            }
+        }
+
+        private void HandleCameraRotation()
+        {
+            if (Input.GetMouseButtonDown(0)) 
+            { 
+                Ray ray = new Ray(targetCamera.transform.position, targetCamera.transform.forward);
+                if (_groundPlane.Raycast(ray, out float enter))
+                {
+                    _panOriginWorld = ray.GetPoint(enter);
+                }
+                else
+                {
+                    // Fallback if looking up/away from the ground
+                    _panOriginWorld = new Vector3(targetCamera.transform.position.x, 0, targetCamera.transform.position.z);
+                }
+                _rotating = true;
+            }
+            if (Input.GetMouseButtonUp(0))   _rotating = false;
+
+            if (!_rotating) return;
+            
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+            
+            if (Mathf.Abs(mouseX) > 0.001f)
+            {
+                targetCamera.transform.RotateAround(_panOriginWorld, Vector3.up, mouseX * rotationSpeed * Time.deltaTime);
+            }
+            
+            if (Mathf.Abs(mouseY) > 0.001f)
+            {
+                // Rotate vertically around the camera's local right axis relative to the pivot
+                targetCamera.transform.RotateAround(_panOriginWorld, targetCamera.transform.right, -mouseY * rotationSpeed * Time.deltaTime);
+            }
         }
 
         // ── Map Save / Load ───────────────────────────────────────────────────

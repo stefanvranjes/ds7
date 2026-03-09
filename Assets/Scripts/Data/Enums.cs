@@ -38,11 +38,11 @@ namespace DS7.Data
     // ── Terrain ───────────────────────────────────────────────────────────────
     public enum TerrainType
     {
-        Plain, Road, Desert, Wasteland, Wetland,
+        Plain, Road, River, Desert, Wasteland, Wetland,
         Grove, Forest, Hill, Mountain, Peaks,
         Lake, Shallows, Sea, DeepSea,
         Bridge,
-        SnowField, SnowyGrove, SnowyForest, SnowyHill, SnowyPeaks,
+        SnowField, SnowyGrove, SnowyForest, SnowyHill, SnowyMountain, SnowyPeaks,
         // Facilities
         Capital, City, Airport, Port, Factory, Refinery
     }

@@ -20,7 +20,7 @@ namespace DS7.Grid
             Z = z;
         }
 
-        // ── Direction offsets (flat-top hex) ──────────────────────────────────
+        // ── Direction offsets (pointy-top hex) ────────────────────────────────
         private static readonly HexCoordinates[] Directions = {
             new( 1, 0), new( 1,-1), new( 0,-1),
             new(-1, 0), new(-1, 1), new( 0, 1)
@@ -45,27 +45,27 @@ namespace DS7.Grid
 
         public int DistanceTo(HexCoordinates other) => Distance(this, other);
 
-        // ── Offset conversion (even-q flat-top) ──────────────────────────────
+        // ── Offset conversion (even-r pointy-top) ──────────────────────────────
         public static HexCoordinates FromOffsetCoords(int col, int row)
         {
-            int x = col;
-            int z = row - (col - (col & 1)) / 2;
+            int x = col - (row + (row & 1)) / 2;
+            int z = row;
             return new HexCoordinates(x, z);
         }
 
         public Vector2Int ToOffsetCoords()
         {
-            int col = X;
-            int row = Z + (X - (X & 1)) / 2;
+            int row = Z;
+            int col = X + (row + (row & 1)) / 2;
             return new Vector2Int(col, row);
         }
 
-        // ── World position (flat-top hexes) ──────────────────────────────────
+        // ── World position (pointy-top hexes) ────────────────────────────────
         /// <summary>Converts cube coordinates to world XZ position given hex size.</summary>
         public Vector3 ToWorldPosition(float hexSize)
         {
-            float wx = hexSize * 1.5f * X;
-            float wz = hexSize * Mathf.Sqrt(3f) * (Z + X * 0.5f);
+            float wx = hexSize * Mathf.Sqrt(3f) * (X + Z * 0.5f);
+            float wz = hexSize * 1.5f * Z;
             return new Vector3(wx, 0f, wz);
         }
 
