@@ -16,6 +16,8 @@ namespace DS7.Data
         [ColorUsage(false)] public Color mapColor  = Color.green;
         [Tooltip("Tile tint colour shown in the Map Editor and on the grid.")]
         [ColorUsage(false)] public Color editorTint = Color.white;
+        [Tooltip("The vertical height at which highlights should appear on this terrain.")]
+        public float visualHeight = 0.5f;
 
         [Header("Facility")]
         public bool isFacility;

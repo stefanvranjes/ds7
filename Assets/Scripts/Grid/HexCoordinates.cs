@@ -45,6 +45,55 @@ namespace DS7.Grid
 
         public int DistanceTo(HexCoordinates other) => Distance(this, other);
 
+        // ── Line Drawing ──────────────────────────────────────────────────────
+        public static float Lerp(float a, float b, float t) => a + (b - a) * t;
+
+        public static HexCoordinates Round(float x, float y, float z)
+        {
+            int rx = Mathf.RoundToInt(x);
+            int ry = Mathf.RoundToInt(y);
+            int rz = Mathf.RoundToInt(z);
+
+            float xDiff = Mathf.Abs(rx - x);
+            float yDiff = Mathf.Abs(ry - y);
+            float zDiff = Mathf.Abs(rz - z);
+
+            if (xDiff > yDiff && xDiff > zDiff)
+                rx = -ry - rz;
+            else if (yDiff > zDiff)
+                ry = -rx - rz;
+            else
+                rz = -rx - ry;
+
+            return new HexCoordinates(rx, rz);
+        }
+
+        public static HexCoordinates Lerp(HexCoordinates a, HexCoordinates b, float t)
+        {
+            return Round(
+                Lerp(a.X + 1e-6f, b.X + 1e-6f, t), 
+                Lerp(a.Y + 1e-6f, b.Y + 1e-6f, t), 
+                Lerp(a.Z - 2e-6f, b.Z - 2e-6f, t)
+            );
+        }
+
+        public static System.Collections.Generic.List<HexCoordinates> GetLine(HexCoordinates a, HexCoordinates b)
+        {
+            int N = Distance(a, b);
+            var results = new System.Collections.Generic.List<HexCoordinates>();
+            if (N == 0)
+            {
+                results.Add(a);
+                return results;
+            }
+
+            for (int i = 0; i <= N; i++)
+            {
+                results.Add(Lerp(a, b, 1.0f / N * i));
+            }
+            return results;
+        }
+
         // ── Offset conversion (even-r pointy-top) ──────────────────────────────
         public static HexCoordinates FromOffsetCoords(int col, int row)
         {

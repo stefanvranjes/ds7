@@ -81,15 +81,14 @@ namespace DS7.Grid
 
         public void SetHighlight(HighlightMode mode)
         {
-            if (_meshRenderer == null) return;
-            _meshRenderer.material.color = mode switch
-            {
-                HighlightMode.MoveRange   => new Color(0.2f, 0.8f, 0.2f, 0.5f),   // green
-                HighlightMode.AttackRange => new Color(0.8f, 0.2f, 0.2f, 0.5f),   // red
-                HighlightMode.Selected    => new Color(1.0f, 1.0f, 0.0f, 0.7f),   // yellow
-                HighlightMode.Enemy       => new Color(0.9f, 0.4f, 0.1f, 0.5f),   // orange
-                _                         => Color.white
-            };
+            // Highlights are now managed by HexGrid pooling and MapEditor positioning.
+            // This method can be used for material color fallbacks if desired,
+            // or left empty if the pooling handles everything.
+        }
+
+        public void UpdateHighlightPositions()
+        {
+            // No longer needed here as MapEditor positions pooled objects in world space.
         }
 
         // ── Map-Editor Helpers ────────────────────────────────────────────────

@@ -15,6 +15,10 @@ namespace DS7.Grid
         public int width  = 20;
         public int height = 20;
 
+        [Header("Layers")]
+        [Tooltip("Layer assigned to every hex cell to ensure Raycasts hit in the MapEditor.")]
+        public int hexLayerIndex = 0; // Default to Default layer
+
         [Header("Hex Size")]
         [Tooltip("Outer radius of each hex tile (center to corner).")]
         public float hexSize = 1f;
@@ -29,6 +33,18 @@ namespace DS7.Grid
         [Header("Prefabs")]
         public TerrainPrefabMapping[] cellPrefabs;
         public HexCell fallbackCellPrefab;
+
+        [Header("Highlight Prefabs")]
+        public GameObject moveRangeHighlightPrefab;
+        public GameObject attackRangeHighlightPrefab;
+        public GameObject selectedHighlightPrefab;
+        public GameObject enemyHighlightPrefab;
+
+        [Header("Highlight Root")]
+        public Transform highlightRoot;
+
+        private readonly Dictionary<HexCell.HighlightMode, List<GameObject>> _highlightPool = new();
+        private readonly List<GameObject> _activeHighlights = new();
 
         private HexCell GetPrefabForTerrain(TerrainType type)
         {
@@ -83,9 +99,122 @@ namespace DS7.Grid
 
                     var cell = Instantiate(prefab, worldPos, Quaternion.identity, transform);
                     cell.name = $"Hex_{col}_{row}";
+                    SetLayerRecursive(cell.gameObject, hexLayerIndex);
                     cell.Initialize(coords, terrain);
+                    
                     _cells[col, row] = cell;
                 }
+            }
+        }
+
+        public GameObject GetHighlight(HexCell.HighlightMode mode)
+        {
+            if (mode == HexCell.HighlightMode.None) return null;
+
+            if (!_highlightPool.ContainsKey(mode))
+                _highlightPool[mode] = new List<GameObject>();
+
+            GameObject highlight = null;
+            if (_highlightPool[mode].Count > 0)
+            {
+                highlight = _highlightPool[mode][0];
+                _highlightPool[mode].RemoveAt(0);
+            }
+            else
+            {
+                var prefab = mode switch
+                {
+                    HexCell.HighlightMode.MoveRange   => moveRangeHighlightPrefab,
+                    HexCell.HighlightMode.AttackRange => attackRangeHighlightPrefab,
+                    HexCell.HighlightMode.Selected    => selectedHighlightPrefab,
+                    HexCell.HighlightMode.Enemy       => enemyHighlightPrefab,
+                    _                                 => null
+                };
+
+                if (prefab != null)
+                {
+                    highlight = Instantiate(prefab, highlightRoot != null ? highlightRoot : transform);
+                }
+            }
+
+            if (highlight != null)
+            {
+                highlight.SetActive(true);
+                _activeHighlights.Add(highlight);
+            }
+            return highlight;
+        }
+
+        public void ReturnAllHighlights()
+        {
+            foreach (var h in _activeHighlights)
+            {
+                if (h == null) continue;
+                h.SetActive(false);
+                
+                // Identify which pool this belongs to
+                // we can store a script on the prefab to identify its mode, 
+                // or just check name/prefab reference. 
+                // For now, let's assume we can determine it or use a default list to clear.
+            }
+            // A better way is to track which mode each active highlight belongs to.
+            // Let's refine this in a second pass if needed, but for now we'll just 
+            // clear the active list and we might need to recreate pools if we don't know the mode.
+            // Actually, let's store them by mode in active highlights too.
+        }
+
+        // Refined pooling structure
+        private readonly Dictionary<GameObject, HexCell.HighlightMode> _activeHighlightModes = new();
+
+        public void ReturnAllActiveHighlights()
+        {
+            foreach (var pair in _activeHighlightModes)
+            {
+                var h = pair.Key;
+                var mode = pair.Value;
+                if (h != null)
+                {
+                    h.SetActive(false);
+                    if (!_highlightPool.ContainsKey(mode)) _highlightPool[mode] = new List<GameObject>();
+                    _highlightPool[mode].Add(h);
+                }
+            }
+            _activeHighlightModes.Clear();
+            _activeHighlights.Clear();
+        }
+
+        public GameObject GetHighlightFromPool(HexCell.HighlightMode mode)
+        {
+            GameObject h = GetHighlight(mode);
+            if (h != null) _activeHighlightModes[h] = mode;
+            return h;
+        }
+
+        private void InstantiateHighlights(HexCell cell)
+        {
+            // Removed for pooling logic
+        }
+
+        public void ReturnHighlight(GameObject highlight, HexCell.HighlightMode mode)
+        {
+            if (highlight == null) return;
+            highlight.SetActive(false);
+            
+            _activeHighlightModes.Remove(highlight);
+            _activeHighlights.Remove(highlight);
+
+            if (!_highlightPool.ContainsKey(mode))
+                _highlightPool[mode] = new List<GameObject>();
+            
+            _highlightPool[mode].Add(highlight);
+        }
+
+        private void SetLayerRecursive(GameObject obj, int layer)
+        {
+            obj.layer = layer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursive(child.gameObject, layer);
             }
         }
 
@@ -94,6 +223,56 @@ namespace DS7.Grid
             foreach (Transform child in transform)
                 Destroy(child.gameObject);
             _cells = null;
+        }
+
+        public HexCell ReplaceCell(HexCell oldCell, DS7.Data.TerrainData newTerrain)
+        {
+            if (oldCell == null) return null;
+
+            var coords = oldCell.Coordinates;
+            var offset = coords.ToOffsetCoords();
+            int col = offset.x;
+            int row = offset.y;
+
+            var oldType = oldCell.Terrain != null ? oldCell.Terrain.terrainType : TerrainType.Plain;
+            var newType = newTerrain != null ? newTerrain.terrainType : TerrainType.Plain;
+
+            if (oldType == newType)
+            {
+                oldCell.SetTerrain(newTerrain);
+                return oldCell;
+            }
+
+            var prefab = GetPrefabForTerrain(newType);
+            var worldPos = oldCell.transform.position;
+
+            var newCell = Instantiate(prefab, worldPos, Quaternion.identity, transform);
+            newCell.name = $"Hex_{col}_{row}";
+            SetLayerRecursive(newCell.gameObject, hexLayerIndex);
+
+            newCell.Initialize(coords, newTerrain);
+            newCell.Owner = oldCell.Owner;
+            newCell.facilityHealth = oldCell.facilityHealth;
+
+            foreach (var alt in System.Enum.GetValues(typeof(AltitudeLayer)))
+            {
+                AltitudeLayer layer = (AltitudeLayer)alt;
+                if (oldCell.IsOccupied(layer))
+                {
+                    newCell.TryPlace(oldCell.GetUnit(layer), layer);
+                }
+            }
+
+            _cells[col, row] = newCell;
+            
+            newCell.RefreshVisuals();
+
+            if (Application.isPlaying)
+                Destroy(oldCell.gameObject);
+            else
+                DestroyImmediate(oldCell.gameObject);
+
+            return newCell;
         }
 
         // ── Cell Access ───────────────────────────────────────────────────────
@@ -262,23 +441,31 @@ namespace DS7.Grid
         // ── Highlight Helpers ─────────────────────────────────────────────────
         public void ClearAllHighlights()
         {
-            if (_cells == null) return;
-            foreach (var cell in _cells)
-                cell?.SetHighlight(HexCell.HighlightMode.None);
+            ReturnAllActiveHighlights();
         }
 
         public void HighlightMovementRange(MovementResult range)
         {
             foreach (var cell in range.StandardRange)
-                cell.SetHighlight(HexCell.HighlightMode.MoveRange);
+                ApplyPooledHighlight(cell, HexCell.HighlightMode.MoveRange);
             foreach (var cell in range.HighSpeedRange)
-                cell.SetHighlight(HexCell.HighlightMode.AttackRange); // red = high-speed
+                ApplyPooledHighlight(cell, HexCell.HighlightMode.AttackRange); // red = high-speed
         }
 
         public void HighlightAttackTargets(List<HexCell> targets)
         {
             foreach (var cell in targets)
-                cell.SetHighlight(HexCell.HighlightMode.Enemy);
+                ApplyPooledHighlight(cell, HexCell.HighlightMode.Enemy);
+        }
+
+        private void ApplyPooledHighlight(HexCell cell, HexCell.HighlightMode mode)
+        {
+            var obj = GetHighlightFromPool(mode);
+            if (obj != null && cell != null)
+            {
+                float height = (cell.Terrain != null) ? cell.Terrain.visualHeight : 0.5f;
+                obj.transform.position = cell.transform.position + Vector3.up * height;
+            }
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DS7.Data;
 using DS7.Grid;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
@@ -23,9 +24,11 @@ namespace DS7.Map
     {
         // ── Paint Mode ────────────────────────────────────────────────────────
         public enum BrushMode { Terrain, Nation, Facility, Erase }
+        public enum BrushShape { Point, Line, Box }
 
         [Header("Mode")]
         public BrushMode brushMode = BrushMode.Terrain;
+        public BrushShape brushShape = BrushShape.Point;
 
         [Header("Brush")]
         public DS7.Data.TerrainData selectedTerrain;
@@ -34,6 +37,16 @@ namespace DS7.Map
         [Range(1, 7)]
         [Tooltip("1 = single hex, 7 = megahex (centre + ring)")]
         public int brushRadius = 1;
+
+        [Header("UI Integration")]
+        public List<TerrainToggleMapping> terrainToggles;
+
+        [Serializable]
+        public struct TerrainToggleMapping
+        {
+            public Toggle toggle;
+            public DS7.Data.TerrainData terrain;
+        }
 
         [Header("Camera Controls")]
         public float panSpeed = 20f;
@@ -50,6 +63,9 @@ namespace DS7.Map
 
         // ── State ─────────────────────────────────────────────────────────────
         private HexCell _lastPainted;
+        private HexCell _hoveredCell;
+        private HexCell _dragStartCell;
+        private readonly Dictionary<HexCell, GameObject> _activeHighlightObjects = new();
 
         // ── Map I/O ───────────────────────────────────────────────────────────
         [Header("Map Serialisation")]
@@ -71,39 +87,184 @@ namespace DS7.Map
             HandleZoom();
             HandleCameraMovement();
             HandleCameraRotation();
+            UpdateSelectedTerrainFromToggles();
 
-            if (Input.GetMouseButton(0))        TryPaint(sample: false);
-            if (Input.GetMouseButtonDown(1))    TryPaint(sample: true);
+            UpdateHoverAndHighlight();
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                _dragStartCell = _hoveredCell;
+            }
+
+            if (brushShape == BrushShape.Point)
+            {
+                if (Input.GetMouseButton(0)) TryPaint();
+            }
+            else
+            {
+                if (Input.GetMouseButtonUp(0)) TryPaint();
+            }
 
             if (Input.GetKeyDown(KeyCode.Z) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand)))
                 Undo();
         }
 
-        // ── Paint / Sample ────────────────────────────────────────────────────
-        private void TryPaint(bool sample)
+        private void UpdateSelectedTerrainFromToggles()
         {
-            var ray = targetCamera.ScreenPointToRay(Input.mousePosition);
-            if (!Physics.Raycast(ray, out var hit, 500f, hexLayer)) return;
-
-            var rootCell = hit.collider.GetComponentInParent<HexCell>();
-            if (rootCell == null) return;
-
-            if (sample)
+            if (terrainToggles == null) return;
+            foreach (var mapping in terrainToggles)
             {
-                // Eye-dropper: copy terrain from clicked cell
-                selectedTerrain = rootCell.Terrain;
-                Debug.Log($"[MapEditor] Sampled: {selectedTerrain?.name}");
-                return;
+                if (mapping.toggle != null && mapping.toggle.isOn)
+                {
+                    selectedTerrain = mapping.terrain;
+                    return;
+                }
+            }
+        }
+
+        private void UpdateHoverAndHighlight()
+        {
+            // Find hovered cell
+            var ray = targetCamera.ScreenPointToRay(Input.mousePosition);
+            LayerMask mask = hexLayer.value == 0 ? ~0 : hexLayer;
+            
+            HexCell newHover = null;
+            if (Physics.Raycast(ray, out var hit, 1000f, mask))
+            {
+                newHover = hit.collider.GetComponentInParent<HexCell>();
+            }
+            _hoveredCell = newHover;
+
+            // Determine current target cells for highlighting
+            HashSet<HexCell> targets = new();
+            if (_hoveredCell != null)
+            {
+                List<HexCell> cells;
+                if (Input.GetMouseButton(0) && (brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null)
+                {
+                    cells = GetShapeCells(_dragStartCell, _hoveredCell);
+                }
+                else
+                {
+                    cells = BrushCells(_hoveredCell);
+                }
+                foreach (var c in cells) if (c != null) targets.Add(c);
             }
 
-            // Avoid re-painting the same cell every frame
-            if (rootCell == _lastPainted && brushRadius == 1) return;
-            _lastPainted = rootCell;
+            // 1. Identify cells to add and remove
+            List<HexCell> cellsToAdd = new();
+            foreach (var t in targets) if (!_activeHighlightObjects.ContainsKey(t)) cellsToAdd.Add(t);
+
+            List<HexCell> cellsToRemove = new();
+            foreach (var cell in _activeHighlightObjects.Keys)
+            {
+                if (cell == null || !targets.Contains(cell)) cellsToRemove.Add(cell);
+            }
+
+            // 2. Handoff: Reuse objects from removed cells for added cells
+            // This prevents SetActive(false) -> SetActive(true) which resets Animators.
+            int handoffCount = Mathf.Min(cellsToAdd.Count, cellsToRemove.Count);
+            for (int i = 0; i < handoffCount; i++)
+            {
+                var fromCell = cellsToRemove[i];
+                var toCell   = cellsToAdd[i];
+                var obj      = _activeHighlightObjects[fromCell];
+
+                _activeHighlightObjects.Remove(fromCell);
+                if (obj != null)
+                {
+                    obj.transform.position = toCell.transform.position + Vector3.up * toCell.Terrain.visualHeight;
+                    _activeHighlightObjects[toCell] = obj;
+                }
+            }
+
+            // 3. Cleanup remaining toRemove
+            for (int i = handoffCount; i < cellsToRemove.Count; i++)
+            {
+                var cell = cellsToRemove[i];
+                var obj  = _activeHighlightObjects[cell];
+                if (obj != null) grid.ReturnHighlight(obj, HexCell.HighlightMode.Selected);
+                _activeHighlightObjects.Remove(cell);
+            }
+
+            // 4. Instantiate remaining toAdd from pool
+            for (int i = handoffCount; i < cellsToAdd.Count; i++)
+            {
+                var cell = cellsToAdd[i];
+                var obj  = grid.GetHighlightFromPool(HexCell.HighlightMode.Selected);
+                if (obj != null)
+                {
+                    obj.transform.position = cell.transform.position + Vector3.up * cell.Terrain.visualHeight;
+                    _activeHighlightObjects[cell] = obj;
+                }
+            }
+        }
+
+        // ── Paint ────────────────────────────────────────────────────────────
+        private void TryPaint()
+        {
+            if (_hoveredCell == null) return;
+
+            // For Point brush, avoid re-painting the same cell every frame
+            if (brushShape == BrushShape.Point && _hoveredCell == _lastPainted && brushRadius == 1) return;
+            _lastPainted = _hoveredCell;
 
             // Collect brush hexes
-            var cells = BrushCells(rootCell);
+            List<HexCell> cells;
+            if ((brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null)
+            {
+                cells = GetShapeCells(_dragStartCell, _hoveredCell);
+            }
+            else
+            {
+                cells = BrushCells(_hoveredCell);
+            }
+
             foreach (var cell in cells)
                 ApplyBrush(cell);
+        }
+
+        private List<HexCell> GetShapeCells(HexCell start, HexCell end)
+        {
+            var results = new List<HexCell>();
+            if (start == null || end == null) return results;
+
+            if (brushShape == BrushShape.Line)
+            {
+                var coords = HexCoordinates.GetLine(start.Coordinates, end.Coordinates);
+                foreach (var c in coords)
+                {
+                    if (grid.TryGetCell(c, out var cell))
+                    {
+                        // Apply radius to each point on the line? 
+                        // For now keep it simple: just the line itself.
+                        results.AddRange(BrushCells(cell));
+                    }
+                }
+            }
+            else if (brushShape == BrushShape.Box)
+            {
+                var startOffset = start.Coordinates.ToOffsetCoords();
+                var endOffset = end.Coordinates.ToOffsetCoords();
+
+                int minX = Mathf.Min(startOffset.x, endOffset.x);
+                int maxX = Mathf.Max(startOffset.x, endOffset.x);
+                int minY = Mathf.Min(startOffset.y, endOffset.y);
+                int maxY = Mathf.Max(startOffset.y, endOffset.y);
+
+                for (int x = minX; x <= maxX; x++)
+                {
+                    for (int y = minY; y <= maxY; y++)
+                    {
+                        var cell = grid.GetCell(x, y);
+                        if (cell != null) results.Add(cell);
+                    }
+                }
+            }
+
+            // Deduplicate
+            var unique = new HashSet<HexCell>(results);
+            return new List<HexCell>(unique);
         }
 
         private List<HexCell> BrushCells(HexCell centre)
@@ -130,7 +291,7 @@ namespace DS7.Map
             {
                 case BrushMode.Terrain:
                     if (selectedTerrain != null)
-                        cell.SetTerrain(selectedTerrain);
+                        grid.ReplaceCell(cell, selectedTerrain);
                     break;
 
                 case BrushMode.Nation:
@@ -144,8 +305,12 @@ namespace DS7.Map
 
                 case BrushMode.Erase:
                     // Reset to default terrain (first element in project or null)
-                    cell.SetTerrain(null);
-                    cell.Owner = Nation.Neutral;
+                    var neutralizedCell = grid.ReplaceCell(cell, null);
+                    if (neutralizedCell != null)
+                    {
+                        neutralizedCell.Owner = Nation.Neutral;
+                        neutralizedCell.RefreshVisuals();
+                    }
                     break;
             }
         }
@@ -209,7 +374,7 @@ namespace DS7.Map
 
         private void HandleCameraRotation()
         {
-            if (Input.GetMouseButtonDown(0)) 
+            if (Input.GetMouseButtonDown(2)) 
             { 
                 Ray ray = new Ray(targetCamera.transform.position, targetCamera.transform.forward);
                 if (_groundPlane.Raycast(ray, out float enter))
@@ -223,7 +388,7 @@ namespace DS7.Map
                 }
                 _rotating = true;
             }
-            if (Input.GetMouseButtonUp(0))   _rotating = false;
+            if (Input.GetMouseButtonUp(2))   _rotating = false;
 
             if (!_rotating) return;
             
@@ -270,7 +435,7 @@ namespace DS7.Map
     [Serializable]
     internal class MapEditAction
     {
-        private readonly HexCell         _cell;
+        private readonly DS7.Grid.HexCoordinates  _coords;
         private readonly MapEditor.BrushMode _mode;
         private readonly DS7.Data.TerrainData _prevTerrain;
         private readonly Nation          _prevNation;
@@ -280,7 +445,7 @@ namespace DS7.Map
         public MapEditAction(HexCell cell, MapEditor.BrushMode mode,
                              DS7.Data.TerrainData newTerrain, Nation newNation)
         {
-            _cell        = cell;
+            _coords      = cell.Coordinates;
             _mode        = mode;
             _prevTerrain = cell.Terrain;
             _prevNation  = cell.Owner;
@@ -290,10 +455,29 @@ namespace DS7.Map
 
         public void Revert()
         {
+            var grid = HexGrid.Instance;
+            if (grid == null || !grid.TryGetCell(_coords, out var cell)) return;
+
             switch (_mode)
             {
-                case MapEditor.BrushMode.Terrain: _cell.SetTerrain(_prevTerrain); break;
-                case MapEditor.BrushMode.Nation:  _cell.Owner = _prevNation; _cell.RefreshVisuals(); break;
+                case MapEditor.BrushMode.Terrain: 
+                    grid.ReplaceCell(cell, _prevTerrain); 
+                    break;
+                case MapEditor.BrushMode.Nation:  
+                    cell.Owner = _prevNation; 
+                    cell.RefreshVisuals(); 
+                    break;
+                case MapEditor.BrushMode.Facility:
+                    // We didn't track previous facility state, this could be extended later
+                    break;
+                case MapEditor.BrushMode.Erase:
+                    var revertedCell = grid.ReplaceCell(cell, _prevTerrain);
+                    if (revertedCell != null)
+                    {
+                        revertedCell.Owner = _prevNation;
+                        revertedCell.RefreshVisuals();
+                    }
+                    break;
             }
         }
     }
@@ -338,12 +522,15 @@ namespace DS7.Map
                 if (!string.IsNullOrEmpty(cd.terrainName))
                 {
                     var td = Resources.Load<DS7.Data.TerrainData>($"TerrainData/{cd.terrainName}");
-                    if (td != null) cell.SetTerrain(td);
+                    if (td != null) cell = grid.ReplaceCell(cell, td);
                 }
 
-                cell.Owner          = (Nation)cd.owner;
-                cell.facilityHealth = cd.facilityHealth;
-                cell.RefreshVisuals();
+                if (cell != null)
+                {
+                    cell.Owner          = (Nation)cd.owner;
+                    cell.facilityHealth = cd.facilityHealth;
+                    cell.RefreshVisuals();
+                }
             }
         }
     }
