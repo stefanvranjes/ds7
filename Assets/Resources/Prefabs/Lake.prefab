@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 621840518913427442}
   - component: {fileID: 5134701613827283411}
   - component: {fileID: 3938912423266298570}
+  - component: {fileID: 5678403874479016702}
   m_Layer: 0
   m_Name: HexChunk3
   m_TagString: Untagged
@@ -83,6 +84,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5678403874479016702
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617564763833606242}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 8b5fb9d9d66408f40b2c54d24ad6c2e2, type: 3}
 --- !u!1 &2503024249127356463
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +117,7 @@ GameObject:
   - component: {fileID: 421810338586676322}
   - component: {fileID: 7263041449250324657}
   - component: {fileID: 5951764430286767322}
+  - component: {fileID: 7732605896465886791}
   m_Layer: 0
   m_Name: HexChunk2
   m_TagString: Untagged
@@ -166,6 +190,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7732605896465886791
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2503024249127356463}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 9c98a35957b252f47b69cec5c34f7fda, type: 3}
 --- !u!1 &4404972857669123527
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +221,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6575544891393336121}
+  - component: {fileID: 8229413618124766124}
   m_Layer: 0
   m_Name: Lake
   m_TagString: Untagged
@@ -200,6 +247,20 @@ Transform:
   - {fileID: 621840518913427442}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8229413618124766124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4404972857669123527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: 2f7ea58531fd97c43a42c936596c72a5, type: 2}
+  facilityHealth: 100
 --- !u!1 &4713514090976275768
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,6 +272,7 @@ GameObject:
   - component: {fileID: 9177191881090752541}
   - component: {fileID: 1424622880531148827}
   - component: {fileID: 2086037640858538021}
+  - component: {fileID: 8729837807592085176}
   m_Layer: 0
   m_Name: HexChunk1
   m_TagString: Untagged
@@ -283,3 +345,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8729837807592085176
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4713514090976275768}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: ffd7560c2b9963c41a2c56173b3c1c7a, type: 3}

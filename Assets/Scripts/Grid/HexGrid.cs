@@ -39,6 +39,7 @@ namespace DS7.Grid
         public GameObject attackRangeHighlightPrefab;
         public GameObject selectedHighlightPrefab;
         public GameObject enemyHighlightPrefab;
+        public GameObject brushHighlightPrefab;
 
         [Header("Highlight Root")]
         public Transform highlightRoot;
@@ -128,6 +129,7 @@ namespace DS7.Grid
                     HexCell.HighlightMode.AttackRange => attackRangeHighlightPrefab,
                     HexCell.HighlightMode.Selected    => selectedHighlightPrefab,
                     HexCell.HighlightMode.Enemy       => enemyHighlightPrefab,
+                    HexCell.HighlightMode.Brush       => brushHighlightPrefab,
                     _                                 => null
                 };
 
@@ -207,6 +209,27 @@ namespace DS7.Grid
                 _highlightPool[mode] = new List<GameObject>();
             
             _highlightPool[mode].Add(highlight);
+        }
+
+        public void ReturnHighlight(GameObject highlight)
+        {
+            if (highlight == null) return;
+            if (_activeHighlightModes.TryGetValue(highlight, out var mode))
+            {
+                ReturnHighlight(highlight, mode);
+            }
+            else
+            {
+                // Fallback for untracked highlights (shouldn't happen with pooled objects)
+                highlight.SetActive(false);
+                Destroy(highlight);
+            }
+        }
+
+        public HexCell.HighlightMode GetActiveHighlightMode(GameObject highlight)
+        {
+            if (highlight == null) return HexCell.HighlightMode.None;
+            return _activeHighlightModes.TryGetValue(highlight, out var mode) ? mode : HexCell.HighlightMode.None;
         }
 
         private void SetLayerRecursive(GameObject obj, int layer)

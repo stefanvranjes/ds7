@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2105875195703211267}
   - component: {fileID: 1329824822161271279}
   - component: {fileID: 1950605977730372993}
+  - component: {fileID: 2630979945492524642}
   m_Layer: 0
   m_Name: HexChunk3
   m_TagString: Untagged
@@ -83,6 +84,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2630979945492524642
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7788818139998961856}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 8b5fb9d9d66408f40b2c54d24ad6c2e2, type: 3}
 --- !u!1 &8070933145210187858
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4348939927378576938}
+  - component: {fileID: 5707795832959162110}
   m_Layer: 0
   m_Name: Forest
   m_TagString: Untagged
@@ -117,6 +141,20 @@ Transform:
   - {fileID: 2105875195703211267}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5707795832959162110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8070933145210187858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: d7f8e8373ba1e914098c17cdf9d52428, type: 2}
+  facilityHealth: 100
 --- !u!1 &8716766649374871236
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,6 +166,7 @@ GameObject:
   - component: {fileID: 2135198504097826072}
   - component: {fileID: 3502483014064466247}
   - component: {fileID: 2119730007527638790}
+  - component: {fileID: 446253048901359844}
   m_Layer: 0
   m_Name: HexChunk2
   m_TagString: Untagged
@@ -200,6 +239,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &446253048901359844
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8716766649374871236}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 9c98a35957b252f47b69cec5c34f7fda, type: 3}
 --- !u!1 &9016960815692283520
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,6 +272,7 @@ GameObject:
   - component: {fileID: 7820610519988842744}
   - component: {fileID: 5342527703419658009}
   - component: {fileID: 4772231928465112808}
+  - component: {fileID: 5664383910029303081}
   m_Layer: 0
   m_Name: HexChunk1
   m_TagString: Untagged
@@ -283,3 +345,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5664383910029303081
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016960815692283520}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: ffd7560c2b9963c41a2c56173b3c1c7a, type: 3}

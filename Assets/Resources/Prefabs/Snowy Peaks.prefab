@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1914484135134934782}
   - component: {fileID: 143669988003682302}
   - component: {fileID: 5852008654039985987}
+  - component: {fileID: 613908593988823067}
   m_Layer: 0
   m_Name: HexChunk4
   m_TagString: Untagged
@@ -83,6 +84,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &613908593988823067
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386976121465789658}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 8b5fb9d9d66408f40b2c54d24ad6c2e2, type: 3}
 --- !u!1 &453939127791143199
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9063946858033688289}
+  - component: {fileID: -4005946005808506380}
   m_Layer: 0
   m_Name: Snowy Peaks
   m_TagString: Untagged
@@ -118,6 +142,20 @@ Transform:
   - {fileID: 1914484135134934782}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4005946005808506380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453939127791143199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: 361e139accabf7b4b8b4bf6871785df6, type: 2}
+  facilityHealth: 100
 --- !u!1 &3100730431878988230
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,6 +167,7 @@ GameObject:
   - component: {fileID: 1816836012090628252}
   - component: {fileID: 8079648164181371073}
   - component: {fileID: 4369964008163400812}
+  - component: {fileID: 8114539531318037824}
   m_Layer: 0
   m_Name: HexChunk3
   m_TagString: Untagged
@@ -201,6 +240,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8114539531318037824
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3100730431878988230}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: c0f1bccde15d7154e8bcb34eb4054712, type: 3}
 --- !u!1 &7136855993145128313
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +273,7 @@ GameObject:
   - component: {fileID: 4444423904318593036}
   - component: {fileID: 7655618243265215416}
   - component: {fileID: 8553249180218929773}
+  - component: {fileID: 755466443847261737}
   m_Layer: 0
   m_Name: HexChunk1
   m_TagString: Untagged
@@ -284,6 +346,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &755466443847261737
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7136855993145128313}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: ffd7560c2b9963c41a2c56173b3c1c7a, type: 3}
 --- !u!1 &7907673871745210889
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,6 +379,7 @@ GameObject:
   - component: {fileID: 3614369736010876114}
   - component: {fileID: 720497665714354539}
   - component: {fileID: 3939412542737299334}
+  - component: {fileID: 3790015340652803105}
   m_Layer: 0
   m_Name: HexChunk2
   m_TagString: Untagged
@@ -367,3 +452,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3790015340652803105
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907673871745210889}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 9c98a35957b252f47b69cec5c34f7fda, type: 3}

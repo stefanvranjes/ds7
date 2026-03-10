@@ -40,12 +40,28 @@ namespace DS7.Map
 
         [Header("UI Integration")]
         public List<TerrainToggleMapping> terrainToggles;
+        public List<BrushModeToggleMapping> modeToggles;
+        public List<BrushShapeToggleMapping> shapeToggles;
 
         [Serializable]
         public struct TerrainToggleMapping
         {
             public Toggle toggle;
             public DS7.Data.TerrainData terrain;
+        }
+
+        [Serializable]
+        public struct BrushModeToggleMapping
+        {
+            public Toggle toggle;
+            public BrushMode mode;
+        }
+
+        [Serializable]
+        public struct BrushShapeToggleMapping
+        {
+            public Toggle toggle;
+            public BrushShape shape;
         }
 
         [Header("Camera Controls")]
@@ -87,7 +103,7 @@ namespace DS7.Map
             HandleZoom();
             HandleCameraMovement();
             HandleCameraRotation();
-            UpdateSelectedTerrainFromToggles();
+            UpdateBrushFromToggles();
 
             UpdateHoverAndHighlight();
 
@@ -109,15 +125,41 @@ namespace DS7.Map
                 Undo();
         }
 
-        private void UpdateSelectedTerrainFromToggles()
+        private void UpdateBrushFromToggles()
         {
-            if (terrainToggles == null) return;
-            foreach (var mapping in terrainToggles)
+            if (terrainToggles != null)
             {
-                if (mapping.toggle != null && mapping.toggle.isOn)
+                foreach (var mapping in terrainToggles)
                 {
-                    selectedTerrain = mapping.terrain;
-                    return;
+                    if (mapping.toggle != null && mapping.toggle.isOn)
+                    {
+                        selectedTerrain = mapping.terrain;
+                        break;
+                    }
+                }
+            }
+
+            if (modeToggles != null)
+            {
+                foreach (var mapping in modeToggles)
+                {
+                    if (mapping.toggle != null && mapping.toggle.isOn)
+                    {
+                        brushMode = mapping.mode;
+                        break;
+                    }
+                }
+            }
+
+            if (shapeToggles != null)
+            {
+                foreach (var mapping in shapeToggles)
+                {
+                    if (mapping.toggle != null && mapping.toggle.isOn)
+                    {
+                        brushShape = mapping.shape;
+                        break;
+                    }
                 }
             }
         }
@@ -135,67 +177,76 @@ namespace DS7.Map
             }
             _hoveredCell = newHover;
 
-            // Determine current target cells for highlighting
-            HashSet<HexCell> targets = new();
+            // Determine current target cells and their intended highlight modes
+            Dictionary<HexCell, HexCell.HighlightMode> targetModes = new();
+            bool isDraggingShape = Input.GetMouseButton(0) && (brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null;
+
             if (_hoveredCell != null)
             {
-                List<HexCell> cells;
-                if (Input.GetMouseButton(0) && (brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null)
+                // 1. Determine shape cells
+                List<HexCell> shapeCells;
+                if (isDraggingShape)
                 {
-                    cells = GetShapeCells(_dragStartCell, _hoveredCell);
+                    shapeCells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: true);
                 }
                 else
                 {
-                    cells = BrushCells(_hoveredCell);
+                    shapeCells = BrushCells(_hoveredCell);
                 }
-                foreach (var c in cells) if (c != null) targets.Add(c);
-            }
 
-            // 1. Identify cells to add and remove
-            List<HexCell> cellsToAdd = new();
-            foreach (var t in targets) if (!_activeHighlightObjects.ContainsKey(t)) cellsToAdd.Add(t);
-
-            List<HexCell> cellsToRemove = new();
-            foreach (var cell in _activeHighlightObjects.Keys)
-            {
-                if (cell == null || !targets.Contains(cell)) cellsToRemove.Add(cell);
-            }
-
-            // 2. Handoff: Reuse objects from removed cells for added cells
-            // This prevents SetActive(false) -> SetActive(true) which resets Animators.
-            int handoffCount = Mathf.Min(cellsToAdd.Count, cellsToRemove.Count);
-            for (int i = 0; i < handoffCount; i++)
-            {
-                var fromCell = cellsToRemove[i];
-                var toCell   = cellsToAdd[i];
-                var obj      = _activeHighlightObjects[fromCell];
-
-                _activeHighlightObjects.Remove(fromCell);
-                if (obj != null)
+                // 2. Assign modes
+                foreach (var cell in shapeCells)
                 {
-                    obj.transform.position = toCell.transform.position + Vector3.up * toCell.Terrain.visualHeight;
-                    _activeHighlightObjects[toCell] = obj;
+                    if (cell == null) continue;
+                    
+                    // Mouse cell always gets Selected highlight
+                    if (cell == _hoveredCell)
+                    {
+                        targetModes[cell] = HexCell.HighlightMode.Selected;
+                    }
+                    else
+                    {
+                        // Other cells in the shape get Brush highlight if dragging a shape, or Selected if point brush
+                        targetModes[cell] = isDraggingShape ? HexCell.HighlightMode.Brush : HexCell.HighlightMode.Selected;
+                    }
                 }
             }
 
-            // 3. Cleanup remaining toRemove
-            for (int i = handoffCount; i < cellsToRemove.Count; i++)
+            // 3. Identify and remove stale or incorrect highlights
+            List<HexCell> cellsToRemove = new();
+            foreach (var pair in _activeHighlightObjects)
             {
-                var cell = cellsToRemove[i];
-                var obj  = _activeHighlightObjects[cell];
-                if (obj != null) grid.ReturnHighlight(obj, HexCell.HighlightMode.Selected);
+                var cell = pair.Key;
+                var obj  = pair.Value;
+                
+                if (cell == null || !targetModes.TryGetValue(cell, out var targetMode) || grid.GetActiveHighlightMode(obj) != targetMode)
+                {
+                    cellsToRemove.Add(cell);
+                }
+            }
+
+            foreach (var cell in cellsToRemove)
+            {
+                var obj = _activeHighlightObjects[cell];
+                if (obj != null) grid.ReturnHighlight(obj);
                 _activeHighlightObjects.Remove(cell);
             }
 
-            // 4. Instantiate remaining toAdd from pool
-            for (int i = handoffCount; i < cellsToAdd.Count; i++)
+            // 4. Add missing highlights
+            foreach (var pair in targetModes)
             {
-                var cell = cellsToAdd[i];
-                var obj  = grid.GetHighlightFromPool(HexCell.HighlightMode.Selected);
-                if (obj != null)
+                var cell = pair.Key;
+                var mode = pair.Value;
+
+                if (!_activeHighlightObjects.ContainsKey(cell))
                 {
-                    obj.transform.position = cell.transform.position + Vector3.up * cell.Terrain.visualHeight;
-                    _activeHighlightObjects[cell] = obj;
+                    var obj = grid.GetHighlightFromPool(mode);
+                    if (obj != null)
+                    {
+                        float height = (cell.Terrain != null) ? cell.Terrain.visualHeight : 0.5f;
+                        obj.transform.position = cell.transform.position + Vector3.up * height;
+                        _activeHighlightObjects[cell] = obj;
+                    }
                 }
             }
         }
@@ -213,7 +264,7 @@ namespace DS7.Map
             List<HexCell> cells;
             if ((brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null)
             {
-                cells = GetShapeCells(_dragStartCell, _hoveredCell);
+                cells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: false);
             }
             else
             {
@@ -224,7 +275,7 @@ namespace DS7.Map
                 ApplyBrush(cell);
         }
 
-        private List<HexCell> GetShapeCells(HexCell start, HexCell end)
+        private List<HexCell> GetShapeCells(HexCell start, HexCell end, bool outlineOnly = false)
         {
             var results = new List<HexCell>();
             if (start == null || end == null) return results;
@@ -256,6 +307,13 @@ namespace DS7.Map
                 {
                     for (int y = minY; y <= maxY; y++)
                     {
+                        if (outlineOnly)
+                        {
+                            // Only add if on the boundary of the box
+                            if (x != minX && x != maxX && y != minY && y != maxY)
+                                continue;
+                        }
+
                         var cell = grid.GetCell(x, y);
                         if (cell != null) results.Add(cell);
                     }

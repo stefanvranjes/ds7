@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8856143460c8324eb0fa3e7f060943d, type: 3}
+  m_Name: Deep Sea
+  m_EditorClassIdentifier: 
+  terrainName: Deep Sea
+  terrainType: 14
+  tileSprite: {fileID: 0}
+  mapColor: {r: 0, g: 1, b: 0, a: 1}
+  editorTint: {r: 1, g: 1, b: 1, a: 1}
+  visualHeight: 0
+  isFacility: 0
+  incomePerTurn: 0
+  canProduce: 0
+  canResupply: 0
+  canEquip: 0
+  movementCosts:
+  - category: 0
+    cost: 0
+  defenseBonus: 0
+  detectionModifier: 0

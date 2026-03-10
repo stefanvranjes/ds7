@@ -70,7 +70,7 @@ namespace DS7.Grid
         }
 
         // ── Visual Feedback ───────────────────────────────────────────────────
-        public enum HighlightMode { None, MoveRange, AttackRange, Selected, Enemy }
+        public enum HighlightMode { None, MoveRange, AttackRange, Selected, Enemy, Brush }
 
         private MeshRenderer _meshRenderer;
 
