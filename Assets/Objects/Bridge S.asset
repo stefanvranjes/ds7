@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bridge S
   m_EditorClassIdentifier: 
   terrainName: Bridge S
-  terrainType: 15
+  terrainType: 17
   tileSprite: {fileID: 0}
   mapColor: {r: 0, g: 1, b: 0, a: 1}
   editorTint: {r: 1, g: 1, b: 1, a: 1}

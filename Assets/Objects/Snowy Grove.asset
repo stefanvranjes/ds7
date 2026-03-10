@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Snowy Grove
   m_EditorClassIdentifier: 
   terrainName: Snowy Grove
-  terrainType: 17
+  terrainType: 19
   tileSprite: {fileID: 0}
   mapColor: {r: 0, g: 1, b: 0, a: 1}
   editorTint: {r: 1, g: 1, b: 1, a: 1}

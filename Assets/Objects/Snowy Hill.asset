@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Snowy Hill
   m_EditorClassIdentifier: 
   terrainName: Snowy Hill
-  terrainType: 19
+  terrainType: 21
   tileSprite: {fileID: 0}
   mapColor: {r: 0, g: 1, b: 0, a: 1}
   editorTint: {r: 1, g: 1, b: 1, a: 1}

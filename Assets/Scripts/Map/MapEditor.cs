@@ -23,7 +23,7 @@ namespace DS7.Map
     public class MapEditor : MonoBehaviour
     {
         // ── Paint Mode ────────────────────────────────────────────────────────
-        public enum BrushMode { Terrain, Nation, Facility, Erase }
+        public enum BrushMode { Terrain, Nation, Facility, Erase, CopyPaste, Fill }
         public enum BrushShape { Point, Line, Box }
 
         [Header("Mode")]
@@ -81,7 +81,23 @@ namespace DS7.Map
         private HexCell _lastPainted;
         private HexCell _hoveredCell;
         private HexCell _dragStartCell;
+        private Vector3 _dragStartPos;
         private readonly Dictionary<HexCell, GameObject> _activeHighlightObjects = new();
+        private BrushMode _lastBrushMode;
+        private BrushMode _lastPaintBrushMode = BrushMode.Terrain;
+
+        // ── Clipboard ─────────────────────────────────────────────────────────
+        [Serializable]
+        public struct ClipboardCell
+        {
+            public Vector2Int offset; // Obsolete, keeping for compatibility if needed elsewhere
+            public HexCoordinates axialOffset; // Relative to root cell
+            public DS7.Data.TerrainData terrain;
+            public Nation owner;
+            public bool hasFacility;
+            public int facilityHealth;
+        }
+        private readonly Dictionary<HexCoordinates, ClipboardCell> _clipboard = new();
 
         // ── Map I/O ───────────────────────────────────────────────────────────
         [Header("Map Serialisation")]
@@ -103,22 +119,24 @@ namespace DS7.Map
             HandleZoom();
             HandleCameraMovement();
             HandleCameraRotation();
-            UpdateBrushFromToggles();
-
-            UpdateHoverAndHighlight();
-
+            
             if (Input.GetMouseButtonDown(0))
             {
                 _dragStartCell = _hoveredCell;
+                _dragStartPos = Input.mousePosition;
             }
 
-            if (brushShape == BrushShape.Point)
+            UpdateBrushFromToggles();
+            UpdateHoverAndHighlight();
+
+            bool isShapeMode = brushShape != BrushShape.Point || brushMode == BrushMode.CopyPaste || brushMode == BrushMode.Fill;
+            if (isShapeMode)
             {
-                if (Input.GetMouseButton(0)) TryPaint();
+                if (Input.GetMouseButtonUp(0)) TryPaint();
             }
             else
             {
-                if (Input.GetMouseButtonUp(0)) TryPaint();
+                if (Input.GetMouseButton(0)) TryPaint();
             }
 
             if (Input.GetKeyDown(KeyCode.Z) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand)))
@@ -146,6 +164,10 @@ namespace DS7.Map
                     if (mapping.toggle != null && mapping.toggle.isOn)
                     {
                         brushMode = mapping.mode;
+                        if (brushMode != BrushMode.Fill && brushMode != BrushMode.CopyPaste)
+                        {
+                            _lastPaintBrushMode = brushMode;
+                        }
                         break;
                     }
                 }
@@ -160,6 +182,29 @@ namespace DS7.Map
                         brushShape = mapping.shape;
                         break;
                     }
+                }
+            }
+
+            if (brushMode != _lastBrushMode)
+            {
+                if (brushMode == BrushMode.CopyPaste)
+                {
+                    SetBrushShape(BrushShape.Box);
+                }
+                _lastBrushMode = brushMode;
+            }
+        }
+
+        public void SetBrushShape(BrushShape shape)
+        {
+            brushShape = shape;
+            if (shapeToggles == null) return;
+            
+            foreach (var mapping in shapeToggles)
+            {
+                if (mapping.toggle != null)
+                {
+                    mapping.toggle.isOn = (mapping.shape == shape);
                 }
             }
         }
@@ -179,15 +224,35 @@ namespace DS7.Map
 
             // Determine current target cells and their intended highlight modes
             Dictionary<HexCell, HexCell.HighlightMode> targetModes = new();
-            bool isDraggingShape = Input.GetMouseButton(0) && (brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null;
+            
+            float dragDist = _dragStartCell != null ? Vector3.Distance(Input.mousePosition, _dragStartPos) : 0f;
+            bool isDragging = Input.GetMouseButton(0) && _dragStartCell != null && (dragDist > 5f || _dragStartCell != _hoveredCell);
+            bool isDraggingShape = isDragging && (brushShape == BrushShape.Line || brushShape == BrushShape.Box || brushMode == BrushMode.CopyPaste);
 
             if (_hoveredCell != null)
             {
                 // 1. Determine shape cells
                 List<HexCell> shapeCells;
-                if (isDraggingShape)
+                bool isPastePreview = brushMode == BrushMode.CopyPaste && !isDragging && brushShape == BrushShape.Point && _clipboard.Count > 0;
+
+                if (isPastePreview)
                 {
-                    shapeCells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: true);
+                    shapeCells = new List<HexCell>();
+                    foreach (var rel in _clipboard.Keys)
+                    {
+                        var target = grid.GetCell(_hoveredCell.Coordinates + rel);
+                        if (target != null) shapeCells.Add(target);
+                    }
+                }
+                else if (isDraggingShape)
+                {
+                    // In CopyPaste mode, default to Box if Point is selected, otherwise respect Line/Box
+                    BrushShape shapeToUse = brushShape;
+                    if (brushMode == BrushMode.CopyPaste && brushShape == BrushShape.Point)
+                    {
+                        shapeToUse = BrushShape.Box;
+                    }
+                    shapeCells = GetShapeCells(_dragStartCell, _hoveredCell, shapeToUse, outlineOnly: true);
                 }
                 else
                 {
@@ -207,7 +272,9 @@ namespace DS7.Map
                     else
                     {
                         // Other cells in the shape get Brush highlight if dragging a shape, or Selected if point brush
-                        targetModes[cell] = isDraggingShape ? HexCell.HighlightMode.Brush : HexCell.HighlightMode.Selected;
+                        // For CopyPaste mode - Point shape, we use Brush highlight for the paste preview
+                        bool useBrushHighlight = isDraggingShape || isPastePreview;
+                        targetModes[cell] = useBrushHighlight ? HexCell.HighlightMode.Brush : HexCell.HighlightMode.Selected;
                     }
                 }
             }
@@ -262,25 +329,200 @@ namespace DS7.Map
 
             // Collect brush hexes
             List<HexCell> cells;
-            if ((brushShape == BrushShape.Line || brushShape == BrushShape.Box) && _dragStartCell != null)
+            float dragDist = _dragStartCell != null ? Vector3.Distance(Input.mousePosition, _dragStartPos) : 0f;
+            bool isDragging = _dragStartCell != null && (dragDist > 5f || _dragStartCell != _hoveredCell);
+            bool isDraggingShape = (brushShape != BrushShape.Point || brushMode == BrushMode.CopyPaste) && isDragging;
+
+            if (isDraggingShape)
             {
-                cells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: false);
+                BrushShape shapeToUse = brushShape;
+                if (brushMode == BrushMode.CopyPaste && brushShape == BrushShape.Point)
+                {
+                    shapeToUse = BrushShape.Box;
+                }
+                cells = GetShapeCells(_dragStartCell, _hoveredCell, shapeToUse, outlineOnly: false);
+            }
+            else if (brushMode == BrushMode.Fill)
+            {
+                cells = GetFillCells(_hoveredCell);
             }
             else
             {
                 cells = BrushCells(_hoveredCell);
             }
 
+            if (brushMode == BrushMode.CopyPaste)
+            {
+                // If we didn't drag at all, it's a Paste.
+                // If we did drag, it's a Copy.
+                
+                if (isDragging)
+                {
+                    CopySelection(cells);
+                    SetBrushShape(BrushShape.Point); // Ready to paste
+                }
+                else if (brushShape == BrushShape.Point)
+                {
+                    ApplyPaste(_hoveredCell);
+                    SetBrushShape(BrushShape.Box); // Ready to copy more
+                }
+                return;
+            }
+
             foreach (var cell in cells)
-                ApplyBrush(cell);
+            {
+                // If we are in Fill mode, we want to apply the "last paint mode" to the area
+                if (brushMode == BrushMode.Fill)
+                {
+                    ApplyFill(cell);
+                }
+                else
+                {
+                    ApplyBrush(cell);
+                }
+            }
+        }
+
+        private void ApplyFill(HexCell cell)
+        {
+            // Record for undo - notice we use _lastPaintBrushMode for the undo action's "intent"
+            var action = new MapEditAction(cell, _lastPaintBrushMode, selectedTerrain, selectedNation);
+            PushUndo(action);
+
+            // Apply based on the context of the fill
+            switch (_lastPaintBrushMode)
+            {
+                case BrushMode.Terrain:
+                    if (selectedTerrain != null)
+                        grid.ReplaceCell(cell, selectedTerrain);
+                    break;
+                case BrushMode.Nation:
+                    cell.Owner = selectedNation;
+                    cell.RefreshVisuals();
+                    break;
+                case BrushMode.Erase:
+                    var neutralizedCell = grid.ReplaceCell(cell, null);
+                    if (neutralizedCell != null)
+                    {
+                        neutralizedCell.Owner = Nation.Neutral;
+                        neutralizedCell.RefreshVisuals();
+                    }
+                    break;
+                case BrushMode.Facility:
+                    cell.SetFacilityActive(setFacilityActive);
+                    break;
+            }
+        }
+
+        private void CopySelection(List<HexCell> cells)
+        {
+            if (cells == null || cells.Count == 0) return;
+            _clipboard.Clear();
+
+            // Use the first cell as the relative root for axial offsets
+            HexCoordinates root = cells[0].Coordinates;
+
+            foreach (var cell in cells)
+            {
+                HexCoordinates rel = cell.Coordinates - root;
+                _clipboard[rel] = new ClipboardCell
+                {
+                    axialOffset = rel,
+                    terrain = cell.Terrain,
+                    owner = cell.Owner,
+                    hasFacility = cell.IsFacility,
+                    facilityHealth = cell.facilityHealth
+                };
+            }
+            Debug.Log($"[MapEditor] Copied {_clipboard.Count} cells to clipboard using axial offsets.");
+        }
+
+        private void ApplyPaste(HexCell root)
+        {
+            if (root == null || _clipboard.Count == 0) return;
+
+            // Record for undo - we should probably record the entire paste operation as one block
+            // For now, ApplyBrush handles individual undos. Let's make Paste use ApplyBrush if possible,
+            // or implement a BulkUndoAction.
+            
+            foreach (var pair in _clipboard)
+            {
+                var rel = pair.Key;
+                var data = pair.Value;
+                
+                var targetCoords = root.Coordinates + rel;
+                if (grid.TryGetCell(targetCoords, out var targetCell))
+                {
+                    // Record for undo manually since we're not using BrushMode
+                    var action = new MapEditAction(targetCell, BrushMode.Terrain, data.terrain, data.owner);
+                    PushUndo(action);
+
+                    // Apply
+                    var replaced = grid.ReplaceCell(targetCell, data.terrain);
+                    if (replaced != null)
+                    {
+                        replaced.Owner = data.owner;
+                        replaced.facilityHealth = data.facilityHealth;
+                        replaced.RefreshVisuals();
+                    }
+                }
+            }
+        }
+
+        private List<HexCell> GetFillCells(HexCell startCell)
+        {
+            var results = new List<HexCell>();
+            if (startCell == null) return results;
+
+            // Determine what we're matching against based on current sub-settings
+            bool matchTerrain = (_lastPaintBrushMode != BrushMode.Nation);
+            
+            var visited = new HashSet<HexCell>();
+            var queue = new Queue<HexCell>();
+            queue.Enqueue(startCell);
+            visited.Add(startCell);
+
+            DS7.Data.TerrainData targetTerrain = startCell.Terrain;
+            Nation targetNation = startCell.Owner;
+
+            while (queue.Count > 0)
+            {
+                var cell = queue.Dequeue();
+                results.Add(cell);
+
+                foreach (var coord in cell.Coordinates.AllNeighbors())
+                {
+                    if (grid.TryGetCell(coord, out var neighbor))
+                    {
+                        if (neighbor == null || visited.Contains(neighbor)) continue;
+
+                        bool isMatch = false;
+                        if (matchTerrain) isMatch = (neighbor.Terrain == targetTerrain);
+                        else isMatch = (neighbor.Owner == targetNation);
+
+                        if (isMatch)
+                        {
+                            visited.Add(neighbor);
+                            queue.Enqueue(neighbor);
+                        }
+                    }
+                }
+            }
+
+            return results;
         }
 
         private List<HexCell> GetShapeCells(HexCell start, HexCell end, bool outlineOnly = false)
         {
+            return GetShapeCells(start, end, brushShape, outlineOnly);
+        }
+
+        private List<HexCell> GetShapeCells(HexCell start, HexCell end, BrushShape shape, bool outlineOnly = false)
+        {
             var results = new List<HexCell>();
             if (start == null || end == null) return results;
 
-            if (brushShape == BrushShape.Line)
+            if (shape == BrushShape.Line)
             {
                 var coords = HexCoordinates.GetLine(start.Coordinates, end.Coordinates);
                 foreach (var c in coords)

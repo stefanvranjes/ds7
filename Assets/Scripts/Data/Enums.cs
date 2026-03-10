@@ -41,7 +41,7 @@ namespace DS7.Data
         Plain, Road, River, Desert, Wasteland, Wetland,
         Grove, Forest, Hill, Mountain, Peaks,
         Lake, Shallows, Sea, DeepSea,
-        Bridge,
+        BridgeL, BridgeR, BridgeS,
         SnowField, SnowyGrove, SnowyForest, SnowyHill, SnowyMountain, SnowyPeaks,
         // Facilities
         Capital, City, Airport, Port, Factory, Refinery
