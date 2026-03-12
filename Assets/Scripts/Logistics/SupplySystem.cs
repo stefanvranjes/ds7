@@ -59,10 +59,10 @@ namespace DS7.Logistics
 
         // ── Execute Resupply ──────────────────────────────────────────────────
         /// <summary>
-        /// Resupplies and refuels a unit. Deducts cost from the nation's funds
+        /// Resupplies and refuels a unit. Deducts cost from the faction's funds
         /// and, if resupplied by a supply truck, consumes one supply stock point.
         /// </summary>
-        public bool Resupply(Unit unit, Dictionary<Nation, int> nationFunds)
+        public bool Resupply(Unit unit, Dictionary<Faction, int> factionFunds)
         {
             if (!CanResupply(unit))
             {
@@ -70,14 +70,14 @@ namespace DS7.Logistics
                 return false;
             }
 
-            // Deduct resupply cost from nation funds
+            // Deduct resupply cost from faction funds
             int cost = CalculateResupplyCost(unit);
-            if (!nationFunds.TryGetValue(unit.Owner, out int funds) || funds < cost)
+            if (!factionFunds.TryGetValue(unit.Owner, out int funds) || funds < cost)
             {
                 Debug.LogWarning($"Insufficient funds to resupply {unit.Data.unitName} (cost {cost}).");
                 return false;
             }
-            nationFunds[unit.Owner] = funds - cost;
+            factionFunds[unit.Owner] = funds - cost;
 
             // Consume supply truck stock if applicable
             TryConsumeSupplyTruckStock(unit);
@@ -85,19 +85,19 @@ namespace DS7.Logistics
             unit.RefillAmmo();
             unit.RefillFuel();
 
-            Debug.Log($"[Supply] {unit.Data.unitName} resupplied. Cost: {cost}. Funds left: {nationFunds[unit.Owner]}");
+            Debug.Log($"[Supply] {unit.Data.unitName} resupplied. Cost: {cost}. Funds left: {factionFunds[unit.Owner]}");
             return true;
         }
 
         // ── Resupply All ──────────────────────────────────────────────────────
-        /// <summary>Attempts to resupply all units of the given nation that need it.</summary>
-        public void ResupplyAll(Nation nation, List<Unit> allUnits, Dictionary<Nation, int> nationFunds)
+        /// <summary>Attempts to resupply all units of the given faction that need it.</summary>
+        public void ResupplyAll(Faction faction, List<Unit> allUnits, Dictionary<Faction, int> factionFunds)
         {
             foreach (var unit in allUnits)
             {
-                if (unit.Owner != nation) continue;
+                if (unit.Owner != faction) continue;
                 if (unit.CurrentFuel >= unit.Data.maxFuel) continue; // not needed
-                Resupply(unit, nationFunds);
+                Resupply(unit, factionFunds);
             }
         }
 

@@ -51,7 +51,7 @@ namespace DS7.GameModes
             }
         }
 
-        private void OnTurnEnd(Nation nation)
+        private void OnTurnEnd(Faction faction)
         {
             if (_missionComplete) return;
 
@@ -66,7 +66,7 @@ namespace DS7.GameModes
                     break;
 
                 case VictoryConditionType.FundRace:
-                    var funds = _turns.NationFunds;
+                    var funds = _turns.FactionFunds;
                     foreach (var kv in funds)
                         if (kv.Value >= targetFundAmount)
                             TriggerVictory(kv.Key);
@@ -75,18 +75,18 @@ namespace DS7.GameModes
                 case VictoryConditionType.TurnSurvival:
                     int elapsed = (_turns?.TurnNumber ?? 1) - _startTurn;
                     if (elapsed >= turnLimit)
-                        TriggerVictory(Nation.USA); // Blue = human nation (scenario-specific)
+                        TriggerVictory(Faction.Blue); // Blue = human faction (scenario-specific)
                     break;
             }
         }
 
-        private void OnVictory(Nation winner)
+        private void OnVictory(Faction winner)
         {
             if (_missionComplete) return;
             TriggerVictory(winner);
         }
 
-        private void TriggerVictory(Nation winner)
+        private void TriggerVictory(Faction winner)
         {
             _missionComplete = true;
 

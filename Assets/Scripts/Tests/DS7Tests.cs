@@ -137,12 +137,12 @@ namespace DS7.Tests
         }
 
         [Test]
-        public void NationFunds_DeductedAfterResupply()
+        public void FactionFunds_DeductedAfterResupply()
         {
-            var funds = new Dictionary<Nation, int> { { Nation.USA, 1000 } };
+            var funds = new Dictionary<Faction, int> { { Faction.Blue, 1000 } };
             int cost  = 50;
-            funds[Nation.USA] -= cost;
-            Assert.AreEqual(950, funds[Nation.USA]);
+            funds[Faction.Blue] -= cost;
+            Assert.AreEqual(950, funds[Faction.Blue]);
         }
     }
 

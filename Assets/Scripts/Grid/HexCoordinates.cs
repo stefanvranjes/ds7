@@ -37,6 +37,8 @@ namespace DS7.Grid
             return n;
         }
 
+        public bool IsNeighbor(HexCoordinates other) => DistanceTo(other) == 1;
+
         // ── Distance ──────────────────────────────────────────────────────────
         public static int Distance(HexCoordinates a, HexCoordinates b)
         {

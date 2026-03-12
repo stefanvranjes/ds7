@@ -15,7 +15,7 @@ namespace DS7.Units
         public UnitData Data { get; private set; }
 
         // ── Ownership ─────────────────────────────────────────────────────────
-        public Nation Owner { get; private set; }
+        public Faction Owner { get; private set; }
 
         // ── Position ──────────────────────────────────────────────────────────
         public HexCoordinates CurrentCoords   { get; private set; }
@@ -54,7 +54,7 @@ namespace DS7.Units
         private int _ecmAmmo;
 
         // ── Initializer ───────────────────────────────────────────────────────
-        public void Initialize(UnitData data, Nation owner, HexCoordinates startCoords,
+        public void Initialize(UnitData data, Faction owner, HexCoordinates startCoords,
                                AltitudeLayer startAlt = AltitudeLayer.Ground)
         {
             Data             = data;
@@ -212,9 +212,9 @@ namespace DS7.Units
     [System.Serializable]
     public class SavedUnitState
     {
-        public string unitDataName;
-        public Nation owner;
-        public int    experience;
+        public string  unitDataName;
+        public Faction owner;
+        public int     experience;
         public int    level;
         public int    endurance;
         public int    fuel;

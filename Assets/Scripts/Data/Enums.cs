@@ -50,7 +50,6 @@ namespace DS7.Data
     // ── Nations ───────────────────────────────────────────────────────────────
     public enum Nation
     {
-        Neutral,
         Japan,
         USA,
         Russia,
@@ -59,6 +58,15 @@ namespace DS7.Data
         France,
         Israel,
         China
+    }
+
+    public enum Faction
+    {
+        Neutral,
+        Blue,
+        Red,
+        Green,
+        Yellow
     }
 
     // ── Game Modes ────────────────────────────────────────────────────────────

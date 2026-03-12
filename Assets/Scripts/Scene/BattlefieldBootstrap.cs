@@ -31,7 +31,7 @@ namespace DS7.Scene
 
         [Header("Game Mode")]
         public GameModes.TurnManager turnManager;
-        public List<NationData>      turnOrder = new();
+        public List<FactionData>     turnOrder = new();
 
         // ── Lifecycle ─────────────────────────────────────────────────────────
         private IEnumerator<YieldInstruction> Start()
@@ -95,13 +95,13 @@ namespace DS7.Scene
             var unit = go.GetComponent<Unit>();
             if (unit == null) { Destroy(go); return; }
 
-            unit.Initialize(su.unitData, su.nation, cell.Coordinates);
+            unit.Initialize(su.unitData, su.faction, cell.Coordinates);
             unit.SetAltitude(su.altitude);
             cell.TryPlace(unit, su.altitude);
 
             turnManager.RegisterUnit(unit);
 
-            Debug.Log($"[Bootstrap] Spawned {su.unitData.unitName} ({su.nation}) at ({su.col},{su.row})");
+            Debug.Log($"[Bootstrap] Spawned {su.unitData.unitName} ({su.faction}) at ({su.col},{su.row})");
         }
 
         private List<Unit> CollectAllUnits()
@@ -123,7 +123,7 @@ namespace DS7.Scene
     public class StartingUnit
     {
         public UnitData    unitData;
-        public Nation      nation;
+        public Faction     faction;
         public int         col, row;
         public AltitudeLayer altitude = AltitudeLayer.Ground;
         public GameObject  prefab;

@@ -24,22 +24,22 @@ namespace DS7.GameModes
 
         // ── State ─────────────────────────────────────────────────────────────
         [Header("Turn Order")]
-        public List<NationData> turnOrder = new();
+        public List<FactionData> turnOrder = new();
 
         private int _currentNationIndex;
         private int _turnNumber = 1;
 
-        public Nation ActiveNation  => turnOrder.Count > 0
-            ? turnOrder[_currentNationIndex].nation
-            : Nation.Neutral;
+        public Faction ActiveFaction => turnOrder.Count > 0
+            ? turnOrder[_currentNationIndex].faction
+            : Faction.Neutral;
 
         public int TurnNumber => _turnNumber;
 
         // ── Events ────────────────────────────────────────────────────────────
-        public event Action<Nation>  OnTurnStart;
-        public event Action<Nation>  OnTurnEnd;
+        public event Action<Faction> OnTurnStart;
+        public event Action<Faction> OnTurnEnd;
         public event Action<int>     OnTurnNumberChanged;
-        public event Action<Nation>  OnVictory;
+        public event Action<Faction> OnVictory;
 
         // ── Runtime unit list ─────────────────────────────────────────────────
         private List<Unit> _allUnits = new();
@@ -47,8 +47,8 @@ namespace DS7.GameModes
         public void RegisterUnit(Unit unit)   => _allUnits.Add(unit);
         public void UnregisterUnit(Unit unit) => _allUnits.Remove(unit);
 
-        // ── Nation funds (runtime) ────────────────────────────────────────────
-        public Dictionary<Nation, int> NationFunds { get; } = new();
+        // ── Faction funds (runtime) ────────────────────────────────────────────
+        public Dictionary<Faction, int> FactionFunds { get; } = new();
 
         // ── Lifecycle ─────────────────────────────────────────────────────────
         private void Awake()
@@ -65,16 +65,16 @@ namespace DS7.GameModes
             _currentNationIndex = 0;
             _turnNumber         = 1;
 
-            foreach (var nation in turnOrder)
-                NationFunds[nation.nation] = nation.baseFundRate;
+            foreach (var f in turnOrder)
+                FactionFunds[f.faction] = f.selectedNation != null ? f.selectedNation.baseFundRate : 100;
 
-            BeginNationTurn();
+            BeginFactionTurn();
         }
 
         // ── Turn Flow ─────────────────────────────────────────────────────────
-        private void BeginNationTurn()
+        private void BeginFactionTurn()
         {
-            Nation active = ActiveNation;
+            Faction active = ActiveFaction;
 
             // 1. Rebuild ZOC
             _zoc?.RebuildZOC(_allUnits);
@@ -92,22 +92,22 @@ namespace DS7.GameModes
 
             // 5. Auto-resupply if mode is Auto
             if (_supply != null && _supply.defaultMode == ResupplyMode.Auto)
-                _supply.ResupplyAll(active, _allUnits, NationFunds);
+                _supply.ResupplyAll(active, _allUnits, FactionFunds);
 
             OnTurnStart?.Invoke(active);
 
-            Debug.Log($"[Turn {_turnNumber}] {active}'s turn begins. Funds: {NationFunds.GetValueOrDefault(active, 0)}");
+            Debug.Log($"[Turn {_turnNumber}] {active}'s turn begins. Funds: {FactionFunds.GetValueOrDefault(active, 0)}");
         }
 
         /// <summary>Called by the player (or AI) when they press End Turn.</summary>
-        public void EndNationTurn()
+        public void EndFactionTurn()
         {
-            Nation active = ActiveNation;
+            Faction active = ActiveFaction;
             OnTurnEnd?.Invoke(active);
 
             CheckVictoryConditions();
 
-            // Advance to next nation
+            // Advance to next faction
             _currentNationIndex = (_currentNationIndex + 1) % turnOrder.Count;
 
             // If we wrapped back to the first nation, a new full turn begins
@@ -117,11 +117,11 @@ namespace DS7.GameModes
                 OnTurnNumberChanged?.Invoke(_turnNumber);
             }
 
-            BeginNationTurn();
+            BeginFactionTurn();
         }
 
         // ── Income ────────────────────────────────────────────────────────────
-        private void CollectIncome(Nation nation)
+        private void CollectIncome(Faction faction)
         {
             int income = 0;
 
@@ -129,7 +129,7 @@ namespace DS7.GameModes
             for (int row = 0; row < _grid.height; row++)
             {
                 var cell = _grid.GetCell(col, row);
-                if (cell?.Owner == nation && cell.Terrain != null)
+                if (cell?.Owner == faction && cell.Terrain != null)
                 {
                     // Apply bombardment damage reduction
                     float healthFactor = cell.facilityHealth / 100f;
@@ -137,16 +137,16 @@ namespace DS7.GameModes
                 }
             }
 
-            if (!NationFunds.ContainsKey(nation)) NationFunds[nation] = 0;
-            NationFunds[nation] += income;
+            if (!FactionFunds.ContainsKey(faction)) FactionFunds[faction] = 0;
+            FactionFunds[faction] += income;
         }
 
         // ── March Orders ──────────────────────────────────────────────────────
-        private void ExecuteMarchOrders(Nation nation)
+        private void ExecuteMarchOrders(Faction faction)
         {
             foreach (var unit in _allUnits)
             {
-                if (unit.Owner != nation) continue;
+                if (unit.Owner != faction) continue;
                 if (unit.MarchDestination == null) continue;
 
                 // Move one step toward destination each turn
@@ -184,9 +184,9 @@ namespace DS7.GameModes
         // ── Unit Production ───────────────────────────────────────────────────
         /// <summary>
         /// Attempts to produce a unit at the given facility cell.
-        /// Deducts production cost from nation funds.
+        /// Deducts production cost from faction funds.
         /// </summary>
-        public Unit ProduceUnit(HexCell cell, UnitData unitData, Nation nation, GameObject unitPrefab)
+        public Unit ProduceUnit(HexCell cell, UnitData unitData, Faction faction, GameObject unitPrefab)
         {
             if (!cell.Terrain.canProduce)
             {
@@ -200,17 +200,17 @@ namespace DS7.GameModes
                 return null;
             }
 
-            if (!NationFunds.TryGetValue(nation, out int funds) || funds < unitData.productionCost)
+            if (!FactionFunds.TryGetValue(faction, out int funds) || funds < unitData.productionCost)
             {
                 Debug.LogWarning($"Insufficient funds to produce {unitData.unitName}.");
                 return null;
             }
 
-            NationFunds[nation] = funds - unitData.productionCost;
+            FactionFunds[faction] = funds - unitData.productionCost;
 
             var go   = Instantiate(unitPrefab, cell.Coordinates.ToWorldPosition(_grid.hexSize), Quaternion.identity);
             var unit = go.GetComponent<Unit>();
-            unit.Initialize(unitData, nation, cell.Coordinates);
+            unit.Initialize(unitData, faction, cell.Coordinates);
             cell.TryPlace(unit, AltitudeLayer.Ground);
             _allUnits.Add(unit);
 
@@ -222,7 +222,7 @@ namespace DS7.GameModes
         private void CheckVictoryConditions()
         {
             // Default: capital capture → victory
-            var capturedCapitals = new HashSet<Nation>();
+            var capturedCapitals = new HashSet<Faction>();
 
             for (int col = 0; col < _grid.width; col++)
             for (int row = 0; row < _grid.height; row++)
@@ -230,11 +230,11 @@ namespace DS7.GameModes
                 var cell = _grid.GetCell(col, row);
                 if (cell == null) continue;
                 if (cell.Terrain?.terrainType != TerrainType.Capital) continue;
-                if (cell.Owner != Nation.Neutral)
+                if (cell.Owner != Faction.Neutral)
                     capturedCapitals.Add(cell.Owner);
             }
 
-            // If only one nation has all capitals (others captured), signal victory
+            // If only one faction has all capitals (others captured), signal victory
             // (Scenario-specific logic is handled by MissionMode/CampaignMode)
             GameManager.Instance?.CheckVictory(capturedCapitals, _allUnits);
         }

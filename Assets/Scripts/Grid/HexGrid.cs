@@ -260,22 +260,24 @@ namespace DS7.Grid
             var oldType = oldCell.Terrain != null ? oldCell.Terrain.terrainType : TerrainType.Plain;
             var newType = newTerrain != null ? newTerrain.terrainType : TerrainType.Plain;
 
-            if (oldType == newType)
-            {
-                oldCell.SetTerrain(newTerrain);
-                return oldCell;
-            }
-
             var prefab = GetPrefabForTerrain(newType);
-            var worldPos = oldCell.transform.position;
+            if (prefab == null) return oldCell;
 
-            var newCell = Instantiate(prefab, worldPos, Quaternion.identity, transform);
-            newCell.name = $"Hex_{col}_{row}";
-            SetLayerRecursive(newCell.gameObject, hexLayerIndex);
+            var worldPos = oldCell.transform.position;
+            var instance = Instantiate(prefab.gameObject, worldPos, Quaternion.identity, transform);
+            instance.name = $"Hex_{col}_{row}";
+            SetLayerRecursive(instance, hexLayerIndex);
+
+            var newCell = instance.GetComponent<HexCell>();
+            if (newCell == null) newCell = instance.AddComponent<HexCell>();
 
             newCell.Initialize(coords, newTerrain);
             newCell.Owner = oldCell.Owner;
             newCell.facilityHealth = oldCell.facilityHealth;
+            
+            // Carry over overlays if any
+            if (oldCell.RoadMask >= 0) newCell.SetRoadMask(oldCell.RoadMask);
+            if (oldCell.RiverMask >= 0) newCell.SetRiverMask(oldCell.RiverMask);
 
             foreach (var alt in System.Enum.GetValues(typeof(AltitudeLayer)))
             {
@@ -336,7 +338,7 @@ namespace DS7.Grid
             int stdMove   = unit.Data.standardMove;
             int highMv    = unit.Data.highMove;
             int fuel      = unit.CurrentFuel;
-            Nation nation = unit.Owner;
+            Faction faction = unit.Owner;
 
             // Dijkstra: stores minimum cost to reach each cell
             var dist = new Dictionary<HexCoordinates, float>();
@@ -360,7 +362,7 @@ namespace DS7.Grid
                     continue;
 
                 // Check ZOC stop: if enemy ZOC, we can enter but not move further
-                bool stoppedByZoc = current != unit.CurrentCoords && currentCell.IsInZocOf(nation);
+                bool stoppedByZoc = current != unit.CurrentCoords && currentCell.IsInZocOf(faction);
 
                 if (!stoppedByZoc)
                 {
@@ -370,7 +372,7 @@ namespace DS7.Grid
 
                         // Can't enter hex occupied by enemy at same altitude
                         var occupant = neighborCell.GetUnit(unit.CurrentAltitude);
-                        if (occupant != null && occupant.Owner != nation) continue;
+                        if (occupant != null && occupant.Owner != faction) continue;
 
                         int terrainCost = neighborCell.Terrain?.GetMovementCost(cat) ?? -1;
                         if (terrainCost < 0) continue; // impassable

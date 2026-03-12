@@ -151,14 +151,14 @@ namespace DS7.Combat
 
         /// <summary>Applies damage to all units in and adjacent to the target hex (7-hex area).</summary>
         private static void ApplyMegahexDamage(Units.Unit primaryTarget, int damage,
-                                                HexGrid grid, Nation attackerNation)
+                                                HexGrid grid, Faction attackerFaction)
         {
             var affected = new HashSet<Units.Unit> { primaryTarget };
             foreach (var neighborCoords in primaryTarget.CurrentCoords.AllNeighbors())
             {
                 if (!grid.TryGetCell(neighborCoords, out var cell)) continue;
                 foreach (var u in cell.AllUnits())
-                    if (u.Owner != attackerNation)
+                    if (u.Owner != attackerFaction)
                         affected.Add(u);
             }
 

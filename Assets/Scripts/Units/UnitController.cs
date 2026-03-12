@@ -199,7 +199,7 @@ namespace DS7.Units
         {
             if (other.Owner != _unit.Owner || other.Data != _unit.Data)
             {
-                Debug.LogWarning("Can only combine units of the same type and nation.");
+                Debug.LogWarning("Can only combine units of the same type and faction.");
                 return;
             }
 

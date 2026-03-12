@@ -1,3 +1,4 @@
+using DS7.Data;
 using DS7.Units;
 using UnityEngine;
 
@@ -57,14 +58,11 @@ namespace DS7.Progression
             Debug.Log($"[XP] {captor.Data.unitName} awarded {CaptureBonus} XP for capture.");
         }
 
-        /// <summary>
-        /// Awards survival XP to all surviving units of a nation at scenario end.
-        /// </summary>
-        public static void AwardSurvival(System.Collections.Generic.IEnumerable<Unit> units, Data.Nation nation)
+        public static void AwardSurvival(System.Collections.Generic.IEnumerable<Unit> units, Faction faction)
         {
             foreach (var u in units)
             {
-                if (u.Owner != nation || !u.IsAlive) continue;
+                if (u.Owner != faction || !u.IsAlive) continue;
                 u.AddExperience(SurvivalBonus);
             }
         }

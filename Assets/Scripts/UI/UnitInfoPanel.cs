@@ -41,8 +41,12 @@ namespace DS7.UI
             // Header
             if (unitNameText) unitNameText.text = unit.Data.unitName;
             if (unitTypeText) unitTypeText.text = unit.Data.unitType.ToString();
-            if (flagIcon && unit.Data.nation != Nation.Neutral)
-            { /* assign sprite from NationData lookup if available */ }
+            if (flagIcon)
+            {
+                var factionData = FactionManager.Instance?.GetFactionData(unit.Owner);
+                if (factionData != null)
+                    flagIcon.color = factionData.factionColor;
+            }
 
             // Status
             if (altitudeText)  altitudeText.text  = unit.CurrentAltitude.ToString();

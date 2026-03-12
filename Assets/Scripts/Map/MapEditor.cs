@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DS7.Data;
 using DS7.Grid;
 using UnityEngine;
+using DS7.Units;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -23,16 +24,14 @@ namespace DS7.Map
     public class MapEditor : MonoBehaviour
     {
         // ── Paint Mode ────────────────────────────────────────────────────────
-        public enum BrushMode { Terrain, Nation, Facility, Erase, CopyPaste, Fill }
-        public enum BrushShape { Point, Line, Box }
+        public enum BrushMode { Pen, Line, Box, Eraser, Copy, Paint, Road, River, Unit }
 
         [Header("Mode")]
-        public BrushMode brushMode = BrushMode.Terrain;
-        public BrushShape brushShape = BrushShape.Point;
+        public BrushMode brushMode = BrushMode.Pen;
 
-        [Header("Brush")]
-        public DS7.Data.TerrainData selectedTerrain;
-        public Nation      selectedNation = Nation.Neutral;
+        [Header("Paint Settings")]
+        public DS7.Data.TerrainData brushTerrain;
+        public Faction     brushOwner = Faction.Neutral;
         public bool        setFacilityActive = true;
         [Range(1, 7)]
         [Tooltip("1 = single hex, 7 = megahex (centre + ring)")]
@@ -41,7 +40,7 @@ namespace DS7.Map
         [Header("UI Integration")]
         public List<TerrainToggleMapping> terrainToggles;
         public List<BrushModeToggleMapping> modeToggles;
-        public List<BrushShapeToggleMapping> shapeToggles;
+        public Toggle[] factionToggles; // Added for Faction selection
 
         [Serializable]
         public struct TerrainToggleMapping
@@ -57,12 +56,7 @@ namespace DS7.Map
             public BrushMode mode;
         }
 
-        [Serializable]
-        public struct BrushShapeToggleMapping
-        {
-            public Toggle toggle;
-            public BrushShape shape;
-        }
+
 
         [Header("Camera Controls")]
         public float panSpeed = 20f;
@@ -84,7 +78,7 @@ namespace DS7.Map
         private Vector3 _dragStartPos;
         private readonly Dictionary<HexCell, GameObject> _activeHighlightObjects = new();
         private BrushMode _lastBrushMode;
-        private BrushMode _lastPaintBrushMode = BrushMode.Terrain;
+        private BrushMode _lastPaintBrushMode = BrushMode.Pen;
 
         // ── Clipboard ─────────────────────────────────────────────────────────
         [Serializable]
@@ -93,9 +87,11 @@ namespace DS7.Map
             public Vector2Int offset; // Obsolete, keeping for compatibility if needed elsewhere
             public HexCoordinates axialOffset; // Relative to root cell
             public DS7.Data.TerrainData terrain;
-            public Nation owner;
+            public Faction owner; // Changed from Nation to Faction
             public bool hasFacility;
             public int facilityHealth;
+            public int roadMask;
+            public int riverMask;
         }
         private readonly Dictionary<HexCoordinates, ClipboardCell> _clipboard = new();
 
@@ -109,6 +105,91 @@ namespace DS7.Map
         {
             if (grid == null) grid = HexGrid.Instance;
             if (targetCamera == null) targetCamera = Camera.main;
+
+            SetupToggleListeners();
+        }
+
+        private void SetupToggleListeners()
+        {
+            if (terrainToggles != null)
+            {
+                foreach (var mapping in terrainToggles)
+                {
+                    if (mapping.toggle != null)
+                    {
+                        mapping.toggle.onValueChanged.AddListener(isOn =>
+                        {
+                            if (isOn)
+                            {
+                                brushTerrain = mapping.terrain; // Changed from selectedTerrain
+                                // If we are in Erase/Road/River/Unit, switch back to Pen mode
+                                if (brushMode == BrushMode.Eraser || brushMode == BrushMode.Road || brushMode == BrushMode.River || brushMode == BrushMode.Unit)
+                                {
+                                    ForceSwitchToPenMode();
+                                }
+                            }
+                        });
+
+                        // Also catch clicks to handle already-on toggles
+                        var trigger = mapping.toggle.GetComponent<EventTrigger>();
+                        if (trigger == null) trigger = mapping.toggle.gameObject.AddComponent<EventTrigger>();
+                        var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
+                        entry.callback.AddListener((data) => 
+                        {
+                            brushTerrain = mapping.terrain; // Changed from selectedTerrain
+                            // Only force switch if we are in a mode that doesn't use terrain (Eraser, Road, River, Unit)
+                            if (brushMode == BrushMode.Eraser || brushMode == BrushMode.Road || brushMode == BrushMode.River || brushMode == BrushMode.Unit)
+                            {
+                                ForceSwitchToPenMode();
+                            }
+                        });
+                        trigger.triggers.Add(entry);
+                    }
+                }
+            }
+
+            if (modeToggles != null)
+            {
+                foreach (var mapping in modeToggles)
+                {
+                    if (mapping.toggle != null)
+                    {
+                        mapping.toggle.onValueChanged.AddListener(isOn =>
+                        {
+                            if (isOn)
+                            {
+                                brushMode = mapping.mode;
+                                // Only track as the "last paint mode" if it's a real painting mode —
+                                // not Paint (overlay), Copy, Eraser, Road, River, Unit.
+                                if (brushMode != BrushMode.Paint
+                                    && brushMode != BrushMode.Copy
+                                    && brushMode != BrushMode.Eraser
+                                    && brushMode != BrushMode.Road
+                                    && brushMode != BrushMode.River
+                                    && brushMode != BrushMode.Unit)
+                                {
+                                    _lastPaintBrushMode = brushMode;
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            // Faction selectors
+            if (factionToggles != null)
+            {
+                for (int i = 0; i < factionToggles.Length; i++)
+                {
+                    int index = i;
+                    if (factionToggles[i] != null)
+                    {
+                        factionToggles[i].onValueChanged.AddListener(on => {
+                            if (on) brushOwner = (Faction)(index); // 0=None, 1=Red, etc.
+                        });
+                    }
+                }
+            }
         }
 
         // ── Update ────────────────────────────────────────────────────────────
@@ -124,12 +205,12 @@ namespace DS7.Map
             {
                 _dragStartCell = _hoveredCell;
                 _dragStartPos = Input.mousePosition;
+                _lastPainted  = null;
             }
 
-            UpdateBrushFromToggles();
             UpdateHoverAndHighlight();
 
-            bool isShapeMode = brushShape != BrushShape.Point || brushMode == BrushMode.CopyPaste || brushMode == BrushMode.Fill;
+            bool isShapeMode = brushMode == BrushMode.Line || brushMode == BrushMode.Box || brushMode == BrushMode.Copy || brushMode == BrushMode.Paint || brushMode == BrushMode.Road || brushMode == BrushMode.River;
             if (isShapeMode)
             {
                 if (Input.GetMouseButtonUp(0)) TryPaint();
@@ -143,68 +224,15 @@ namespace DS7.Map
                 Undo();
         }
 
-        private void UpdateBrushFromToggles()
+        private void ForceSwitchToPenMode()
         {
-            if (terrainToggles != null)
-            {
-                foreach (var mapping in terrainToggles)
-                {
-                    if (mapping.toggle != null && mapping.toggle.isOn)
-                    {
-                        selectedTerrain = mapping.terrain;
-                        break;
-                    }
-                }
-            }
-
-            if (modeToggles != null)
-            {
-                foreach (var mapping in modeToggles)
-                {
-                    if (mapping.toggle != null && mapping.toggle.isOn)
-                    {
-                        brushMode = mapping.mode;
-                        if (brushMode != BrushMode.Fill && brushMode != BrushMode.CopyPaste)
-                        {
-                            _lastPaintBrushMode = brushMode;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            if (shapeToggles != null)
-            {
-                foreach (var mapping in shapeToggles)
-                {
-                    if (mapping.toggle != null && mapping.toggle.isOn)
-                    {
-                        brushShape = mapping.shape;
-                        break;
-                    }
-                }
-            }
-
-            if (brushMode != _lastBrushMode)
-            {
-                if (brushMode == BrushMode.CopyPaste)
-                {
-                    SetBrushShape(BrushShape.Box);
-                }
-                _lastBrushMode = brushMode;
-            }
-        }
-
-        public void SetBrushShape(BrushShape shape)
-        {
-            brushShape = shape;
-            if (shapeToggles == null) return;
-            
-            foreach (var mapping in shapeToggles)
+            brushMode = BrushMode.Pen;
+            if (modeToggles == null) return;
+            foreach (var mapping in modeToggles)
             {
                 if (mapping.toggle != null)
                 {
-                    mapping.toggle.isOn = (mapping.shape == shape);
+                    mapping.toggle.isOn = (mapping.mode == BrushMode.Pen);
                 }
             }
         }
@@ -227,32 +255,40 @@ namespace DS7.Map
             
             float dragDist = _dragStartCell != null ? Vector3.Distance(Input.mousePosition, _dragStartPos) : 0f;
             bool isDragging = Input.GetMouseButton(0) && _dragStartCell != null && (dragDist > 5f || _dragStartCell != _hoveredCell);
-            bool isDraggingShape = isDragging && (brushShape == BrushShape.Line || brushShape == BrushShape.Box || brushMode == BrushMode.CopyPaste);
+            bool isDraggingShape = isDragging && (brushMode == BrushMode.Line || brushMode == BrushMode.Box || brushMode == BrushMode.Copy || brushMode == BrushMode.Road || brushMode == BrushMode.River);
 
             if (_hoveredCell != null)
             {
                 // 1. Determine shape cells
                 List<HexCell> shapeCells;
-                bool isPastePreview = brushMode == BrushMode.CopyPaste && !isDragging && brushShape == BrushShape.Point && _clipboard.Count > 0;
+                bool isPastePreview = brushMode == BrushMode.Copy && !isDragging && _clipboard.Count > 0;
 
                 if (isPastePreview)
                 {
                     shapeCells = new List<HexCell>();
-                    foreach (var rel in _clipboard.Keys)
+                    var clipOffsets = new HashSet<HexCoordinates>(_clipboard.Keys);
+                    
+                    foreach (var rel in clipOffsets)
                     {
+                        // A cell is on the outline if any of its 6 neighbors is NOT in the clipboard
+                        bool isOutline = false;
+                        for (int d = 0; d < 6; d++)
+                        {
+                            if (!clipOffsets.Contains(rel.Neighbor(d)))
+                            {
+                                isOutline = true;
+                                break;
+                            }
+                        }
+                        if (!isOutline) continue;
+
                         var target = grid.GetCell(_hoveredCell.Coordinates + rel);
                         if (target != null) shapeCells.Add(target);
                     }
                 }
                 else if (isDraggingShape)
                 {
-                    // In CopyPaste mode, default to Box if Point is selected, otherwise respect Line/Box
-                    BrushShape shapeToUse = brushShape;
-                    if (brushMode == BrushMode.CopyPaste && brushShape == BrushShape.Point)
-                    {
-                        shapeToUse = BrushShape.Box;
-                    }
-                    shapeCells = GetShapeCells(_dragStartCell, _hoveredCell, shapeToUse, outlineOnly: true);
+                    shapeCells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: true);
                 }
                 else
                 {
@@ -272,7 +308,7 @@ namespace DS7.Map
                     else
                     {
                         // Other cells in the shape get Brush highlight if dragging a shape, or Selected if point brush
-                        // For CopyPaste mode - Point shape, we use Brush highlight for the paste preview
+                        // For Copy mode, we use Brush highlight for the paste preview
                         bool useBrushHighlight = isDraggingShape || isPastePreview;
                         targetModes[cell] = useBrushHighlight ? HexCell.HighlightMode.Brush : HexCell.HighlightMode.Selected;
                     }
@@ -323,92 +359,111 @@ namespace DS7.Map
         {
             if (_hoveredCell == null) return;
 
-            // For Point brush, avoid re-painting the same cell every frame
-            if (brushShape == BrushShape.Point && _hoveredCell == _lastPainted && brushRadius == 1) return;
+            // For Pen brush, avoid re-painting the same cell every frame
+            if (brushMode == BrushMode.Pen && _hoveredCell == _lastPainted && brushRadius == 1) return;
+            
+            HexCell prevHub = _lastPainted;
             _lastPainted = _hoveredCell;
 
             // Collect brush hexes
-            List<HexCell> cells;
             float dragDist = _dragStartCell != null ? Vector3.Distance(Input.mousePosition, _dragStartPos) : 0f;
             bool isDragging = _dragStartCell != null && (dragDist > 5f || _dragStartCell != _hoveredCell);
-            bool isDraggingShape = (brushShape != BrushShape.Point || brushMode == BrushMode.CopyPaste) && isDragging;
+            bool isDraggingShape = (brushMode == BrushMode.Line || brushMode == BrushMode.Box || brushMode == BrushMode.Copy || brushMode == BrushMode.Road || brushMode == BrushMode.River) && isDragging;
+
+            bool isLinePaintMode = (brushMode == BrushMode.Road || brushMode == BrushMode.River);
 
             if (isDraggingShape)
             {
-                BrushShape shapeToUse = brushShape;
-                if (brushMode == BrushMode.CopyPaste && brushShape == BrushShape.Point)
-                {
-                    shapeToUse = BrushShape.Box;
-                }
-                cells = GetShapeCells(_dragStartCell, _hoveredCell, shapeToUse, outlineOnly: false);
-            }
-            else if (brushMode == BrushMode.Fill)
-            {
-                cells = GetFillCells(_hoveredCell);
-            }
-            else
-            {
-                cells = BrushCells(_hoveredCell);
-            }
+                var cells = GetShapeCells(_dragStartCell, _hoveredCell, outlineOnly: false);
 
-            if (brushMode == BrushMode.CopyPaste)
-            {
-                // If we didn't drag at all, it's a Paste.
-                // If we did drag, it's a Copy.
-                
-                if (isDragging)
+                if (brushMode == BrushMode.Copy)
                 {
+                    // This is a drag — copy the selection
                     CopySelection(cells);
-                    SetBrushShape(BrushShape.Point); // Ready to paste
+                    return;
                 }
-                else if (brushShape == BrushShape.Point)
+
+                if (isLinePaintMode)
                 {
-                    ApplyPaste(_hoveredCell);
-                    SetBrushShape(BrushShape.Box); // Ready to copy more
+                    HexCell pathPrev = null;
+                    foreach (var hub in cells)
+                    {
+                        ApplyBrush(hub, pathPrev);
+                        pathPrev = hub;
+                    }
+                }
+                else
+                {
+                    foreach (var cell in cells) ApplyBrush(cell);
                 }
                 return;
             }
 
-            foreach (var cell in cells)
+            // Copy: single click → paste
+            if (brushMode == BrushMode.Copy && _clipboard.Count > 0)
             {
-                // If we are in Fill mode, we want to apply the "last paint mode" to the area
-                if (brushMode == BrushMode.Fill)
+                ApplyPaste(_hoveredCell);
+                _clipboard.Clear(); // Clear the clipboard after pasting to go back to box drag selection
+                return;
+            }
+            if (brushMode == BrushMode.Paint)
+            {
+                var cells = GetFillCells(_hoveredCell);
+                foreach (var cell in cells) ApplyFill(cell);
+                return;
+            }
+            
+            // Continuous Path (Line Paint - connecting items as brush moves over them)
+            if (isLinePaintMode && !isDraggingShape && prevHub != null)
+            {
+                var pathCoords = HexCoordinates.GetLine(prevHub.Coordinates, _hoveredCell.Coordinates);
+                HexCell pathPrev = prevHub;
+                
+                // path[0] is prevHub (already processed last frame). We start from path[1].
+                for (int i = 1; i < pathCoords.Count; i++)
                 {
-                    ApplyFill(cell);
+                    if (grid.TryGetCell(pathCoords[i], out var hub))
+                    {
+                        // Apply to the hub (center) with connectivity
+                        ApplyBrush(hub, pathPrev);
+
+                        // If radius > 1, apply to surrounding area (isolated)
+                        if (brushRadius > 1)
+                        {
+                            foreach (var sc in BrushCells(hub))
+                            {
+                                if (sc != hub) ApplyBrush(sc);
+                            }
+                        }
+                        pathPrev = hub;
+                    }
                 }
-                else
-                {
-                    ApplyBrush(cell);
-                }
+            }
+            else
+            {
+                // Regular single-point or radius brush
+                var hubs = BrushCells(_hoveredCell);
+                foreach (var cell in hubs) ApplyBrush(cell);
             }
         }
 
         private void ApplyFill(HexCell cell)
         {
             // Record for undo - notice we use _lastPaintBrushMode for the undo action's "intent"
-            var action = new MapEditAction(cell, _lastPaintBrushMode, selectedTerrain, selectedNation);
+            var action = new MapEditAction(cell, _lastPaintBrushMode, brushTerrain, brushOwner); // Changed selectedTerrain, selectedNation
             PushUndo(action);
 
             // Apply based on the context of the fill
             switch (_lastPaintBrushMode)
             {
-                case BrushMode.Terrain:
-                    if (selectedTerrain != null)
-                        grid.ReplaceCell(cell, selectedTerrain);
-                    break;
-                case BrushMode.Nation:
-                    cell.Owner = selectedNation;
-                    cell.RefreshVisuals();
-                    break;
-                case BrushMode.Erase:
-                    var neutralizedCell = grid.ReplaceCell(cell, null);
-                    if (neutralizedCell != null)
+                case BrushMode.Pen:
+                case BrushMode.Line:
+                case BrushMode.Box:
+                    if (brushTerrain != null) // Changed selectedTerrain
                     {
-                        neutralizedCell.Owner = Nation.Neutral;
-                        neutralizedCell.RefreshVisuals();
+                        grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
                     }
-                    break;
-                case BrushMode.Facility:
+                    cell.Owner = brushOwner; // Added
                     cell.SetFacilityActive(setFacilityActive);
                     break;
             }
@@ -431,7 +486,9 @@ namespace DS7.Map
                     terrain = cell.Terrain,
                     owner = cell.Owner,
                     hasFacility = cell.IsFacility,
-                    facilityHealth = cell.facilityHealth
+                    facilityHealth = cell.facilityHealth,
+                    roadMask = cell.RoadMask,
+                    riverMask = cell.RiverMask
                 };
             }
             Debug.Log($"[MapEditor] Copied {_clipboard.Count} cells to clipboard using axial offsets.");
@@ -454,7 +511,7 @@ namespace DS7.Map
                 if (grid.TryGetCell(targetCoords, out var targetCell))
                 {
                     // Record for undo manually since we're not using BrushMode
-                    var action = new MapEditAction(targetCell, BrushMode.Terrain, data.terrain, data.owner);
+                    var action = new MapEditAction(targetCell, BrushMode.Pen, data.terrain, data.owner); // Changed Nation to Faction
                     PushUndo(action);
 
                     // Apply
@@ -463,6 +520,8 @@ namespace DS7.Map
                     {
                         replaced.Owner = data.owner;
                         replaced.facilityHealth = data.facilityHealth;
+                        replaced.SetRoadMask(data.roadMask);
+                        replaced.SetRiverMask(data.riverMask);
                         replaced.RefreshVisuals();
                     }
                 }
@@ -475,7 +534,7 @@ namespace DS7.Map
             if (startCell == null) return results;
 
             // Determine what we're matching against based on current sub-settings
-            bool matchTerrain = (_lastPaintBrushMode != BrushMode.Nation);
+            bool matchTerrain = true; // Paint only compares terrain now, not nations
             
             var visited = new HashSet<HexCell>();
             var queue = new Queue<HexCell>();
@@ -483,7 +542,7 @@ namespace DS7.Map
             visited.Add(startCell);
 
             DS7.Data.TerrainData targetTerrain = startCell.Terrain;
-            Nation targetNation = startCell.Owner;
+            Faction targetNation = startCell.Owner; // Changed Nation to Faction
 
             while (queue.Count > 0)
             {
@@ -496,9 +555,7 @@ namespace DS7.Map
                     {
                         if (neighbor == null || visited.Contains(neighbor)) continue;
 
-                        bool isMatch = false;
-                        if (matchTerrain) isMatch = (neighbor.Terrain == targetTerrain);
-                        else isMatch = (neighbor.Owner == targetNation);
+                        bool isMatch = (neighbor.Terrain == targetTerrain);
 
                         if (isMatch)
                         {
@@ -514,15 +571,10 @@ namespace DS7.Map
 
         private List<HexCell> GetShapeCells(HexCell start, HexCell end, bool outlineOnly = false)
         {
-            return GetShapeCells(start, end, brushShape, outlineOnly);
-        }
-
-        private List<HexCell> GetShapeCells(HexCell start, HexCell end, BrushShape shape, bool outlineOnly = false)
-        {
             var results = new List<HexCell>();
             if (start == null || end == null) return results;
 
-            if (shape == BrushShape.Line)
+            if (brushMode == BrushMode.Line || brushMode == BrushMode.Road || brushMode == BrushMode.River)
             {
                 var coords = HexCoordinates.GetLine(start.Coordinates, end.Coordinates);
                 foreach (var c in coords)
@@ -535,7 +587,7 @@ namespace DS7.Map
                     }
                 }
             }
-            else if (brushShape == BrushShape.Box)
+            else if (brushMode == BrushMode.Box || brushMode == BrushMode.Copy)
             {
                 var startOffset = start.Coordinates.ToOffsetCoords();
                 var endOffset = end.Coordinates.ToOffsetCoords();
@@ -581,37 +633,124 @@ namespace DS7.Map
             return result;
         }
 
-        private void ApplyBrush(HexCell cell)
+        private void ApplyBrush(HexCell cell, HexCell fromCell = null)
         {
-            // Record for undo
-            var action = new MapEditAction(cell, brushMode, selectedTerrain, selectedNation);
-            PushUndo(action);
+            // Record for undo - only if something might change
+            bool stateChanged = false;
+            switch (brushMode)
+            {
+                case BrushMode.Pen:
+                case BrushMode.Line:
+                case BrushMode.Box:
+                case BrushMode.Paint:
+                    stateChanged = cell.Terrain != brushTerrain || cell.Owner != brushOwner || cell.IsFacility != setFacilityActive; // Changed selectedTerrain, selectedNation
+                    break;
+                case BrushMode.Eraser:   
+                    stateChanged = cell.RoadMask >= 0 || cell.RiverMask >= 0 || cell.AllUnits().GetEnumerator().MoveNext(); 
+                    break;
+                case BrushMode.Road:    stateChanged = cell.RoadMask < 0 || fromCell != null; break;
+                case BrushMode.River:   stateChanged = cell.RiverMask < 0 || fromCell != null; break;
+            }
+
+            if (stateChanged)
+            {
+                var action = new MapEditAction(cell, brushMode, brushTerrain, brushOwner); // Changed selectedTerrain, selectedNation
+                PushUndo(action);
+            }
 
             switch (brushMode)
             {
-                case BrushMode.Terrain:
-                    if (selectedTerrain != null)
-                        grid.ReplaceCell(cell, selectedTerrain);
-                    break;
-
-                case BrushMode.Nation:
-                    cell.Owner = selectedNation;
-                    cell.RefreshVisuals();
-                    break;
-
-                case BrushMode.Facility:
+                case BrushMode.Pen:
+                case BrushMode.Line:
+                case BrushMode.Box:
+                case BrushMode.Paint:
+                    if (brushTerrain != null) // Changed selectedTerrain
+                    {
+                        grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
+                    }
+                    cell.Owner = brushOwner; // Added
                     cell.SetFacilityActive(setFacilityActive);
                     break;
 
-                case BrushMode.Erase:
-                    // Reset to default terrain (first element in project or null)
-                    var neutralizedCell = grid.ReplaceCell(cell, null);
-                    if (neutralizedCell != null)
+                case BrushMode.Eraser:
+                    cell.ClearOverlays();
+                    
+                    // Remove units
+                    var layersToClear = new List<AltitudeLayer>();
+                    foreach (var u in cell.AllUnits())
                     {
-                        neutralizedCell.Owner = Nation.Neutral;
-                        neutralizedCell.RefreshVisuals();
+                        layersToClear.Add(u.CurrentAltitude);
+                    }
+                    foreach (var layer in layersToClear)
+                    {
+                        // In practice, call unit.Die() or similar, based on how Units are despawned
+                        if (cell.GetUnit(layer) is Unit targetUnit)
+                        {
+                            if (targetUnit.gameObject != null) Destroy(targetUnit.gameObject);
+                            cell.RemoveUnit(layer);
+                        }
                     }
                     break;
+
+                case BrushMode.Road:
+                case BrushMode.River:
+                    ApplyOverlayBrush(cell, fromCell);
+                    break;
+            }
+        }
+
+        /// <summary>Removes neighbor connection stubs that point back to a cell being erased.</summary>
+        private void CleanNeighborConnections(HexCell cell)
+        {
+            for (int dir = 0; dir < 6; dir++)
+            {
+                var nbCoords = cell.Coordinates.Neighbor(dir);
+                if (!grid.TryGetCell(nbCoords, out var nb)) continue;
+                int oppDir = ConnectivityHelper.GetOppositeDirection(dir);
+                if (nb.RoadMask >= 0)
+                    nb.SetRoadMask(ConnectivityHelper.RemoveConnection(nb.RoadMask, oppDir));
+                if (nb.RiverMask >= 0)
+                    nb.SetRiverMask(ConnectivityHelper.RemoveConnection(nb.RiverMask, oppDir));
+            }
+        }
+
+        private void ApplyOverlayBrush(HexCell cell, HexCell fromCell = null)
+        {
+            bool isRoad = brushMode == BrushMode.Road;
+            
+            // Ensure isolated node exists
+            if (isRoad)
+            {
+                if (cell.RoadMask < 0) cell.SetRoadMask(0);
+            }
+            else
+            {
+                if (cell.RiverMask < 0) cell.SetRiverMask(0);
+            }
+
+            // Connection logic
+            if (fromCell != null && fromCell != cell)
+            {
+                if (fromCell.Coordinates.IsNeighbor(cell.Coordinates))
+                {
+                    int dirToCell = ConnectivityHelper.GetDirection(fromCell.Coordinates, cell.Coordinates);
+                    int dirToLast = ConnectivityHelper.GetOppositeDirection(dirToCell);
+
+                    if (isRoad)
+                    {
+                        int fromMask = fromCell.RoadMask < 0 ? 0 : fromCell.RoadMask;
+                        int cellMask = cell.RoadMask < 0 ? 0 : cell.RoadMask;
+                        fromCell.SetRoadMask(ConnectivityHelper.AddConnection(fromMask, dirToCell));
+                        cell.SetRoadMask(ConnectivityHelper.AddConnection(cellMask, dirToLast));
+                    }
+                    else
+                    {
+                        int fromMask = fromCell.RiverMask < 0 ? 0 : fromCell.RiverMask;
+                        int cellMask = cell.RiverMask < 0 ? 0 : cell.RiverMask;
+                        fromCell.SetRiverMask(ConnectivityHelper.AddConnection(fromMask, dirToCell));
+                        cell.SetRiverMask(ConnectivityHelper.AddConnection(cellMask, dirToLast));
+                    }
+                }
             }
         }
 
@@ -738,19 +877,23 @@ namespace DS7.Map
         private readonly DS7.Grid.HexCoordinates  _coords;
         private readonly MapEditor.BrushMode _mode;
         private readonly DS7.Data.TerrainData _prevTerrain;
-        private readonly Nation          _prevNation;
+        private readonly Faction          _prevNation;
         private readonly DS7.Data.TerrainData _newTerrain;
-        private readonly Nation          _newNation;
+        private readonly Faction          _newNation;
+        private readonly int             _prevRoadMask;
+        private readonly int             _prevRiverMask;
 
         public MapEditAction(HexCell cell, MapEditor.BrushMode mode,
-                             DS7.Data.TerrainData newTerrain, Nation newNation)
+                             DS7.Data.TerrainData newTerrain, Faction newNation)
         {
-            _coords      = cell.Coordinates;
-            _mode        = mode;
-            _prevTerrain = cell.Terrain;
-            _prevNation  = cell.Owner;
-            _newTerrain  = newTerrain;
-            _newNation   = newNation;
+            _coords       = cell.Coordinates;
+            _mode         = mode;
+            _prevTerrain  = cell.Terrain;
+            _prevNation   = cell.Owner;
+            _newTerrain   = newTerrain;
+            _newNation    = newNation;
+            _prevRoadMask = cell.RoadMask;
+            _prevRiverMask = cell.RiverMask;
         }
 
         public void Revert()
@@ -760,23 +903,30 @@ namespace DS7.Map
 
             switch (_mode)
             {
-                case MapEditor.BrushMode.Terrain: 
-                    grid.ReplaceCell(cell, _prevTerrain); 
-                    break;
-                case MapEditor.BrushMode.Nation:  
-                    cell.Owner = _prevNation; 
-                    cell.RefreshVisuals(); 
-                    break;
-                case MapEditor.BrushMode.Facility:
-                    // We didn't track previous facility state, this could be extended later
-                    break;
-                case MapEditor.BrushMode.Erase:
-                    var revertedCell = grid.ReplaceCell(cell, _prevTerrain);
-                    if (revertedCell != null)
+                case MapEditor.BrushMode.Pen:
+                case MapEditor.BrushMode.Line:
+                case MapEditor.BrushMode.Box:
+                case MapEditor.BrushMode.Paint:
+                case MapEditor.BrushMode.Copy:
+                    var tc = grid.ReplaceCell(cell, _prevTerrain);
+                    if (tc != null)
                     {
-                        revertedCell.Owner = _prevNation;
-                        revertedCell.RefreshVisuals();
+                        tc.SetFacilityActive(_prevTerrain != null && _prevTerrain.isFacility && cell.facilityHealth > 0);
+                        tc.Owner = _prevNation;
+                        tc.SetRoadMask(_prevRoadMask);
+                        tc.SetRiverMask(_prevRiverMask);
+                        tc.RefreshVisuals();
                     }
+                    break;
+                case MapEditor.BrushMode.Eraser:
+                    cell.SetRoadMask(_prevRoadMask);
+                    cell.SetRiverMask(_prevRiverMask);
+                    break;
+                case MapEditor.BrushMode.Road:
+                    cell.SetRoadMask(_prevRoadMask);
+                    break;
+                case MapEditor.BrushMode.River:
+                    cell.SetRiverMask(_prevRiverMask);
                     break;
             }
         }
@@ -802,11 +952,13 @@ namespace DS7.Map
                 if (cell == null) continue;
                 cells.Add(new CellSaveData
                 {
-                    col           = col,
-                    row           = row,
-                    terrainName   = cell.Terrain?.name ?? string.Empty,
-                    owner         = (int)cell.Owner,
-                    facilityHealth = cell.facilityHealth
+                    col            = col,
+                    row            = row,
+                    terrainName    = cell.Terrain?.name ?? string.Empty,
+                    owner          = (int)cell.Owner,
+                    facilityHealth = cell.facilityHealth,
+                    roadMask       = cell.RoadMask,
+                    riverMask      = cell.RiverMask
                 });
             }
         }
@@ -827,8 +979,10 @@ namespace DS7.Map
 
                 if (cell != null)
                 {
-                    cell.Owner          = (Nation)cd.owner;
+                    cell.Owner          = (Faction)cd.owner;
                     cell.facilityHealth = cd.facilityHealth;
+                    cell.SetRoadMask(cd.roadMask);
+                    cell.SetRiverMask(cd.riverMask);
                     cell.RefreshVisuals();
                 }
             }
@@ -842,5 +996,7 @@ namespace DS7.Map
         public string terrainName;
         public int    owner;
         public int    facilityHealth;
+        public int    roadMask;
+        public int    riverMask;
     }
 }

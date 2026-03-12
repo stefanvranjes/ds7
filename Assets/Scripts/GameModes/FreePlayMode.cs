@@ -20,7 +20,7 @@ namespace DS7.GameModes
         public GameObject blackoutPanel;
 
         private TurnManager _turns;
-        private Nation      _lastNation;
+        private Faction     _lastFaction;
 
         private void Start()
         {
@@ -34,25 +34,25 @@ namespace DS7.GameModes
             // Configure turn order from active slots
             _turns.turnOrder.Clear();
             foreach (var slot in playerSlots)
-                if (slot.active && slot.nationData != null)
-                    _turns.turnOrder.Add(slot.nationData);
+                if (slot.active && slot.factionData != null)
+                    _turns.turnOrder.Add(slot.factionData);
 
             _turns.StartGame();
         }
 
-        private void OnTurnStart(Nation nation)
+        private void OnTurnStart(Faction faction)
         {
             // Hide blackout when new turn begins
             if (blackoutPanel != null)
                 blackoutPanel.SetActive(false);
 
-            _lastNation = nation;
+            _lastFaction = faction;
         }
 
-        private void OnTurnEnd(Nation nation)
+        private void OnTurnEnd(Faction faction)
         {
             // If next player is also human, show blackout
-            var slot = GetSlot(nation);
+            var slot = GetSlot(faction);
             if (hotSeatBlackout && slot?.playerType == PlayerType.Human)
             {
                 if (blackoutPanel != null)
@@ -60,10 +60,10 @@ namespace DS7.GameModes
             }
         }
 
-        private FreePlaySlot GetSlot(Nation nation)
+        private FreePlaySlot GetSlot(Faction faction)
         {
             foreach (var s in playerSlots)
-                if (s.nationData?.nation == nation) return s;
+                if (s.factionData?.faction == faction) return s;
             return null;
         }
     }
@@ -71,8 +71,8 @@ namespace DS7.GameModes
     [System.Serializable]
     public class FreePlaySlot
     {
-        public bool       active;
-        public NationData nationData;
+        public bool        active;
+        public FactionData factionData;
         public PlayerType playerType;
         public int        startingFunds;
         [Tooltip("Used for alliances: nations with same alliance ID are allied.")]

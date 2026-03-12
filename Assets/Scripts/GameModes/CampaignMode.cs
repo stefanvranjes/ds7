@@ -34,7 +34,7 @@ namespace DS7.GameModes
                 _turns.OnVictory += OnVictory;
         }
 
-        private void OnVictory(Nation winner)
+        private void OnVictory(Faction winner)
         {
             if (_battleComplete) return;
             _battleComplete = true;
@@ -66,7 +66,7 @@ namespace DS7.GameModes
         }
 
         // ── Save Units Screen ─────────────────────────────────────────────────
-        private void OpenSaveUnitsScreen(Nation winner)
+        private void OpenSaveUnitsScreen(Faction winner)
         {
             // In a full implementation this opens a UI letting the player pick
             // which leveled units to save (up to 20). For now, auto-save all

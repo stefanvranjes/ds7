@@ -24,6 +24,8 @@ namespace DS7.Editor
             CreateNationAssets();
             CreateWeaponAssets();
             CreateUnitAssets();
+            CreateFactionAssets();
+            CreateFactionManager();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[DS7Factory] Starter assets created in Assets/DS7Data/");
@@ -88,6 +90,53 @@ namespace DS7.Editor
             CreateNation("USA",    Nation.USA,    new Color(0.2f,0.4f,0.8f),  500);
             CreateNation("Japan",  Nation.Japan,  new Color(0.9f,0.2f,0.2f),  500);
             CreateNation("Russia", Nation.Russia, new Color(0.1f,0.6f,0.1f),  500);
+        }
+
+        private static void CreateFactionAssets()
+        {
+            EnsureDir($"{RootPath}/Factions");
+            CreateFaction("Red",    Faction.Red,    new Color(0.9f, 0.1f, 0.1f));
+            CreateFaction("Blue",   Faction.Blue,   new Color(0.1f, 0.3f, 0.9f));
+            CreateFaction("Green",  Faction.Green,  new Color(0.1f, 0.7f, 0.1f));
+            CreateFaction("Yellow", Faction.Yellow, new Color(0.9f, 0.8f, 0.1f));
+        }
+
+        private static void CreateFaction(string assetName, Faction faction, Color color)
+        {
+            string path = $"{RootPath}/Factions/{assetName}.asset";
+            if (File.Exists(Path.Combine(Application.dataPath, "..", path))) return;
+
+            var f = ScriptableObject.CreateInstance<FactionData>();
+            f.faction     = faction;
+            f.factionName = assetName;
+            f.factionColor = color;
+            
+            // Default link to a nation if available (just for convenience)
+            string defaultNationPath = $"{RootPath}/Nations/USA.asset";
+            f.selectedNation = AssetDatabase.LoadAssetAtPath<NationData>(defaultNationPath);
+
+            AssetDatabase.CreateAsset(f, path);
+        }
+
+        private static void CreateFactionManager()
+        {
+            EnsureDir($"{RootPath}/Factions");
+            string path = $"{RootPath}/Factions/FactionManager.asset";
+            if (File.Exists(Path.Combine(Application.dataPath, "..", path))) return;
+
+            var fm = ScriptableObject.CreateInstance<FactionManager>();
+            
+            // Find all FactionData assets in RootPath/Factions
+            string factionsPath = $"{RootPath}/Factions";
+            string[] guids = AssetDatabase.FindAssets("t:FactionData", new[] { factionsPath });
+            foreach (string guid in guids)
+            {
+                string p = AssetDatabase.GUIDToAssetPath(guid);
+                var fd = AssetDatabase.LoadAssetAtPath<FactionData>(p);
+                if (fd != null) fm.factions.Add(fd);
+            }
+
+            AssetDatabase.CreateAsset(fm, path);
         }
 
         private static void CreateNation(string assetName, Nation nation, Color flag, int funds)

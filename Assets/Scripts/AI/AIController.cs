@@ -17,7 +17,7 @@ namespace DS7.AI
         [Tooltip("1=Easy, 2=Normal, 3=Hard")]
         public int difficulty = 1;
 
-        public Nation controlledNation;
+        public Faction controlledFaction;
 
         private HexGrid           _grid;
         private List<Unit>        _allUnits;
@@ -30,27 +30,27 @@ namespace DS7.AI
         }
 
         // ── Execute AI Turn ───────────────────────────────────────────────────
-        /// <summary>Called by TurnManager when this AI nation's turn begins.</summary>
-        public void ExecuteTurn(List<Unit> allUnits, Dictionary<Nation, int> nationFunds)
+        /// <summary>Called by TurnManager when this AI faction's turn begins.</summary>
+        public void ExecuteTurn(List<Unit> allUnits, Dictionary<Faction, int> factionFunds)
         {
             _allUnits = allUnits;
 
             var myUnits = new List<Unit>();
             foreach (var u in allUnits)
-                if (u.Owner == controlledNation && u.IsAlive) myUnits.Add(u);
+                if (u.Owner == controlledFaction && u.IsAlive) myUnits.Add(u);
 
             foreach (var unit in myUnits)
             {
                 if (!unit.IsAlive) continue;
-                ActWithUnit(unit, nationFunds);
+                ActWithUnit(unit, factionFunds);
             }
 
             // End turn automatically
-            GameModes.TurnManager.Instance?.EndNationTurn();
+            GameModes.TurnManager.Instance?.EndFactionTurn();
         }
 
         // ── Unit Decision ─────────────────────────────────────────────────────
-        private void ActWithUnit(Unit unit, Dictionary<Nation, int> funds)
+        private void ActWithUnit(Unit unit, Dictionary<Faction, int> funds)
         {
             // 1. Resupply if needed
             if (ShouldResupply(unit) && _supply.CanResupply(unit))
@@ -92,7 +92,7 @@ namespace DS7.AI
             if (!unit.HasActed && unit.Data.HasAbility(UnitAbility.Capture))
             {
                 var cell = _grid.GetCell(unit.CurrentCoords);
-                if (cell != null && cell.IsFacility && cell.Owner != controlledNation)
+                if (cell != null && cell.IsFacility && cell.Owner != controlledFaction)
                     unit.GetComponent<Units.UnitController>()?.AttemptCapture(cell);
             }
         }
@@ -111,13 +111,12 @@ namespace DS7.AI
         {
             Unit   best    = null;
             int    bestHP  = int.MaxValue; // prefer weakest target on Easy
-            float  bestAtk = 0;
 
             foreach (var cell in targetCells)
             {
                 foreach (var u in cell.AllUnits())
                 {
-                    if (u.Owner == controlledNation) continue;
+                    if (u.Owner == controlledFaction) continue;
 
                     // Hard mode: pick highest-value target (lowest endurance → easiest kill)
                     if (difficulty >= 2)
@@ -169,17 +168,17 @@ namespace DS7.AI
             for (int row = 0; row < _grid.height; row++)
             {
                 var cell = _grid.GetCell(col, row);
-                if (cell == null || !cell.IsVisibleTo(controlledNation)) continue;
+                if (cell == null || !cell.IsVisibleTo(controlledFaction)) continue;
 
                 if (cell.Terrain?.terrainType == TerrainType.Capital &&
-                    cell.Owner != controlledNation)
+                    cell.Owner != controlledFaction)
                 {
                     bestCapital = cell.Coordinates;
                 }
 
                 foreach (var u in cell.AllUnits())
                 {
-                    if (u.Owner == controlledNation) continue;
+                    if (u.Owner == controlledFaction) continue;
                     int d = HexCoordinates.Distance(unit.CurrentCoords, cell.Coordinates);
                     if (d < minDist) { minDist = d; nearestEnemy = cell.Coordinates; }
                 }

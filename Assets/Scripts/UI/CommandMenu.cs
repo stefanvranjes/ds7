@@ -25,7 +25,7 @@ namespace DS7.UI
         public Button waitButton;
 
         [Header("Status Label")]
-        public TMP_Text activeNationText;
+        public TMP_Text activeFactionText;
 
         private Unit          _unit;
         private HexSelector   _selector;
@@ -52,7 +52,7 @@ namespace DS7.UI
             {
                 if (_unit == null) return;
                 Logistics.SupplySystem.Instance?.Resupply(_unit,
-                    GameModes.TurnManager.Instance?.NationFunds);
+                    GameModes.TurnManager.Instance?.FactionFunds);
                 Hide();
             });
 
@@ -116,9 +116,9 @@ namespace DS7.UI
             if (loadButton)     loadButton.interactable     = _unit.Data.HasAbility(UnitAbility.Trans);
             if (unloadButton)   unloadButton.interactable   = _unit.CargoUnits.Count > 0;
 
-            // Update nation label
-            if (activeNationText && GameModes.TurnManager.Instance != null)
-                activeNationText.text = $"{GameModes.TurnManager.Instance.ActiveNation} — Turn {GameModes.TurnManager.Instance.TurnNumber}";
+            // Update faction label
+            if (activeFactionText && GameModes.TurnManager.Instance != null)
+                activeFactionText.text = $"{GameModes.TurnManager.Instance.ActiveFaction} — Turn {GameModes.TurnManager.Instance.TurnNumber}";
         }
     }
 }

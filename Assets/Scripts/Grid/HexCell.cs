@@ -20,8 +20,8 @@ namespace DS7.Grid
         public bool IsFacility => Terrain != null && Terrain.isFacility;
 
         // ── Ownership & Facility State ────────────────────────────────────────
-        /// <summary>Which nation currently owns this facility (null = neutral).</summary>
-        public Nation Owner { get; set; } = Nation.Neutral;
+        /// <summary>Which faction currently owns this facility.</summary>
+        public Faction Owner { get; set; } = Faction.Neutral;
 
         /// <summary>Capture progress counter. Ground units add 1/turn while occupying.</summary>
         public int CaptureProgress { get; set; } = 0;
@@ -50,23 +50,52 @@ namespace DS7.Grid
         public IEnumerable<Unit> AllUnits() => _occupants.Values;
 
         // ── Zone of Control ───────────────────────────────────────────────────
-        /// <summary>Set of nations exerting ZOC over this cell (updated each turn).</summary>
-        public HashSet<Nation> ZocNations { get; } = new();
+        /// <summary>Set of factions exerting ZOC over this cell (updated each turn).</summary>
+        public HashSet<Faction> ZocFactions { get; } = new();
 
-        public bool IsInZocOf(Nation nation) => ZocNations.Contains(nation);
+        public bool IsInZocOf(Faction faction) => ZocFactions.Contains(faction);
 
         // ── Fog of War ────────────────────────────────────────────────────────
-        /// <summary>Nations that can currently see this hex.</summary>
-        public HashSet<Nation> VisibleTo { get; } = new();
+        /// <summary>Factions that can currently see this hex.</summary>
+        public HashSet<Faction> VisibleTo { get; } = new();
 
-        public bool IsVisibleTo(Nation nation) => VisibleTo.Contains(nation);
+        public bool IsVisibleTo(Faction faction) => VisibleTo.Contains(faction);
+
+        // ── Overlays (Roads / Rivers) ────────────────────────────────────────
+        [field: SerializeField] public int RoadMask { get; private set; } = -1;
+        [field: SerializeField] public int RiverMask { get; private set; } = -1;
+
+        private GameObject _roadOverlay;
+        private GameObject _riverOverlay;
+
+        public void SetRoadMask(int mask)
+        {
+            RoadMask = mask;
+            RefreshOverlays();
+        }
+
+        public void SetRiverMask(int mask)
+        {
+            RiverMask = mask;
+            RefreshOverlays();
+        }
+
+        public void ClearOverlays()
+        {
+            RoadMask = -1;
+            RiverMask = -1;
+            RefreshOverlays();
+        }
 
         // ── Initializer ───────────────────────────────────────────────────────
         public void Initialize(HexCoordinates coords, DS7.Data.TerrainData terrain)
         {
             Coordinates = coords;
             Terrain = terrain;
-            facilityHealth = 100;
+            facilityHealth = (terrain != null && terrain.isFacility) ? 100 : 0;
+            // Overlays are persistent unless cleared
+            if (RoadMask == 0) RoadMask = -1; // Default to none if uninitialized
+            if (RiverMask == 0) RiverMask = -1;
         }
 
         // ── Visual Feedback ───────────────────────────────────────────────────
@@ -81,14 +110,7 @@ namespace DS7.Grid
 
         public void SetHighlight(HighlightMode mode)
         {
-            // Highlights are now managed by HexGrid pooling and MapEditor positioning.
-            // This method can be used for material color fallbacks if desired,
-            // or left empty if the pooling handles everything.
-        }
-
-        public void UpdateHighlightPositions()
-        {
-            // No longer needed here as MapEditor positions pooled objects in world space.
+            // Managed by pooling
         }
 
         // ── Map-Editor Helpers ────────────────────────────────────────────────
@@ -107,14 +129,56 @@ namespace DS7.Grid
             facilityHealth = active ? 100 : 0;
         }
 
-        /// <summary>Repaints the tile tint from the TerrainData colour (or white for null).</summary>
+        /// <summary>Repaints the tile tint and updates overlays.</summary>
         public void RefreshVisuals()
         {
             if (_meshRenderer == null) _meshRenderer = GetComponent<MeshRenderer>();
-            if (_meshRenderer == null) return;
+            if (_meshRenderer != null)
+            {
+                Color tint = (Terrain != null) ? Terrain.editorTint : Color.white;
+                _meshRenderer.material.color = tint;
+            }
+            RefreshOverlays();
+        }
 
-            Color tint = (Terrain != null) ? Terrain.editorTint : Color.white;
-            _meshRenderer.material.color = tint;
+        private void RefreshOverlays()
+        {
+            UpdateOverlay(ref _roadOverlay, "Road", RoadMask);
+            UpdateOverlay(ref _riverOverlay, "River", RiverMask);
+        }
+
+        private void UpdateOverlay(ref GameObject overlayObj, string folder, int mask)
+        {
+            if (mask < 0)
+            {
+                if (overlayObj != null) DestroyImmediate(overlayObj);
+                overlayObj = null;
+                return;
+            }
+
+            // Load variant
+            string baseName = folder;
+            string prefabName = (mask == 0) ? baseName : $"{baseName} {mask + 1}";
+            // Note: In DS7 style, Road 1 might be mask 0, but usually mask 0 is "no road".
+            // If mask 0 is "dot", and mask 1 is "E", etc.
+            // Following previous logic: mask 0 -> "Road", mask X -> "Road X+1"
+            
+            GameObject prefab = Resources.Load<GameObject>($"Prefabs/{folder}/{prefabName}");
+            if (prefab == null) return;
+
+            if (overlayObj != null)
+            {
+                // Check if it's already the right one (simple check by name)
+                if (overlayObj.name == prefabName) return;
+                DestroyImmediate(overlayObj);
+            }
+
+            overlayObj = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            overlayObj.name = prefabName;
+            
+            // Adjust height to sit on top of base terrain
+            //float heightOffset = (Terrain != null) ? Terrain.visualHeight : 0.1f;
+            //overlayObj.transform.position += Vector3.up * (heightOffset + 0.01f);
         }
     }
 }

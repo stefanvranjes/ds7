@@ -7,7 +7,7 @@ using UnityEngine;
 namespace DS7.Map
 {
     /// <summary>
-    /// Manages per-nation fog of war. Updates each turn based on unit detection ranges.
+    /// Manages per-faction fog of war. Updates each turn based on unit detection ranges.
     /// </summary>
     public class FogOfWar : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace DS7.Map
         }
 
         // ── Rebuild Visibility ────────────────────────────────────────────────
-        /// <summary>Rebuilds the visibility map for all nations each turn.</summary>
+        /// <summary>Rebuilds the visibility map for all factions each turn.</summary>
         public void RebuildVisibility(List<Unit> allUnits)
         {
             if (!fogEnabled) return;
@@ -42,7 +42,8 @@ namespace DS7.Map
                 RevealAroundUnit(unit);
 
             // Update tile rendering (show/hide)
-            ApplyToTiles(Nation.Japan); // human player — extend for multiplayer
+            // Assuming Blue is the human player for now - this should come from local player logic
+            ApplyToTiles(Faction.Blue); 
         }
 
         private void RevealAroundUnit(Unit unit)
@@ -69,7 +70,7 @@ namespace DS7.Map
             }
         }
 
-        private void ApplyToTiles(Nation viewingNation)
+        private void ApplyToTiles(Faction viewingFaction)
         {
             for (int col = 0; col < _grid.width; col++)
             for (int row = 0; row < _grid.height; row++)
@@ -77,7 +78,7 @@ namespace DS7.Map
                 var cell = _grid.GetCell(col, row);
                 if (cell == null) continue;
 
-                bool visible = cell.IsVisibleTo(viewingNation);
+                bool visible = cell.IsVisibleTo(viewingFaction);
 
                 // Gray out or hide non-visible tiles
                 var rend = cell.GetComponent<MeshRenderer>();
@@ -86,7 +87,7 @@ namespace DS7.Map
 
                 // Hide enemy units in fog
                 foreach (var unit in cell.AllUnits())
-                    if (unit.Owner != viewingNation)
+                    if (unit.Owner != viewingFaction)
                         unit.gameObject.SetActive(visible);
             }
         }

@@ -89,18 +89,18 @@ namespace DS7.GameModes
         }
 
         // ── Victory ───────────────────────────────────────────────────────────
-        public void CheckVictory(HashSet<Nation> owningNations, List<Unit> allUnits)
+        public void CheckVictory(HashSet<Faction> owningNations, List<Unit> allUnits)
         {
             // Handled by active game mode script
             // This is the fallback: if only one living nation exists → victory
-            var livingNations = new HashSet<Nation>();
+            var livingFactions = new HashSet<Faction>();
             foreach (var u in allUnits)
-                if (u.IsAlive) livingNations.Add(u.Owner);
+                if (u.IsAlive) livingFactions.Add(u.Owner);
 
-            if (livingNations.Count == 1)
+            if (livingFactions.Count == 1)
             {
-                foreach (var n in livingNations)
-                    Debug.Log($"[GameManager] VICTORY: {n} wins!");
+                foreach (var f in livingFactions)
+                    Debug.Log($"[GameManager] VICTORY: {f} wins!");
             }
         }
     }
@@ -111,16 +111,16 @@ namespace DS7.GameModes
     {
         public GameMode mode;
         public int      turnNumber;
-        public Nation   activeNation;
+        public Faction  activeFaction;
 
         public static GameSaveData Capture(TurnManager tm, GameMode mode)
         {
             if (tm == null) return new GameSaveData { mode = mode };
             return new GameSaveData
             {
-                mode         = mode,
-                turnNumber   = tm.TurnNumber,
-                activeNation = tm.ActiveNation
+                mode          = mode,
+                turnNumber    = tm.TurnNumber,
+                activeFaction = tm.ActiveFaction
             };
         }
     }

@@ -24,7 +24,7 @@ namespace DS7.Combat
 
         // ── Rebuild ZOC map ───────────────────────────────────────────────────
         /// <summary>
-        /// Called at the start of each nation's turn.
+        /// Called at the start of each faction's turn.
         /// Clears old ZOC and recalculates based on all ground/surface units.
         /// </summary>
         public void RebuildZOC(IEnumerable<Units.Unit> allUnits)
@@ -36,7 +36,7 @@ namespace DS7.Combat
             for (int row = 0; row < _grid.height; row++)
             {
                 var cell = _grid.GetCell(col, row);
-                cell?.ZocNations.Clear();
+                cell?.ZocFactions.Clear();
             }
 
             // Apply ZOC for all ground and surface units
@@ -47,7 +47,7 @@ namespace DS7.Combat
                 foreach (var neighborCoords in unit.CurrentCoords.AllNeighbors())
                 {
                     if (!_grid.TryGetCell(neighborCoords, out var cell)) continue;
-                    cell.ZocNations.Add(unit.Owner);
+                    cell.ZocFactions.Add(unit.Owner);
                 }
             }
         }
