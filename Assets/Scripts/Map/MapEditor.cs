@@ -461,10 +461,18 @@ namespace DS7.Map
                 case BrushMode.Box:
                     if (brushTerrain != null) // Changed selectedTerrain
                     {
-                        grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
+                        var newCell = grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
+                        if (newCell != null)
+                        {
+                            newCell.Owner = brushOwner;
+                            newCell.SetFacilityActive(setFacilityActive);
+                        }
                     }
-                    cell.Owner = brushOwner; // Added
-                    cell.SetFacilityActive(setFacilityActive);
+                    else
+                    {
+                        cell.Owner = brushOwner; // Added
+                        cell.SetFacilityActive(setFacilityActive);
+                    }
                     break;
             }
         }
@@ -666,10 +674,18 @@ namespace DS7.Map
                 case BrushMode.Paint:
                     if (brushTerrain != null) // Changed selectedTerrain
                     {
-                        grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
+                        var newCell = grid.ReplaceCell(cell, brushTerrain); // Changed selectedTerrain
+                        if (newCell != null)
+                        {
+                            newCell.Owner = brushOwner;
+                            newCell.SetFacilityActive(setFacilityActive);
+                        }
                     }
-                    cell.Owner = brushOwner; // Added
-                    cell.SetFacilityActive(setFacilityActive);
+                    else
+                    {
+                        cell.Owner = brushOwner; // Added
+                        cell.SetFacilityActive(setFacilityActive);
+                    }
                     break;
 
                 case BrushMode.Eraser:

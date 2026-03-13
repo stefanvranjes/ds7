@@ -20,8 +20,20 @@ namespace DS7.Grid
         public bool IsFacility => Terrain != null && Terrain.isFacility;
 
         // ── Ownership & Facility State ────────────────────────────────────────
+        private Faction _owner = Faction.Neutral;
         /// <summary>Which faction currently owns this facility.</summary>
-        public Faction Owner { get; set; } = Faction.Neutral;
+        public Faction Owner
+        {
+            get => _owner;
+            set
+            {
+                if (_owner != value)
+                {
+                    _owner = value;
+                    RefreshVisuals();
+                }
+            }
+        }
 
         /// <summary>Capture progress counter. Ground units add 1/turn while occupying.</summary>
         public int CaptureProgress { get; set; } = 0;
@@ -138,6 +150,21 @@ namespace DS7.Grid
                 Color tint = (Terrain != null) ? Terrain.editorTint : Color.white;
                 _meshRenderer.material.color = tint;
             }
+
+            // Faction coloring on the last child (top surface)
+            if (transform.childCount > 0)
+            {
+                Transform lastChild = transform.GetChild(transform.childCount - 1);
+                var lastChildRenderer = lastChild.GetComponent<MeshRenderer>();
+                if (lastChildRenderer != null)
+                {
+                    Color factionColor = FactionManager.Instance != null 
+                        ? FactionManager.Instance.GetFactionColor(Owner) 
+                        : Color.white;
+                    lastChildRenderer.material.color = factionColor;
+                }
+            }
+
             RefreshOverlays();
         }
 

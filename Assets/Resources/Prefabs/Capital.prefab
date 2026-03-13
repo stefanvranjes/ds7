@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 298757793384378659}
   - component: {fileID: 133300675303987362}
   - component: {fileID: 2949618711164423552}
+  - component: {fileID: 2848488748210539880}
   m_Layer: 0
   m_Name: HexChunk3
   m_TagString: Untagged
@@ -189,6 +190,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2848488748210539880
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668659930864223000}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 8b5fb9d9d66408f40b2c54d24ad6c2e2, type: 3}
 --- !u!1 &2327227235961323731
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +358,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4646575718278084122}
-  m_Mesh: {fileID: 7336321454789311003, guid: 5cc0af03bb5d00d4ba1c09c9253e89ef, type: 3}
+  m_Mesh: {fileID: 7336321454789311003, guid: 3d694bcbd15456249a85cb90951c8d27, type: 3}
 --- !u!23 &7906840170709226763
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -387,6 +410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 620374787697700623}
+  - component: {fileID: -8387359285106428972}
   m_Layer: 0
   m_Name: Capital
   m_TagString: Untagged
@@ -413,3 +437,19 @@ Transform:
   - {fileID: 1468731680149034415}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8387359285106428972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5726886434104561307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: db40de9e28787184d824094662536f20, type: 2}
+  facilityHealth: 100
+  <RoadMask>k__BackingField: -1
+  <RiverMask>k__BackingField: -1

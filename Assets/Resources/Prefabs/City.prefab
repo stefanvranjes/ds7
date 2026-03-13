@@ -146,7 +146,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 558579944843478956}
-  m_Mesh: {fileID: -6158919997635970013, guid: 5cc0af03bb5d00d4ba1c09c9253e89ef, type: 3}
+  m_Mesh: {fileID: -6158919997635970013, guid: 3d694bcbd15456249a85cb90951c8d27, type: 3}
 --- !u!23 &7988189638493882503
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -198,6 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2716450336895116758}
+  - component: {fileID: -2961916719888825362}
   m_Layer: 0
   m_Name: City
   m_TagString: Untagged
@@ -224,6 +225,22 @@ Transform:
   - {fileID: 4505534386018185857}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2961916719888825362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136544068289842672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: a4f36dbaf09a1c64eb2101105f86b9ab, type: 2}
+  facilityHealth: 100
+  <RoadMask>k__BackingField: -1
+  <RiverMask>k__BackingField: -1
 --- !u!1 &4737559159281610907
 GameObject:
   m_ObjectHideFlags: 0

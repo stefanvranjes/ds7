@@ -41,7 +41,7 @@ public class DS7ModelImporter : UnityEditor.AssetImporters.ScriptedImporter {
                         for(int k = 0; k < VERTICES_COUNT; k++)
                         {
                             reader.BaseStream.Seek(0x10, SeekOrigin.Current);
-                            Vector3 vertex = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                            Vector3 vertex = new Vector3(-reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                             vertices.Add(vertex);
 
                             reader.BaseStream.Seek(0x04, SeekOrigin.Current);

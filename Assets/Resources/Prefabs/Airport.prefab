@@ -221,6 +221,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4594985780807286284}
+  - component: {fileID: -1382596755786535375}
   m_Layer: 0
   m_Name: Airport
   m_TagString: Untagged
@@ -247,6 +248,22 @@ Transform:
   - {fileID: 6825707219518509240}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1382596755786535375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414067901038668289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e55c2b0d1650549b1ccfe0cfc95dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Terrain>k__BackingField: {fileID: 11400000, guid: 14c8d64c2da60364ebd9945de902399b, type: 2}
+  facilityHealth: 100
+  <RoadMask>k__BackingField: -1
+  <RiverMask>k__BackingField: -1
 --- !u!1 &4429723092226350267
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +304,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4429723092226350267}
-  m_Mesh: {fileID: -378421297585932773, guid: 5cc0af03bb5d00d4ba1c09c9253e89ef, type: 3}
+  m_Mesh: {fileID: -378421297585932773, guid: 3d694bcbd15456249a85cb90951c8d27, type: 3}
 --- !u!23 &880333943165468576
 MeshRenderer:
   m_ObjectHideFlags: 0
